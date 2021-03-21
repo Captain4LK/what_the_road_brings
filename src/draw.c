@@ -41,13 +41,13 @@ static void draw_segment(Segment *s);
 void load_assets()
 {
    backdrop = SLK_pal_sprite_load("assets/night.slk");
-   SLK_Pal_sprite *car = SLK_pal_sprite_load("assets/car.slk");
-   for(int i = 0;i<7;i++)
-   {
-      car_sprites[i] = SLK_pal_sprite_create(150,107);
-      SLK_pal_sprite_copy_partial(car_sprites[i],car,0,0,i*150,0,150,107);
-   }
-   SLK_pal_sprite_destroy(car);
+   car_sprites[0] = SLK_pal_sprite_load("assets/car_0.slk");
+   car_sprites[1] = SLK_pal_sprite_load("assets/car_1.slk");
+   car_sprites[2] = SLK_pal_sprite_load("assets/car_2.slk");
+   car_sprites[3] = SLK_pal_sprite_load("assets/car_3.slk");
+   car_sprites[4] = SLK_pal_sprite_load("assets/car_4.slk");
+   car_sprites[5] = SLK_pal_sprite_load("assets/car_5.slk");
+   car_sprites[6] = SLK_pal_sprite_load("assets/car_6.slk");
 }
 
 void draw(ULK_fixed x, ULK_fixed z, int steer)
@@ -89,7 +89,8 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       max_y = ULK_fixed_32_to_int(s->p1.screen_y);
    }
 
-   SLK_draw_pal_sprite(car_sprites[steer+3],245,370);
+   SLK_draw_pal_sprite(car_sprites[steer+3],85,140);
+   //SLK_draw_pal_sprite(car_sprites[3],85,140);
 }
 
 static void project_point(Point *p, ULK_fixed_32 cam_x, ULK_fixed cam_y, ULK_fixed cam_z, ULK_fixed_32 cam_depth, int width, int height, int road_width)
@@ -118,28 +119,11 @@ static void draw_segment(Segment *s)
    w+=ULK_fixed_32_mul(dw,ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
    ULK_fixed_32 y = ULK_fixed_32_to_int((s->p1.screen_y));
 
-   /*SDL_SetRenderDrawColor(renderer,s->color.r,s->color.g,s->color.b,s->color.a);
-   SDL_Rect rect;
-   rect.x = 0;
-   rect.y = y;
-   rect.w = window_width;
-   rect.h = ULK_fixed_32_to_int(ULK_fixed_32_round(height));
-   SDL_RenderFillRect(renderer,&rect);*/
-   if(1||s->line)
+   if(s->line)
       while(y<ULK_fixed_32_to_int(ULK_fixed_32_round(s->p0.screen_y)))
       {
-         /*ULK_fixed_32 w16 = w/16;
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(x-w)),y,ULK_fixed_32_to_int(ULK_fixed_32_round(x-w+w16)),y);
-         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(x-w+w16)),y,ULK_fixed_32_to_int(ULK_fixed_32_round(x+w-w16)),y);
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(x+w-w16)),y,ULK_fixed_32_to_int(ULK_fixed_32_round(x+w)),y);
-         x+=dx;
-         w+=dw;
-         y++;*/
          int w16 = w/16;
-         SLK_draw_pal_horizontal_line(0,ULK_fixed_32_to_int(ULK_fixed_32_round(x-w)),y,s->color);
+         SLK_draw_pal_horizontal_line(0,ULK_fixed_32_to_int((x-w)),y,s->color);
          SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x-w),ULK_fixed_32_to_int(x-w+w16),y,s->color_border);
          SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x-w+w16),ULK_fixed_32_to_int(x+w-w16),y,s->color_road);
          SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x+w-w16),ULK_fixed_32_to_int(x+w),y,s->color_border);
@@ -151,37 +135,6 @@ static void draw_segment(Segment *s)
    else
       while(y<ULK_fixed_32_to_int(s->p0.screen_y))
       {
-        /* ULK_fixed_32 w16 = w/16;
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(x-w)),y,ULK_fixed_32_to_int(ULK_fixed_32_round(x-w+w16)),y);
-
-         ULK_fixed_32 start = x-w+w16;
-         ULK_fixed_32 end = x-w+10*w16;
-         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(start)),y,ULK_fixed_32_to_int(ULK_fixed_32_round(end)),y);
-         start = end;
-         end+=w16;
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(start)),y,ULK_fixed_32_to_int(ULK_fixed_32_round(end)),y);
-         start = end;
-         end+=10*w16;
-         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(start)),y,ULK_fixed_32_to_int(ULK_fixed_32_round(end)),y);
-         start = end;
-         end+=w16;
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(start)),y,ULK_fixed_32_to_int(ULK_fixed_32_round(end)),y);
-         start = end;
-         end+=10*w16;
-         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(start)),y,ULK_fixed_32_to_int(ULK_fixed_32_round(end)),y);
-
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(x+w-w16)),y,ULK_fixed_32_to_int(ULK_fixed_32_round(x+w)),y);
-
-         x+=dx;
-         w+=dw;
-         y++;*/
          int w16 = w/16;
          SLK_draw_pal_horizontal_line(0,ULK_fixed_32_to_int(x-w),y,s->color);
          SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x-w),ULK_fixed_32_to_int(x-w+w16),y,s->color_border);

@@ -38,6 +38,7 @@ static int frame = 0;
 void player_update()
 {
    frame++;
+
    if(SLK_key_down(SLK_KEY_UP))
    {
       if(player.vz<(MAX_SPEED-ACCEL))

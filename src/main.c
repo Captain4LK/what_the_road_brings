@@ -29,12 +29,12 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Variables
-static uint8_t grass0 = 87;
-static uint8_t grass1 = 88;
+static uint8_t grass0 = 88;
+static uint8_t grass1 = 89;
 static uint8_t border0 = 50;
 static uint8_t border1 = 51;
-static uint8_t road0 = 1;
-static uint8_t road1 = 2;
+static uint8_t road0 = 3;
+static uint8_t road1 = 4;
 //-------------------------------------
 
 //Function prototypes
@@ -54,7 +54,7 @@ int main(int argc, char **arg)
    SLK_layer_activate(0,1);
    SLK_layer_set_dynamic(0,0);
    SLK_layer_set_current(0);
-   SLK_layer_set_palette(0,SLK_palette_load("assets/aurora.pal"));
+   SLK_layer_set_palette(0,SLK_palette_load("assets/duel.pal"));
    SLK_draw_pal_set_clear_index(0);
    SLK_draw_pal_clear();
 
@@ -62,14 +62,15 @@ int main(int argc, char **arg)
 
   //Setup road
    segment_list_init(&segments);
-   add_road(0,0,32,0,0);
-   for(int i = 0;i<10;i++)
+   add_road(0,0,64,0,0);
+   add_road(0,0,640,ULK_fixed_32_from_int(1)/2,0);
+   /*for(int i = 0;i<10;i++)
    {
       add_road(4,4,32,0,ULK_fixed_32_from_int(400));
       //add_road(0,0,8,0,0);
       add_road(4,4,32,0,-ULK_fixed_32_from_int(400));
       //add_road(0,0,8,0,0);
-   }
+   }*/
 
    while(SLK_core_running())
    {
