@@ -11,12 +11,15 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //External includes
 #include <stdio.h>
 #include <stdlib.h>
-#include <SLK/SLK.h>
+#include <string.h>
+#include <stdint.h>
+#include <SDL2/SDL.h>
 //-------------------------------------
 
 //Internal includes
-#include "../external/ULK_fixed.h"
+#include "ULK_fixed.h"
 #include "config.h"
+#include "sdl.h"
 #include "segment.h"
 //-------------------------------------
 

@@ -1,5 +1,5 @@
 /*
-SoftLK-demos - a collection of bigger examples for SoftLK-lib
+A racing game
 
 Written in 2021 by Lukas Holzbeierlein (Captain4LK) email: captain4lk [at] tutanota [dot] com
 
@@ -9,21 +9,21 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 */
 
 //External includes
-#include <string.h>
 #include <math.h>
-#include <SLK/SLK.h>
+#include <SDL2/SDL.h>
+//#include <SLK/SLK.h>
 //-------------------------------------
 
 //Internal includes
-#include "../external/ULK_fixed.h"
+#include "ULK_fixed.h"
 #include "config.h"
+#include "sdl.h"
 #include "player.h"
 #include "segment.h"
 #include "draw.h"
 //-------------------------------------
 
 //#defines
-
 #define COLOR_ROAD() \
 { if((segments.used%6)<3) {s.color = grass0;s.color_road = road0;s.color_border = border0;s.line = 1;}else{s.color = grass1;s.color_road = road1;s.color_border = border1;s.line = 0;}}
 //-------------------------------------
@@ -32,12 +32,12 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Variables
-static uint8_t grass0 = 162;
-static uint8_t grass1 = 163;
-static uint8_t border0 = 146;
-static uint8_t border1 = 6;
-static uint8_t road0 = 82;
-static uint8_t road1 = 81;
+static Color grass0 = {185,217,34,255};
+static Color grass1 = {156,193,27,255};
+static Color border0 = {155,11,11,255};
+static Color border1 = {244,240,190,255};
+static Color road0 = {121,121,141,255};
+static Color road1 = {139,138,154,255};
 //-------------------------------------
 
 //Function prototypes
@@ -49,25 +49,12 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
 
 int main(int argc, char **arg)
 {
-   SLK_setup(XRES,YRES,1,"SLK_img2pixel",0,SLK_WINDOW_MAX,0);
-   SLK_timer_set_fps(FPS);
-
-   //Layer for game
-   SLK_layer_create(0,SLK_LAYER_PAL);
-   SLK_layer_activate(0,1);
-   SLK_layer_set_dynamic(0,0);
-   SLK_layer_set_current(0);
-   SLK_layer_set_palette(0,SLK_palette_load("assets/duel.pal"));
-   SLK_draw_pal_set_clear_index(0);
-   SLK_draw_pal_clear();
-
+   sdl_init();
    load_assets();
 
-  //Setup road
+   //Setup road
    segment_list_init(&segments);
-   add_road(0,0,64,0,0);
-   add_road(0,0,64,ULK_fixed_32_from_int(1)/2,0);
-   add_road(0,0,64,-ULK_fixed_32_from_int(1)/2,0);
+   add_road(0,0,32,0,0);
    for(int i = 0;i<10;i++)
    {
       add_road(4,4,32,0,ULK_fixed_32_from_int(400));
@@ -75,14 +62,30 @@ int main(int argc, char **arg)
       add_road(4,4,32,0,-ULK_fixed_32_from_int(400));
       //add_road(0,0,8,0,0);
    }
-
-   while(SLK_core_running())
+   /*for(int i = 0;i<10;i++)
    {
-      SLK_update();
+      add_road(8,8,32,ULK_fixed_32_from_int(1)/2,0);
+      add_road(8,8,32,-ULK_fixed_32_from_int(1)/2,0);
+   }*/
+   /*add_road(8,8,32,ULK_fixed_32_from_int(1)/2,ULK_fixed_32_from_int(500));
+   add_road(8,8,64,-ULK_fixed_32_from_int(1)/2,0);
+   add_road(8,8,32,0,ULK_fixed_32_from_int(-10));
+   add_road(8,8,32,0,ULK_fixed_32_from_int(10));
+   add_road(8,8,32,0,ULK_fixed_32_from_int(-5));*/
+
+   while(sdl_running())
+   {
+      sdl_update();
+
+      SDL_SetRenderDrawColor(renderer,0,0,0,255);
+      SDL_RenderClear(renderer);
 
       game_update();
 
-      SLK_render_update();
+      //SDL_SetRenderDrawColor(renderer,0xff,0,0xff,255);
+      //SDL_RenderFillRect(renderer,&((SDL_Rect){.x = 0,.y = 0,.w = 255,.h = 255}));
+
+      SDL_RenderPresent(renderer);
    }
 
    return 0;
@@ -90,9 +93,6 @@ int main(int argc, char **arg)
 
 static void game_update()
 {
-   SLK_layer_set_current(0);
-   SLK_draw_pal_clear();
-
    player_update();
 
    draw(player.px,player.pz,player.steer);
@@ -100,6 +100,7 @@ static void game_update()
 
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill)
 {
+
    ULK_fixed_32 start_y = segments.used?segments.segments[segments.used-1].p1.y:0;
    ULK_fixed_32 end_y = start_y+hill;
    int total = start+end+length;

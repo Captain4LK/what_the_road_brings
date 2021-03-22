@@ -30,10 +30,10 @@ typedef struct
 {
    Point p0;
    Point p1;
-   uint8_t color;
-   uint8_t color_road;
-   uint8_t color_border;
-   uint8_t color_line;
+   Color color;
+   Color color_road;
+   Color color_border;
+   Color color_line;
    int line;
    ULK_fixed_32 curve;
 }Segment;

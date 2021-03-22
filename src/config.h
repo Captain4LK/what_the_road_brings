@@ -12,11 +12,12 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 #define _CONFIG_H_
 
+//0 for vsync
+#define FPS 60 
 #define XRES 320
 #define YRES 240
-#define FPS 30
 #define SEGLEN ULK_fixed_from_int(32)
-#define MAX_SPEED ULK_fixed_from_int(24)
+#define MAX_SPEED ULK_fixed_from_int(12)
 #define ACCEL ULK_fixed_div(MAX_SPEED,ULK_fixed_from_int(10*FPS))
 #define DECEL ULK_fixed_div(-MAX_SPEED,ULK_fixed_from_int(5*FPS))
 #define RENDER_DISTANCE 64

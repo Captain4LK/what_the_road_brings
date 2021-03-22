@@ -9,12 +9,17 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 */
 
 //External includes
-#include <SLK/SLK.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <SDL2/SDL.h>
 //-------------------------------------
 
 //Internal includes
-#include "../external/ULK_fixed.h"
+#include "ULK_fixed.h"
 #include "config.h"
+#include "sdl.h"
 #include "player.h"
 #include "segment.h"
 //-------------------------------------
@@ -38,13 +43,12 @@ static int frame = 0;
 void player_update()
 {
    frame++;
-
-   if(SLK_key_down(SLK_KEY_UP)||SLK_gamepad_down(0,SLK_PAD_B))
+   if(sdl_key_down(KEY_UP))
    {
       if(player.vz<(MAX_SPEED-ACCEL))
          player.vz+=ACCEL;
    }
-   else if(SLK_key_down(SLK_KEY_DOWN)||SLK_gamepad_down(0,SLK_PAD_A))
+   else if(sdl_key_down(KEY_DOWN))
       player.vz+=2*DECEL;
    else
       player.vz+=DECEL;
@@ -53,7 +57,7 @@ void player_update()
    player.pz+=player.vz;
 
    int speed_x = ULK_fixed_32_from_int(4);
-   if(SLK_key_down(SLK_KEY_LEFT)||SLK_gamepad_down(0,SLK_PAD_LEFT))
+   if(sdl_key_down(KEY_LEFT))
    {
       if(player.steer==0)
          frame = 0;
@@ -61,7 +65,7 @@ void player_update()
       if(player.steer<3&&frame%2==0)
          player.steer++;
    }
-   else if(SLK_key_down(SLK_KEY_RIGHT)||SLK_gamepad_down(0,SLK_PAD_RIGHT))
+   else if(sdl_key_down(KEY_RIGHT))
    {
       if(player.steer==0)
          frame = 0;
@@ -80,3 +84,4 @@ void player_update()
    player.pz = player.pz%(segments.used*SEGLEN);
 }
 //-------------------------------------
+//player.vz-=ACCEL;
