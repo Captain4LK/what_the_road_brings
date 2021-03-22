@@ -39,12 +39,12 @@ void player_update()
 {
    frame++;
 
-   if(SLK_key_down(SLK_KEY_UP))
+   if(SLK_key_down(SLK_KEY_UP)||SLK_gamepad_down(0,SLK_PAD_B))
    {
       if(player.vz<(MAX_SPEED-ACCEL))
          player.vz+=ACCEL;
    }
-   else if(SLK_key_down(SLK_KEY_DOWN))
+   else if(SLK_key_down(SLK_KEY_DOWN)||SLK_gamepad_down(0,SLK_PAD_A))
       player.vz+=2*DECEL;
    else
       player.vz+=DECEL;
@@ -53,7 +53,7 @@ void player_update()
    player.pz+=player.vz;
 
    int speed_x = ULK_fixed_32_from_int(4);
-   if(SLK_key_down(SLK_KEY_LEFT))
+   if(SLK_key_down(SLK_KEY_LEFT)||SLK_gamepad_down(0,SLK_PAD_LEFT))
    {
       if(player.steer==0)
          frame = 0;
@@ -61,7 +61,7 @@ void player_update()
       if(player.steer<3&&frame%2==0)
          player.steer++;
    }
-   else if(SLK_key_down(SLK_KEY_RIGHT))
+   else if(SLK_key_down(SLK_KEY_RIGHT)||SLK_gamepad_down(0,SLK_PAD_RIGHT))
    {
       if(player.steer==0)
          frame = 0;
@@ -80,4 +80,3 @@ void player_update()
    player.pz = player.pz%(segments.used*SEGLEN);
 }
 //-------------------------------------
-//player.vz-=ACCEL;

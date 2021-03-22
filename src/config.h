@@ -22,6 +22,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define RENDER_DISTANCE 64
 #define ROAD_WIDTH 30000
 #define CAM_HEIGHT ULK_fixed_32_from_int(64)
-#define CAM_DEPTH ULK_fixed_32_from_int(1)
+#define CAM_DEPTH 54991
 
 #endif

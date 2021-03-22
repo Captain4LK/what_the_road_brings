@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS+=-lm -Wall -g
+CFLAGS+=-lm -Wall
 
 pseudo_3d_racer: main.o segment.o ULK_fixed.o draw.o player.o
 	gcc -o pseudo_3d_racer $^ -lSLK -lm -lSDL2 -Wall

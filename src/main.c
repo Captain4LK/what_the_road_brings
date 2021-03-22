@@ -23,18 +23,21 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //#defines
+
+#define COLOR_ROAD() \
+{ if((segments.used%6)<3) {s.color = grass0;s.color_road = road0;s.color_border = border0;s.line = 1;}else{s.color = grass1;s.color_road = road1;s.color_border = border1;s.line = 0;}}
 //-------------------------------------
 
 //Typedefs
 //-------------------------------------
 
 //Variables
-static uint8_t grass0 = 88;
-static uint8_t grass1 = 89;
-static uint8_t border0 = 50;
-static uint8_t border1 = 51;
-static uint8_t road0 = 3;
-static uint8_t road1 = 4;
+static uint8_t grass0 = 162;
+static uint8_t grass1 = 163;
+static uint8_t border0 = 146;
+static uint8_t border1 = 6;
+static uint8_t road0 = 82;
+static uint8_t road1 = 81;
 //-------------------------------------
 
 //Function prototypes
@@ -63,14 +66,15 @@ int main(int argc, char **arg)
   //Setup road
    segment_list_init(&segments);
    add_road(0,0,64,0,0);
-   add_road(0,0,640,ULK_fixed_32_from_int(1)/2,0);
-   /*for(int i = 0;i<10;i++)
+   add_road(0,0,64,ULK_fixed_32_from_int(1)/2,0);
+   add_road(0,0,64,-ULK_fixed_32_from_int(1)/2,0);
+   for(int i = 0;i<10;i++)
    {
       add_road(4,4,32,0,ULK_fixed_32_from_int(400));
       //add_road(0,0,8,0,0);
       add_road(4,4,32,0,-ULK_fixed_32_from_int(400));
       //add_road(0,0,8,0,0);
-   }*/
+   }
 
    while(SLK_core_running())
    {
@@ -110,10 +114,7 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       s.p1.z = (segments.used+1)*SEGLEN;
       s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)i/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
       s.curve = curve+ULK_fixed_32_mul(-curve,((-ULK_fixed_32_cos(ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(end))*4)/2)+ULK_fixed_32_from_int(1)/2));
-      s.color = segments.used&1?grass0:grass1;
-      s.color_road = segments.used&1?road0:road1;
-      s.color_border = segments.used&1?border0:border1;
-      s.line = segments.used&1;
+      COLOR_ROAD()
       s.curve = ULK_fixed_32_mul(curve,ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(start)),ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(start))));
       segment_list_add(&segments,&s);
    }
@@ -127,10 +128,7 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       s.p0.y = ly;
       s.p1.z = (segments.used+1)*SEGLEN;
       s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)(start+i)/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
-      s.color = segments.used&1?grass0:grass1;
-      s.color_road = segments.used&1?road0:road1;
-      s.color_border = segments.used&1?border0:border1;
-      s.line = segments.used&1;
+      COLOR_ROAD()
       s.curve = curve;
       segment_list_add(&segments,&s);
    }
@@ -144,10 +142,7 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       s.p0.y = ly;
       s.p1.z = (segments.used+1)*SEGLEN;
       s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)(start+length+i)/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
-      s.color = segments.used&1?grass0:grass1;
-      s.color_road = segments.used&1?road0:road1;
-      s.color_border = segments.used&1?border0:border1;
-      s.line = segments.used&1;
+      COLOR_ROAD()
       //s.curve = ULK_fixed_32_mul(curve,ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(end)),ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(end))));
       s.curve = curve+ULK_fixed_32_mul(-curve,((-cos(((float)i/(float)end)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
       segment_list_add(&segments,&s);

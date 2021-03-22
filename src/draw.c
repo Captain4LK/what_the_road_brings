@@ -21,6 +21,8 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //#defines
+#define MAX(a,b) \
+   ((a)>(b)?(a):(b))
 //-------------------------------------
 
 //Typedefs
@@ -57,7 +59,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
 
    int i = 0;
    int is = 0;
-   int max_y = YRES;
+   ULK_fixed_32 max_y = ULK_fixed_32_from_int(YRES);
    Segment *base_player = segment_list_get_pos(&segments,z+ULK_fixed_from_int(64),&i);
    Segment *base = segment_list_get_pos(&segments,z,&i);
    int max = i+RENDER_DISTANCE;
@@ -81,85 +83,93 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       cache = s->p1;
       cx+=cdx;
       cdx+=s->curve;
-      if(s->p0.camera_z<<8<=CAM_DEPTH||ULK_fixed_32_to_int(s->p1.screen_y)>=max_y||s->p1.screen_y>=s->p0.screen_y)
+      if(s->p0.camera_z<<8<=CAM_DEPTH||s->p1.screen_y>=max_y||s->p1.screen_y>=s->p0.screen_y)
+         continue;
+      if(ULK_fixed_32_floor(s->p0.screen_y)<ULK_fixed_32_ceil(s->p1.screen_y))
          continue;
 
       draw_segment(s);
 
-      max_y = ULK_fixed_32_to_int(s->p1.screen_y);
+      max_y = s->p1.screen_y;
    }
 
-   SLK_draw_pal_sprite(car_sprites[steer+3],85,140);
+   SLK_draw_pal_sprite(car_sprites[steer+3],85,155);
    //SLK_draw_pal_sprite(car_sprites[3],85,140);
 }
 
 static void project_point(Point *p, ULK_fixed_32 cam_x, ULK_fixed cam_y, ULK_fixed cam_z, ULK_fixed_32 cam_depth, int width, int height, int road_width)
 {
-p->camera_x = p->x-cam_x;
+   p->camera_x = p->x-cam_x;
    p->camera_y = p->y-cam_y;
    p->camera_z = p->z-cam_z;
    if(p->camera_z==0)
       p->camera_z = INT16_MAX<<8;
-   p->screen_x = ULK_fixed_32_from_int(width/2)+ULK_fixed_32_mul(ULK_fixed_32_from_int(width/2),ULK_fixed_32_div(p->camera_x,p->camera_z<<8));
-   p->screen_y = ULK_fixed_32_round(((ULK_fixed_32_from_int(height/2)-ULK_fixed_32_mul(ULK_fixed_32_from_int(height/2),ULK_fixed_32_div(p->camera_y,p->camera_z<<8)))));
+   p->screen_x = (ULK_fixed_32_from_int(width/2)+ULK_fixed_32_mul(ULK_fixed_32_from_int(width/2),ULK_fixed_32_mul(ULK_fixed_32_div(p->camera_x,p->camera_z<<8),cam_depth)));
+   p->screen_y = (ULK_fixed_32_from_int(height/2)-ULK_fixed_32_mul(ULK_fixed_32_from_int(height/2),ULK_fixed_32_mul(ULK_fixed_32_div(p->camera_y,p->camera_z<<8),cam_depth)));
    //p->screen_w = ((ULK_fixed_32_mul(p->screen_scale,ULK_fixed_32_mul(ULK_fixed_32_from_int(road_width),ULK_fixed_32_from_int(width/2))))); //Doesn't fucking work
-   p->screen_w = ULK_fixed_32_div(ULK_fixed_32_from_int(width),p->camera_z<<8)*48;
+   p->screen_w = ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(width),p->camera_z<<8)*48,cam_depth);
 }
 
 static void draw_segment(Segment *s)
 {
    ULK_fixed_32 height = s->p0.screen_y-s->p1.screen_y; 
-   if(height==0)
-      return;
    ULK_fixed_32 dx = ULK_fixed_32_div((s->p0.screen_x-s->p1.screen_x),(height));
    ULK_fixed_32 dw = ULK_fixed_32_div((s->p0.screen_w-s->p1.screen_w),(height));
    ULK_fixed_32 x = (s->p1.screen_x);
    ULK_fixed_32 w = (s->p1.screen_w);
    x+=ULK_fixed_32_mul(dx,ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
    w+=ULK_fixed_32_mul(dw,ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
-   ULK_fixed_32 y = ULK_fixed_32_to_int((s->p1.screen_y));
+   ULK_fixed_32 y = (s->p1.screen_y+ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
 
    if(s->line)
-      while(y<ULK_fixed_32_to_int(ULK_fixed_32_round(s->p0.screen_y)))
+   {
+      int y_draw = ULK_fixed_32_to_int(ULK_fixed_32_floor(y));
+      while(y<(s->p0.screen_y))
       {
          int w16 = w/16;
-         SLK_draw_pal_horizontal_line(0,ULK_fixed_32_to_int((x-w)),y,s->color);
-         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x-w),ULK_fixed_32_to_int(x-w+w16),y,s->color_border);
-         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x-w+w16),ULK_fixed_32_to_int(x+w-w16),y,s->color_road);
-         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x+w-w16),ULK_fixed_32_to_int(x+w),y,s->color_border);
-         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x+w),XRES,y,s->color);
+         SLK_draw_pal_horizontal_line(0,ULK_fixed_32_to_int((x-w)),y_draw,s->color);
+         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x-w),ULK_fixed_32_to_int(x-w+w16),y_draw,s->color_border);
+         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x-w+w16),ULK_fixed_32_to_int(x+w-w16),y_draw,s->color_road);
+         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x+w-w16),ULK_fixed_32_to_int(x+w),y_draw,s->color_border);
+         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x+w),XRES,y_draw,s->color);
          x+=dx;
          w+=dw;
-         y++;
+         y+=ULK_fixed_32_from_int(1);
+         y_draw++;
       }
-   else
-      while(y<ULK_fixed_32_to_int(s->p0.screen_y))
+   }
+   else 
+   {
+      int y_draw = ULK_fixed_32_to_int(ULK_fixed_32_ceil(y));
+      while(y<(s->p0.screen_y))
       {
          int w16 = w/16;
-         SLK_draw_pal_horizontal_line(0,ULK_fixed_32_to_int(x-w),y,s->color);
-         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x-w),ULK_fixed_32_to_int(x-w+w16),y,s->color_border);
+         SLK_draw_pal_horizontal_line(0,ULK_fixed_32_to_int(x-w),y_draw,s->color);
+         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x-w),ULK_fixed_32_to_int(x-w+w16),y_draw,s->color_border);
 
          ULK_fixed_32 start = x-w+w16;
          ULK_fixed_32 end = x-w+10*w16;
-         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(start),ULK_fixed_32_to_int(end),y,s->color_road);
+         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(start),ULK_fixed_32_to_int(end),y_draw,s->color_road);
          start = end;
          end+=w16;
-         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(start),ULK_fixed_32_to_int(end),y,s->color_border);
+         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(start),ULK_fixed_32_to_int(end),y_draw,s->color_border);
          start = end;
          end+=10*w16;
-         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(start),ULK_fixed_32_to_int(end),y,s->color_road);
+         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(start),ULK_fixed_32_to_int(end),y_draw,s->color_road);
          start = end;
          end+=w16;
-         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(start),ULK_fixed_32_to_int(end),y,s->color_border);
+         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(start),ULK_fixed_32_to_int(end),y_draw,s->color_border);
          start = end;
          end+=10*w16;
-         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(start),ULK_fixed_32_to_int(end),y,s->color_road);
+         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(start),ULK_fixed_32_to_int(end),y_draw,s->color_road);
 
-         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x+w-w16),ULK_fixed_32_to_int(x+w),y,s->color_border);
-         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x+w),XRES,y,s->color);
+         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x+w-w16),ULK_fixed_32_to_int(x+w),y_draw,s->color_border);
+         SLK_draw_pal_horizontal_line(ULK_fixed_32_to_int(x+w),XRES,y_draw,s->color);
          x+=dx;
          w+=dw;
-         y++;
+         y+=ULK_fixed_32_from_int(1);
+         y_draw++;
+      }
    }
 }
 //-------------------------------------
