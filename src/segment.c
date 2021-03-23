@@ -53,6 +53,7 @@ void segment_list_add(Segment_list *list, Segment *s)
    list->segments[list->used].color_road = s->color_road;
    list->segments[list->used].color_border = s->color_border;
    list->segments[list->used].line = s->line;
+   list->segments[list->used].texture = s->texture;
    list->segments[list->used].curve = s->curve;
    list->used++;
    if(list->used==list->space)

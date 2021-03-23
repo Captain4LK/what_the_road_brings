@@ -36,8 +36,22 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Variables
-static SDL_Texture *texture = NULL;
 static int draw_mode = 0;
+static SDL_Texture *texture = NULL;
+
+static struct
+{
+   SDL_Rect road00;
+   SDL_Rect road01;
+   SDL_Rect road02;
+   SDL_Rect road03;
+}texture_rects = 
+{
+   .road00 = {.x = 0,.y = 0,.w = 128,.h = 16},
+   .road01 = {.x = 0,.y = 16,.w = 128,.h = 16},
+   .road02 = {.x = 0,.y = 32,.w = 128,.h = 16},
+   .road03 = {.x = 0,.y = 48,.w = 128,.h = 16},
+};
 //-------------------------------------
 
 //Function prototypes
@@ -51,7 +65,7 @@ static void draw_segment_frame(Segment *s);
 
 void load_assets()
 {
-   texture = sdl_load_image("assets/default.png");
+   texture = sdl_load_image("assets/textures.png");
 }
 
 void draw(ULK_fixed x, ULK_fixed z, int steer)
@@ -131,7 +145,6 @@ static void draw_segment(Segment *s)
    w+=ULK_fixed_32_mul(dw,ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
    ULK_fixed_32 y = (s->p1.screen_y);//+ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
 
-   //TODO: use rectangles for grass
    SDL_SetRenderDrawColor(renderer,s->color.r,s->color.g,s->color.b,s->color.a);
    SDL_Rect rect;
    rect.x = 0;
@@ -203,50 +216,63 @@ static void draw_segment(Segment *s)
 static void draw_segment_frame(Segment *s)
 {
    SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((s->p1.screen_x-s->p1.screen_w)),ULK_fixed_32_to_int((s->p1.screen_y)),ULK_fixed_32_to_int((s->p1.screen_x+s->p1.screen_w)),ULK_fixed_32_to_int((s->p1.screen_y)));
-   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((s->p0.screen_x-s->p1.screen_w)),ULK_fixed_32_to_int((s->p0.screen_y)),ULK_fixed_32_to_int((s->p0.screen_x+s->p0.screen_w)),ULK_fixed_32_to_int((s->p0.screen_y)));
-   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((s->p1.screen_x-s->p1.screen_w)),ULK_fixed_32_to_int((s->p1.screen_y)),ULK_fixed_32_to_int((s->p0.screen_x-s->p0.screen_w)),ULK_fixed_32_to_int((s->p0.screen_y)));
-   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((s->p0.screen_x+s->p0.screen_w)),ULK_fixed_32_to_int((s->p0.screen_y)),ULK_fixed_32_to_int((s->p1.screen_x+s->p1.screen_w)),ULK_fixed_32_to_int((s->p1.screen_y)));
+   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(s->p1.screen_x-s->p1.screen_w),ULK_fixed_32_to_int(s->p1.screen_y),ULK_fixed_32_to_int(s->p1.screen_x+s->p1.screen_w),ULK_fixed_32_to_int(s->p1.screen_y));
+   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(s->p0.screen_x-s->p1.screen_w),ULK_fixed_32_to_int(s->p0.screen_y),ULK_fixed_32_to_int(s->p0.screen_x+s->p0.screen_w),ULK_fixed_32_to_int(s->p0.screen_y));
+   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(s->p1.screen_x-s->p1.screen_w),ULK_fixed_32_to_int(s->p1.screen_y),ULK_fixed_32_to_int(s->p0.screen_x-s->p0.screen_w),ULK_fixed_32_to_int(s->p0.screen_y));
+   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(s->p0.screen_x+s->p0.screen_w),ULK_fixed_32_to_int(s->p0.screen_y),ULK_fixed_32_to_int(s->p1.screen_x+s->p1.screen_w),ULK_fixed_32_to_int(s->p1.screen_y));
 }
 
 static void draw_segment_tex(Segment *s)
 {
    ULK_fixed_32 height = s->p0.screen_y-s->p1.screen_y; 
-   if(height==0)
-      return;
    ULK_fixed_32 dx = ULK_fixed_32_div((s->p0.screen_x-s->p1.screen_x),(height));
    ULK_fixed_32 dw = ULK_fixed_32_div((s->p0.screen_w-s->p1.screen_w),(height));
    ULK_fixed_32 x = (s->p1.screen_x);
    ULK_fixed_32 w = (s->p1.screen_w);
    x+=ULK_fixed_32_mul(dx,ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
    w+=ULK_fixed_32_mul(dw,ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
-   ULK_fixed_32 y = ULK_fixed_32_to_int((s->p1.screen_y));
+   ULK_fixed_32 y = (s->p1.screen_y);//+ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
 
    SDL_SetRenderDrawColor(renderer,s->color.r,s->color.g,s->color.b,s->color.a);
    SDL_Rect rect;
    SDL_Rect trect;
    rect.x = 0;
-   rect.y = y;
+   rect.y = ULK_fixed_32_to_int(y);
    rect.w = XRES;
-   rect.h = ULK_fixed_32_to_int(ULK_fixed_32_round(height));
+   rect.h = ULK_fixed_32_to_int((height))+1;
    SDL_RenderFillRect(renderer,&rect);
 
-   ULK_fixed_32 stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(128),height);
-   ULK_fixed_32 stripe_y = 0;
-   while(y<ULK_fixed_32_to_int(ULK_fixed_32_round(s->p0.screen_y)))
+   ULK_fixed_32 stripe_height = 0;
+   switch(s->texture)
    {
-      rect.w = ULK_fixed_32_to_int(ULK_fixed_32_round(2*w));
-      rect.x = ULK_fixed_32_to_int(ULK_fixed_32_round(x-w));
-      rect.y = y;
+   case 0: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road00.h),height); break;
+   case 1: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road01.h),height); break;
+   case 2: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road02.h),height); break;
+   case 3: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road03.h),height); break;
+   }
+
+   ULK_fixed_32 stripe_y = 0;
+   int y_draw = ULK_fixed_32_to_int((y));
+   while(y<(s->p0.screen_y))
+   {
+      rect.w = ULK_fixed_32_to_int((2*w));
+      rect.x = ULK_fixed_32_to_int((x-w));
+      rect.y = y_draw;
       rect.h = 1;
-      trect.w = 428; 
+      switch(s->texture)
+      {
+      case 0: trect.w = texture_rects.road00.w; trect.y = ULK_fixed_32_to_int((stripe_y))+texture_rects.road00.y; break;
+      case 1: trect.w = texture_rects.road01.w; trect.y = ULK_fixed_32_to_int((stripe_y))+texture_rects.road01.y; break;
+      case 2: trect.w = texture_rects.road02.w; trect.y = ULK_fixed_32_to_int((stripe_y))+texture_rects.road02.y; break;
+      case 3: trect.w = texture_rects.road03.w; trect.y = ULK_fixed_32_to_int((stripe_y))+texture_rects.road03.y; break;
+      }
       trect.x = 0;
-      trect.y = ULK_fixed_32_to_int(ULK_fixed_32_round(stripe_y));
-      trect.h = MAX(1,ULK_fixed_32_to_int(ULK_fixed_32_round(stripe_height)));
+      trect.h = MAX(1,ULK_fixed_32_to_int((stripe_height)));
       SDL_RenderCopy(renderer,texture,&trect,&rect);
       x+=dx;
       w+=dw;
-      y++;
+      y+=ULK_fixed_32_from_int(1);
+      y_draw++;
       stripe_y+=stripe_height;
    }
 }

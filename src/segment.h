@@ -35,6 +35,7 @@ typedef struct
    Color color_border;
    Color color_line;
    int line;
+   int texture;
    ULK_fixed_32 curve;
 }Segment;
 
