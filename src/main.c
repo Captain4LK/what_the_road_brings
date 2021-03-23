@@ -54,7 +54,9 @@ int main(int argc, char **arg)
 
    //Setup road
    segment_list_init(&segments);
-   add_road(0,0,32,0,0);
+   add_road(0,0,64,0,0);
+   add_road(0,0,64,ULK_fixed_32_from_int(1)/2,0);
+   add_road(0,0,64,-ULK_fixed_32_from_int(1)/2,0);
    for(int i = 0;i<10;i++)
    {
       add_road(4,4,32,0,ULK_fixed_32_from_int(400));
@@ -62,16 +64,6 @@ int main(int argc, char **arg)
       add_road(4,4,32,0,-ULK_fixed_32_from_int(400));
       //add_road(0,0,8,0,0);
    }
-   /*for(int i = 0;i<10;i++)
-   {
-      add_road(8,8,32,ULK_fixed_32_from_int(1)/2,0);
-      add_road(8,8,32,-ULK_fixed_32_from_int(1)/2,0);
-   }*/
-   /*add_road(8,8,32,ULK_fixed_32_from_int(1)/2,ULK_fixed_32_from_int(500));
-   add_road(8,8,64,-ULK_fixed_32_from_int(1)/2,0);
-   add_road(8,8,32,0,ULK_fixed_32_from_int(-10));
-   add_road(8,8,32,0,ULK_fixed_32_from_int(10));
-   add_road(8,8,32,0,ULK_fixed_32_from_int(-5));*/
 
    while(sdl_running())
    {
@@ -81,9 +73,6 @@ int main(int argc, char **arg)
       SDL_RenderClear(renderer);
 
       game_update();
-
-      //SDL_SetRenderDrawColor(renderer,0xff,0,0xff,255);
-      //SDL_RenderFillRect(renderer,&((SDL_Rect){.x = 0,.y = 0,.w = 255,.h = 255}));
 
       SDL_RenderPresent(renderer);
    }
