@@ -141,16 +141,12 @@ static void draw_segment(Segment *s)
       while(y<(s->p0.screen_y))
       {
          ULK_fixed_32 w16 = w/16;
-         //SDL_SetRenderDrawColor(renderer,s->color.r,s->color.g,s->color.b,s->color.a);
-         //SDL_RenderDrawLine(renderer,0,y_draw,ULK_fixed_32_to_int(ULK_fixed_32_round(x-w)),y_draw);
          SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
          SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x-w)),y_draw,ULK_fixed_32_to_int((x-w+w16)),y_draw);
          SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
          SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x-w+w16)),y_draw,ULK_fixed_32_to_int((x+w-w16)),y_draw);
          SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
          SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x+w-w16)),y_draw,ULK_fixed_32_to_int((x+w)),y_draw);
-         //SDL_SetRenderDrawColor(renderer,s->color.r,s->color.g,s->color.b,s->color.a);
-         //SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x+w)),y_draw,XRES,y_draw);
          x+=dx;
          w+=dw;
          y+=ULK_fixed_32_from_int(1);
@@ -163,8 +159,6 @@ static void draw_segment(Segment *s)
       while(y<(s->p0.screen_y))
       {
          ULK_fixed_32 w16 = w/16;
-         //SDL_SetRenderDrawColor(renderer,s->color.r,s->color.g,s->color.b,s->color.a);
-         //SDL_RenderDrawLine(renderer,0,y_draw,ULK_fixed_32_to_int((x-w)),y_draw);
 
          SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
          SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x-w)),y_draw,ULK_fixed_32_to_int((x-w+w16)),y_draw);
@@ -192,9 +186,6 @@ static void draw_segment(Segment *s)
 
          SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
          SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x+w-w16)),y_draw,ULK_fixed_32_to_int((x+w)),y_draw);
-
-         //SDL_SetRenderDrawColor(renderer,s->color.r,s->color.g,s->color.b,s->color.a);
-         //SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x+w)),y_draw,XRES,y_draw);
 
          x+=dx;
          w+=dw;

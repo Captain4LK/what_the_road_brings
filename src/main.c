@@ -60,14 +60,19 @@ int main(int argc, char **arg)
    for(int i = 0;i<10;i++)
    {
       add_road(4,4,32,0,ULK_fixed_32_from_int(400));
-      //add_road(0,0,8,0,0);
       add_road(4,4,32,0,-ULK_fixed_32_from_int(400));
-      //add_road(0,0,8,0,0);
    }
 
+   int fullscreen = 0;
    while(sdl_running())
    {
       sdl_update();
+
+      if(sdl_key_pressed(KEY_M))
+      {
+         fullscreen = !fullscreen;
+         SDL_SetWindowFullscreen(sdl_window,fullscreen?SDL_WINDOW_FULLSCREEN_DESKTOP:0);
+      }
 
       SDL_SetRenderDrawColor(renderer,0,0,0,255);
       SDL_RenderClear(renderer);
