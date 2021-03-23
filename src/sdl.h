@@ -56,6 +56,7 @@ typedef struct
 
 extern SDL_Window *sdl_window;
 extern SDL_Renderer *renderer;
+extern SDL_Texture *target;
 
 void sdl_init();
 void sdl_update();

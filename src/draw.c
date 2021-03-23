@@ -94,7 +94,12 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       if(ULK_fixed_32_floor(s->p0.screen_y)<ULK_fixed_32_ceil(s->p1.screen_y))
          continue;
 
-      draw_segment(s);
+      switch(draw_mode)
+      {
+      case 0: draw_segment(s); break;
+      case 1: draw_segment_frame(s); break;
+      case 2: draw_segment_tex(s); break;
+      }
 
       max_y = s->p1.screen_y;
    }
@@ -198,10 +203,10 @@ static void draw_segment(Segment *s)
 static void draw_segment_frame(Segment *s)
 {
    SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(s->p1.screen_x-s->p1.screen_w)),ULK_fixed_32_to_int(ULK_fixed_32_round(s->p1.screen_y)),ULK_fixed_32_to_int(ULK_fixed_32_round(s->p1.screen_x+s->p1.screen_w)),ULK_fixed_32_to_int(ULK_fixed_32_round(s->p1.screen_y)));
-   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(s->p0.screen_x-s->p1.screen_w)),ULK_fixed_32_to_int(ULK_fixed_32_round(s->p0.screen_y)),ULK_fixed_32_to_int(ULK_fixed_32_round(s->p0.screen_x+s->p0.screen_w)),ULK_fixed_32_to_int(ULK_fixed_32_round(s->p0.screen_y)));
-   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(s->p1.screen_x-s->p1.screen_w)),ULK_fixed_32_to_int(ULK_fixed_32_round(s->p1.screen_y)),ULK_fixed_32_to_int(ULK_fixed_32_round(s->p0.screen_x-s->p0.screen_w)),ULK_fixed_32_to_int(ULK_fixed_32_round(s->p0.screen_y)));
-   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(ULK_fixed_32_round(s->p0.screen_x+s->p0.screen_w)),ULK_fixed_32_to_int(ULK_fixed_32_round(s->p0.screen_y)),ULK_fixed_32_to_int(ULK_fixed_32_round(s->p1.screen_x+s->p1.screen_w)),ULK_fixed_32_to_int(ULK_fixed_32_round(s->p1.screen_y)));
+   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((s->p1.screen_x-s->p1.screen_w)),ULK_fixed_32_to_int((s->p1.screen_y)),ULK_fixed_32_to_int((s->p1.screen_x+s->p1.screen_w)),ULK_fixed_32_to_int((s->p1.screen_y)));
+   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((s->p0.screen_x-s->p1.screen_w)),ULK_fixed_32_to_int((s->p0.screen_y)),ULK_fixed_32_to_int((s->p0.screen_x+s->p0.screen_w)),ULK_fixed_32_to_int((s->p0.screen_y)));
+   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((s->p1.screen_x-s->p1.screen_w)),ULK_fixed_32_to_int((s->p1.screen_y)),ULK_fixed_32_to_int((s->p0.screen_x-s->p0.screen_w)),ULK_fixed_32_to_int((s->p0.screen_y)));
+   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((s->p0.screen_x+s->p0.screen_w)),ULK_fixed_32_to_int((s->p0.screen_y)),ULK_fixed_32_to_int((s->p1.screen_x+s->p1.screen_w)),ULK_fixed_32_to_int((s->p1.screen_y)));
 }
 
 static void draw_segment_tex(Segment *s)

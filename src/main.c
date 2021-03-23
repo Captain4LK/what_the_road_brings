@@ -68,6 +68,7 @@ int main(int argc, char **arg)
    {
       sdl_update();
 
+      SDL_SetRenderTarget(renderer,target);
       if(sdl_key_pressed(KEY_M))
       {
          fullscreen = !fullscreen;
@@ -78,7 +79,11 @@ int main(int argc, char **arg)
       SDL_RenderClear(renderer);
 
       game_update();
+      SDL_SetRenderTarget(renderer,NULL);
 
+      SDL_SetRenderDrawColor(renderer,0,0,0,255);
+      SDL_RenderClear(renderer);
+      SDL_RenderCopy(renderer,target,NULL,NULL);
       SDL_RenderPresent(renderer);
    }
 
