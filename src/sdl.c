@@ -103,6 +103,7 @@ void sdl_init()
    SDL_RendererInfo info;
    SDL_GetRendererInfo(renderer,&info);
    printf("%d\n",info.flags&SDL_RENDERER_TARGETTEXTURE);
+   SDL_SetHint("SDL_HINT_RENDER_SCALE_QUALITY","0");
 
    //update_viewport();
 

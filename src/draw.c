@@ -45,12 +45,17 @@ static struct
    SDL_Rect road01;
    SDL_Rect road02;
    SDL_Rect road03;
+   SDL_Rect player_car[7];
 }texture_rects = 
 {
    .road00 = {.x = 0,.y = 0,.w = 128,.h = 16},
    .road01 = {.x = 0,.y = 16,.w = 128,.h = 16},
    .road02 = {.x = 0,.y = 32,.w = 128,.h = 16},
    .road03 = {.x = 0,.y = 48,.w = 128,.h = 16},
+   .player_car = 
+   {
+      {.x = 0, .y = 0, .w = 150, .h = 100 },
+   }
 };
 //-------------------------------------
 
@@ -243,15 +248,15 @@ static void draw_segment_tex(Segment *s)
    SDL_RenderFillRect(renderer,&rect);
 
    ULK_fixed_32 stripe_height = 0;
+   ULK_fixed_32 stripe_y = 0;
    switch(s->texture)
    {
-   case 0: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road00.h),height); break;
-   case 1: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road01.h),height); break;
-   case 2: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road02.h),height); break;
-   case 3: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road03.h),height); break;
+   case 0: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road00.h),ULK_fixed_32_ceil(height)); stripe_y = ULK_fixed_32_from_int(texture_rects.road00.y); break;
+   case 1: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road01.h),ULK_fixed_32_ceil(height)); stripe_y = ULK_fixed_32_from_int(texture_rects.road01.y); break;
+   case 2: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road02.h),ULK_fixed_32_ceil(height)); stripe_y = ULK_fixed_32_from_int(texture_rects.road02.y); break;
+   case 3: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road03.h),ULK_fixed_32_ceil(height)); stripe_y = ULK_fixed_32_from_int(texture_rects.road03.y); break;
    }
 
-   ULK_fixed_32 stripe_y = 0;
    int y_draw = ULK_fixed_32_to_int((y));
    while(y<(s->p0.screen_y))
    {
@@ -261,13 +266,14 @@ static void draw_segment_tex(Segment *s)
       rect.h = 1;
       switch(s->texture)
       {
-      case 0: trect.w = texture_rects.road00.w; trect.y = ULK_fixed_32_to_int((stripe_y))+texture_rects.road00.y; break;
-      case 1: trect.w = texture_rects.road01.w; trect.y = ULK_fixed_32_to_int((stripe_y))+texture_rects.road01.y; break;
-      case 2: trect.w = texture_rects.road02.w; trect.y = ULK_fixed_32_to_int((stripe_y))+texture_rects.road02.y; break;
-      case 3: trect.w = texture_rects.road03.w; trect.y = ULK_fixed_32_to_int((stripe_y))+texture_rects.road03.y; break;
+      case 0: trect.w = texture_rects.road00.w; break;
+      case 1: trect.w = texture_rects.road01.w; break;
+      case 2: trect.w = texture_rects.road02.w; break;
+      case 3: trect.w = texture_rects.road03.w; break;
       }
+      trect.y = ULK_fixed_32_to_int((stripe_y));
       trect.x = 0;
-      trect.h = MAX(1,ULK_fixed_32_to_int((stripe_height)));
+      trect.h = MAX(1,ULK_fixed_32_to_int((stripe_height)-1));
       SDL_RenderCopy(renderer,texture,&trect,&rect);
       x+=dx;
       w+=dw;
@@ -276,4 +282,3 @@ static void draw_segment_tex(Segment *s)
       stripe_y+=stripe_height;
    }
 }
-//-------------------------------------
