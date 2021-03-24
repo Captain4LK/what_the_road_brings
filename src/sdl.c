@@ -430,7 +430,7 @@ SDL_Texture *sdl_load_image(const char *path)
       return NULL;
    }
 
-   SDL_Surface *s = SDL_CreateRGBSurfaceWithFormatFrom(img.pix,img.w,img.h,32,img.w*4,SDL_PIXELFORMAT_ARGB8888);
+   SDL_Surface *s = SDL_CreateRGBSurfaceWithFormatFrom(img.pix,img.w,img.h,32,img.w*4,SDL_PIXELFORMAT_ABGR8888);
    SDL_Texture *out = SDL_CreateTextureFromSurface(renderer,s);
    SDL_FreeSurface(s);
    cp_free_png(&img);

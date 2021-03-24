@@ -45,16 +45,22 @@ static struct
    SDL_Rect road01;
    SDL_Rect road02;
    SDL_Rect road03;
-   SDL_Rect player_car[7];
+   SDL_Rect car_player[7];
 }texture_rects = 
 {
    .road00 = {.x = 0,.y = 0,.w = 128,.h = 16},
    .road01 = {.x = 0,.y = 16,.w = 128,.h = 16},
    .road02 = {.x = 0,.y = 32,.w = 128,.h = 16},
    .road03 = {.x = 0,.y = 48,.w = 128,.h = 16},
-   .player_car = 
+   .car_player = 
    {
-      {.x = 0, .y = 0, .w = 150, .h = 100 },
+      {.x = 0, .y = 64, .w = 150, .h = 80},
+      {.x = 150, .y = 64, .w = 150, .h = 80},
+      {.x = 300, .y = 64, .w = 150, .h = 80},
+      {.x = 450, .y = 64, .w = 150, .h = 80},
+      {.x = 600, .y = 64, .w = 150, .h = 80},
+      {.x = 750, .y = 64, .w = 150, .h = 80},
+      {.x = 900, .y = 64, .w = 150, .h = 80},
    }
 };
 //-------------------------------------
@@ -123,6 +129,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       max_y = s->p1.screen_y;
    }
 
+   SDL_RenderCopy(renderer,texture,&texture_rects.car_player[steer+3],&((SDL_Rect){.x = 85, .y = 155, .w = 150, .h = 80}));
    /*SLK_draw_pal_sprite(car_sprites[steer+3],245,370);*/
 }
 

@@ -56,12 +56,15 @@ int main(int argc, char **arg)
    segment_list_init(&segments);
    add_road(0,0,64,0,0);
    add_road(0,0,64,ULK_fixed_32_from_int(1)/2,0);
+   add_road(0,0,16,0,0);
    add_road(0,0,64,-ULK_fixed_32_from_int(1)/2,0);
-   for(int i = 0;i<10;i++)
+   add_road(0,0,16,0,0);
+   add_road(0,0,64,ULK_fixed_32_from_int(1)/2,0);
+   /*for(int i = 0;i<10;i++)
    {
       add_road(4,4,32,0,ULK_fixed_32_from_int(400));
       add_road(4,4,32,0,-ULK_fixed_32_from_int(400));
-   }
+   }*/
 
    int fullscreen = 0;
    while(sdl_running())

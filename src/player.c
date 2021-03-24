@@ -56,7 +56,7 @@ void player_update()
       player.vz = 0;
    player.pz+=player.vz;
 
-   int speed_x = ULK_fixed_32_from_int(4);
+   int speed_x = ULK_fixed_32_from_int(2);
    if(sdl_key_down(KEY_LEFT))
    {
       if(player.steer==0)
