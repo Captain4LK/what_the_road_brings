@@ -15,7 +15,7 @@ segment.o: ../../src/segment.c ../../src/segment.h ../../src/config.h
 ULK_fixed.o: ../../src/ULK_fixed.c ../../src/ULK_fixed.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-draw.o: ../../src/draw.c ../../src/draw.h ../../src/segment.h ../../src/config.h
+draw.o: ../../src/draw.c ../../src/draw.h ../../src/segment.h ../../src/player.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 player.o: ../../src/player.c ../../src/player.h ../../src/segment.h ../../src/config.h

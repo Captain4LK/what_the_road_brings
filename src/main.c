@@ -56,7 +56,7 @@ int main(int argc, char **arg)
    //Setup road
    segment_list_init(&segments);
    add_road(0,0,64,0,0);
-   add_road(0,0,64,ULK_fixed_32_from_int(1)/2,0);
+   //add_road(0,0,640,-ULK_fixed_32_from_int(4),0);
    add_road(0,0,16,0,0);
    add_road(0,0,64,-ULK_fixed_32_from_int(1)/2,0);
    add_road(0,0,16,0,0);

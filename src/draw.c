@@ -22,6 +22,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "sdl.h"
 #include "segment.h"
 #include "draw.h"
+#include "player.h"
 //-------------------------------------
 
 //#defines
@@ -46,7 +47,7 @@ static struct
    SDL_Rect road02;
    SDL_Rect road03;
    SDL_Rect car_player[7];
-   SDL_Rect backdrop[2];
+   SDL_Rect backdrop[5];
 }texture_rects = 
 {
    .road00 = {.x = 0,.y = 0,.w = 128,.h = 16},
@@ -65,7 +66,31 @@ static struct
    },
    .backdrop = 
    {
-      {.x = 0, .y = 144, .w = 427, .h = 240},
+      {.x = 0, .y = 144, .w = 320, .h = 160},
+      {.x = 320, .y = 144, .w = 272, .h = 160},
+      {.x = 592, .y = 144, .w = 544, .h = 160},
+      {.x = 1136, .y = 144, .w = 544, .h = 160},
+      {.x = 1680, .y = 144, .w = 544, .h = 160},
+   },
+};
+
+static struct
+{
+   SDL_FRect layers[5][2];
+   float speed[5];
+}parallax_data = 
+{
+   .layers = 
+   {
+      { {.x = 0, .y = -25, .w = 320, .h = 160}, {.x = 0, .y = -25, .w = 0, .h = 0 } },
+      { {.x = 0, .y = -25, .w = 272, .h = 160}, {.x = 272, .y = -25, .w = 272, .h = 160 } },
+      { {.x = 0, .y = -25, .w = 544, .h = 160}, {.x = 544, .y = -25, .w = 544, .h = 160 } },
+      { {.x = 0, .y = -25, .w = 544, .h = 160}, {.x = 544, .y = -25, .w = 544, .h = 160 } },
+      { {.x = 0, .y = -25, .w = 544, .h = 160}, {.x = 544, .y = -25, .w = 544, .h = 160 } },
+   },
+   .speed = 
+   {
+      0, 0.5f, 1.0f, 1.5f, 2.0f,
    },
 };
 //-------------------------------------
@@ -75,6 +100,7 @@ static void project_point(Point *p, ULK_fixed cam_x, ULK_fixed cam_y, ULK_fixed 
 static void draw_segment(Segment *s);
 static void draw_segment_tex(Segment *s);
 static void draw_segment_frame(Segment *s);
+static void parallax_scroll(ULK_fixed_32 curve);
 //-------------------------------------
 
 //Function implementations
@@ -86,7 +112,12 @@ void load_assets()
 
 void draw(ULK_fixed x, ULK_fixed z, int steer)
 {
-   SDL_RenderCopy(renderer,texture,&texture_rects.backdrop[0],&((SDL_Rect){.x = 0,.y = 0,.w = 427,.h = 240}));
+   for(int i = 0;i<5;i++)
+   {
+      SDL_RenderCopyF(renderer,texture,&texture_rects.backdrop[i],&parallax_data.layers[i][0]);
+      SDL_RenderCopyF(renderer,texture,&texture_rects.backdrop[i],&parallax_data.layers[i][1]);
+   }
+
    if(sdl_key_pressed(KEY_Y))
    {
       draw_mode++;
@@ -99,6 +130,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    ULK_fixed_32 max_y = ULK_fixed_32_from_int(YRES);
    Segment *base_player = segment_list_get_pos(&segments,z+ULK_fixed_from_int(64),&i);
    Segment *base = segment_list_get_pos(&segments,z,&i);
+   parallax_scroll(base_player->curve);
    int max = i+RENDER_DISTANCE;
    is = i;
    
@@ -292,5 +324,37 @@ static void draw_segment_tex(Segment *s)
       y+=ULK_fixed_32_from_int(1);
       y_draw++;
       stripe_y+=stripe_height;
+   }
+}
+
+static void parallax_scroll(ULK_fixed_32 curve)
+{
+   for(int i = 0;i<5;i++)
+   {
+      float speed = 0.0f;
+      if(curve<0)
+         speed = -MIN(2.0f,parallax_data.speed[i]*(curve/65536.0f)*((float)player.vz/(float)MAX_SPEED));
+      else if(curve>0)
+         speed = -MIN(2.0f,parallax_data.speed[i]*(curve/65536.0f)*((float)player.vz/(float)MAX_SPEED));
+
+      parallax_data.layers[i][0].x+=speed;
+      parallax_data.layers[i][1].x+=speed;
+
+      //Clip layer
+      SDL_FRect tmp;
+      if(parallax_data.layers[i][0].x<0.0f)
+      {
+         tmp = parallax_data.layers[i][0];
+         parallax_data.layers[i][0] = parallax_data.layers[i][1];
+         parallax_data.layers[i][1] = tmp;
+         parallax_data.layers[i][0].x = parallax_data.layers[i][1].x+parallax_data.layers[i][1].w;
+      }
+      else if(parallax_data.layers[i][0].x>0.0f)
+      {
+         tmp = parallax_data.layers[i][0];
+         parallax_data.layers[i][0] = parallax_data.layers[i][1];
+         parallax_data.layers[i][1] = tmp;
+         parallax_data.layers[i][0].x = parallax_data.layers[i][1].x-parallax_data.layers[i][1].w;
+      }
    }
 }
