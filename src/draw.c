@@ -46,6 +46,7 @@ static struct
    SDL_Rect road02;
    SDL_Rect road03;
    SDL_Rect car_player[7];
+   SDL_Rect backdrop[2];
 }texture_rects = 
 {
    .road00 = {.x = 0,.y = 0,.w = 128,.h = 16},
@@ -61,7 +62,11 @@ static struct
       {.x = 600, .y = 64, .w = 150, .h = 80},
       {.x = 750, .y = 64, .w = 150, .h = 80},
       {.x = 900, .y = 64, .w = 150, .h = 80},
-   }
+   },
+   .backdrop = 
+   {
+      {.x = 0, .y = 144, .w = 427, .h = 240},
+   },
 };
 //-------------------------------------
 
@@ -81,6 +86,7 @@ void load_assets()
 
 void draw(ULK_fixed x, ULK_fixed z, int steer)
 {
+   SDL_RenderCopy(renderer,texture,&texture_rects.backdrop[0],&((SDL_Rect){.x = 0,.y = 0,.w = 427,.h = 240}));
    if(sdl_key_pressed(KEY_Y))
    {
       draw_mode++;
@@ -130,7 +136,6 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    }
 
    SDL_RenderCopy(renderer,texture,&texture_rects.car_player[steer+3],&((SDL_Rect){.x = 85, .y = 155, .w = 150, .h = 80}));
-   /*SLK_draw_pal_sprite(car_sprites[steer+3],245,370);*/
 }
 
 static void project_point(Point *p, ULK_fixed_32 cam_x, ULK_fixed_32 cam_y, ULK_fixed cam_z, ULK_fixed_32 cam_depth, int width, int height, int road_width)
@@ -165,7 +170,7 @@ static void draw_segment(Segment *s)
    rect.h = ULK_fixed_32_to_int((height))+1;
    SDL_RenderFillRect(renderer,&rect);
 
-   if(s->line)
+   if(!s->line)
    {
       int y_draw = ULK_fixed_32_to_int((y));
       while(y<(s->p0.screen_y))

@@ -25,19 +25,20 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 //#defines
 #define COLOR_ROAD() \
-{ if((segments.used%6)<3) {s.color = grass0;s.color_road = road0;s.color_border = border0;s.line = 1;}else{s.color = grass1;s.color_road = road1;s.color_border = border1;s.line = 0;}}
+{ if((segments.used%10)<5) {s.color = grass0;s.color_road = road0;s.color_border = border0;s.line = segments.used%5>1;}else{s.color = grass1;s.color_road = road1;s.color_border = border1;s.line = 0;}}
 //-------------------------------------
 
 //Typedefs
 //-------------------------------------
 
 //Variables
-static Color grass0 = {185,217,34,255};
-static Color grass1 = {156,193,27,255};
-static Color border0 = {155,11,11,255};
-static Color border1 = {244,240,190,255};
-static Color road0 = {121,121,141,255};
-static Color road1 = {139,138,154,255};
+static Color grass0 = {83,80,10,255};
+static Color grass1 = {65,65,35,255};
+static Color border0 = {102,102,102,255};
+static Color border1 = {65,65,35,255};
+//static Color road0 = {34,34,34,255};
+static Color road0 = {59,45,31,255};
+static Color road1 = {59,45,31,255};
 //-------------------------------------
 
 //Function prototypes
