@@ -62,7 +62,7 @@ void player_update()
       if(player.steer==0)
          frame = 0;
       player.px-=speed_x;
-      if(player.steer<1&&frame%2==0)
+      if(player.steer<2&&frame%6==0)
          player.steer++;
    }
    else if(sdl_key_down(KEY_RIGHT))
@@ -70,10 +70,10 @@ void player_update()
       if(player.steer==0)
          frame = 0;
       player.px+=speed_x;
-      if(player.steer>-1&&frame%2==0)
+      if(player.steer>-2&&frame%6==0)
          player.steer--;
    } 
-   else if(player.steer!=0&&frame%2==0)
+   else if(player.steer!=0&&frame%6==0)
    {
       if(player.steer<0)
          player.steer++;

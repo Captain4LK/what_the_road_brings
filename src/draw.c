@@ -46,7 +46,7 @@ static struct
    SDL_Rect road01;
    SDL_Rect road02;
    SDL_Rect road03;
-   SDL_Rect car_player[9];
+   SDL_Rect car_player[2][9];
    SDL_Rect backdrop[5];
 }texture_rects = 
 {
@@ -55,7 +55,7 @@ static struct
    .road02 = {.x = 0,.y = 32,.w = 128,.h = 16},
    .road03 = {.x = 0,.y = 48,.w = 128,.h = 16},
    .car_player = 
-   {
+   {{
       {.x = 0, .y = 0, .w = 90, .h = 48},
       {.x = 90, .y = 0, .w = 90, .h = 48},
       {.x = 180, .y = 0, .w = 90, .h = 48},
@@ -65,7 +65,17 @@ static struct
       {.x = 540, .y = 0, .w = 90, .h = 48},
       {.x = 630, .y = 0, .w = 90, .h = 48},
       {.x = 720, .y = 0, .w = 90, .h = 48},
-   },
+    },{
+      {.x = 0, .y = 48, .w = 90, .h = 48},
+      {.x = 90, .y = 48, .w = 90, .h = 48},
+      {.x = 180, .y = 48, .w = 90, .h = 48},
+      {.x = 270, .y = 48, .w = 90, .h = 48},
+      {.x = 360, .y = 48, .w = 90, .h = 48},
+      {.x = 450, .y = 48, .w = 90, .h = 48},
+      {.x = 540, .y = 48, .w = 90, .h = 48},
+      {.x = 630, .y = 48, .w = 90, .h = 48},
+      {.x = 720, .y = 48, .w = 90, .h = 48},
+   }},
    .backdrop = 
    {
       {.x = 0, .y = 144, .w = 320, .h = 160},
@@ -170,7 +180,10 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       max_y = s->p1.screen_y;
    }
 
-   SDL_RenderCopy(renderer,texture,&texture_rects.car_player[steer+4],&((SDL_Rect){.x = 115, .y = 180, .w = 90, .h = 48}));
+   if(base_player->p1.y-base_player->p0.y>ULK_fixed_32_from_int(1))
+      SDL_RenderCopy(renderer,texture,&texture_rects.car_player[1][steer+4],&((SDL_Rect){.x = 115, .y = 180, .w = 90, .h = 48}));
+   else
+      SDL_RenderCopy(renderer,texture,&texture_rects.car_player[0][steer+4],&((SDL_Rect){.x = 115, .y = 180, .w = 90, .h = 48}));
 }
 
 static void project_point(Point *p, ULK_fixed_32 cam_x, ULK_fixed_32 cam_y, ULK_fixed cam_z, ULK_fixed_32 cam_depth, int width, int height, int road_width)
