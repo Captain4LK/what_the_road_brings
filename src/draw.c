@@ -84,11 +84,11 @@ static struct
 {
    .layers = 
    {
-      { {.x = 0, .y = -25, .w = 320, .h = 160}, {.x = 0, .y = -25, .w = 0, .h = 0 } },
-      { {.x = 0, .y = -25, .w = 272, .h = 160}, {.x = 272, .y = -25, .w = 272, .h = 160 } },
-      { {.x = 0, .y = -25, .w = 544, .h = 160}, {.x = 544, .y = -25, .w = 544, .h = 160 } },
-      { {.x = 0, .y = -25, .w = 544, .h = 160}, {.x = 544, .y = -25, .w = 544, .h = 160 } },
-      { {.x = 0, .y = -25, .w = 544, .h = 160}, {.x = 544, .y = -25, .w = 544, .h = 160 } },
+      { {.x = 0, .y = -20, .w = 320, .h = 160}, {.x = 0, .y = -20, .w = 0, .h = 0 } },
+      { {.x = 0, .y = -20, .w = 272, .h = 160}, {.x = 272, .y = -20, .w = 272, .h = 160 } },
+      { {.x = 0, .y = -20, .w = 544, .h = 160}, {.x = 544, .y = -20, .w = 544, .h = 160 } },
+      { {.x = 0, .y = -20, .w = 544, .h = 160}, {.x = 544, .y = -20, .w = 544, .h = 160 } },
+      { {.x = 0, .y = -20, .w = 544, .h = 160}, {.x = 544, .y = -20, .w = 544, .h = 160 } },
    },
    .speed = 
    {
@@ -133,6 +133,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    Segment *base_player = segment_list_get_pos(&segments,z+ULK_fixed_from_int(64),&i);
    Segment *base = segment_list_get_pos(&segments,z,&i);
    parallax_scroll(base_player->curve);
+   player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(base_player->curve,ULK_fixed_32_from_int(2)));
    int max = i+RENDER_DISTANCE;
    is = i;
    

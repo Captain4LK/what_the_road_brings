@@ -58,12 +58,13 @@ int main(int argc, char **arg)
    add_road(0,0,64,0,0);
    //add_road(0,0,640,-ULK_fixed_32_from_int(4),0);
    add_road(0,0,16,0,0);
-   add_road(0,0,64,-ULK_fixed_32_from_int(1)/2,0);
+   add_road(0,0,64,-ULK_fixed_32_from_int(1),0);
    add_road(0,0,16,0,0);
-   add_road(0,0,64,ULK_fixed_32_from_int(1)/2,0);
-   for(int i = 0;i<4;i++)
+   add_road(0,0,64,ULK_fixed_32_from_int(1),0);
+   for(int i = 0;i<2;i++)
    {
       add_road(4,4,32,0,ULK_fixed_32_from_int(400));
+      add_road(0,0,64,ULK_fixed_32_from_int(1)/2,0);
       add_road(4,4,32,0,-ULK_fixed_32_from_int(400));
    }
 
@@ -149,8 +150,8 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       s.p1.z = (segments.used+1)*SEGLEN;
       s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)(start+length+i)/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
       COLOR_ROAD()
-      //s.curve = ULK_fixed_32_mul(curve,ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(end)),ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(end))));
       s.texture = segments.used%4;
+      //Util.easeInOut(curve, 0, n/leave)
       s.curve = curve+ULK_fixed_32_mul(-curve,((-cos(((float)i/(float)end)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
       segment_list_add(&segments,&s);
    }

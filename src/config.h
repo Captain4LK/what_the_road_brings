@@ -17,9 +17,9 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define XRES 320
 #define YRES 240
 #define SEGLEN ULK_fixed_from_int(32)
-#define MAX_SPEED ULK_fixed_from_int(12)
-#define ACCEL ULK_fixed_div(MAX_SPEED,ULK_fixed_from_int(10*FPS))
-#define DECEL ULK_fixed_div(-MAX_SPEED,ULK_fixed_from_int(5*FPS))
+#define MAX_SPEED ULK_fixed_from_int(24)
+#define ACCEL ULK_fixed_div(MAX_SPEED,ULK_fixed_from_int(20*FPS))
+#define DECEL ULK_fixed_div(-MAX_SPEED,ULK_fixed_from_int(10*FPS))
 #define RENDER_DISTANCE 64
 #define ROAD_WIDTH 30000
 #define CAM_HEIGHT ULK_fixed_32_from_int(64)
