@@ -46,7 +46,7 @@ static struct
    SDL_Rect road01;
    SDL_Rect road02;
    SDL_Rect road03;
-   SDL_Rect car_player[7];
+   SDL_Rect car_player[9];
    SDL_Rect backdrop[5];
 }texture_rects = 
 {
@@ -56,13 +56,15 @@ static struct
    .road03 = {.x = 0,.y = 48,.w = 128,.h = 16},
    .car_player = 
    {
-      {.x = 0, .y = 64, .w = 150, .h = 80},
-      {.x = 150, .y = 64, .w = 150, .h = 80},
-      {.x = 300, .y = 64, .w = 150, .h = 80},
-      {.x = 450, .y = 64, .w = 150, .h = 80},
-      {.x = 600, .y = 64, .w = 150, .h = 80},
-      {.x = 750, .y = 64, .w = 150, .h = 80},
-      {.x = 900, .y = 64, .w = 150, .h = 80},
+      {.x = 0, .y = 0, .w = 90, .h = 48},
+      {.x = 90, .y = 0, .w = 90, .h = 48},
+      {.x = 180, .y = 0, .w = 90, .h = 48},
+      {.x = 270, .y = 0, .w = 90, .h = 48},
+      {.x = 360, .y = 0, .w = 90, .h = 48},
+      {.x = 450, .y = 0, .w = 90, .h = 48},
+      {.x = 540, .y = 0, .w = 90, .h = 48},
+      {.x = 630, .y = 0, .w = 90, .h = 48},
+      {.x = 720, .y = 0, .w = 90, .h = 48},
    },
    .backdrop = 
    {
@@ -141,7 +143,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    ULK_fixed_32 py = base_player->p0.y+ULK_fixed_32_mul(base_player->p1.y-base_player->p0.y,ppos);
 
    Point cache;
-   project_point(&base->p0,(x)-cx-cdx,py+CAM_HEIGHT,z,CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
+   project_point(&base->p0,(x)-cx-cdx,py+CAM_HEIGHT,z-((is%segments.used<is)?segments.used*SEGLEN:0),CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
    cache = base->p0;
    for(;i<max;i++)
    {
@@ -167,7 +169,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       max_y = s->p1.screen_y;
    }
 
-   SDL_RenderCopy(renderer,texture,&texture_rects.car_player[steer+3],&((SDL_Rect){.x = 85, .y = 155, .w = 150, .h = 80}));
+   SDL_RenderCopy(renderer,texture,&texture_rects.car_player[steer+4],&((SDL_Rect){.x = 115, .y = 180, .w = 90, .h = 48}));
 }
 
 static void project_point(Point *p, ULK_fixed_32 cam_x, ULK_fixed_32 cam_y, ULK_fixed cam_z, ULK_fixed_32 cam_depth, int width, int height, int road_width)
@@ -331,11 +333,7 @@ static void parallax_scroll(ULK_fixed_32 curve)
 {
    for(int i = 0;i<5;i++)
    {
-      float speed = 0.0f;
-      if(curve<0)
-         speed = -MIN(2.0f,parallax_data.speed[i]*(curve/65536.0f)*((float)player.vz/(float)MAX_SPEED));
-      else if(curve>0)
-         speed = -MIN(2.0f,parallax_data.speed[i]*(curve/65536.0f)*((float)player.vz/(float)MAX_SPEED));
+      float speed = -MIN(2.0f,parallax_data.speed[i]*(curve/65536.0f)*((float)player.vz/(float)MAX_SPEED));
 
       parallax_data.layers[i][0].x+=speed;
       parallax_data.layers[i][1].x+=speed;
