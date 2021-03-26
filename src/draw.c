@@ -182,7 +182,6 @@ p->camera_x = p->x-cam_x;
       p->camera_z = INT16_MAX<<8;
    p->screen_x = (ULK_fixed_32_from_int(width/2)+ULK_fixed_32_mul(ULK_fixed_32_from_int(width/2),ULK_fixed_32_mul(ULK_fixed_32_div(p->camera_x,p->camera_z<<8),cam_depth)));
    p->screen_y = (ULK_fixed_32_from_int(height/2)-ULK_fixed_32_mul(ULK_fixed_32_from_int(height/2),ULK_fixed_32_mul(ULK_fixed_32_div(p->camera_y,p->camera_z<<8),cam_depth)));
-   //p->screen_w = ((ULK_fixed_32_mul(p->screen_scale,ULK_fixed_32_mul(ULK_fixed_32_from_int(road_width),ULK_fixed_32_from_int(width/2))))); //Doesn't fucking work
    p->screen_w = ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(width),p->camera_z<<8)*48,cam_depth);
 }
 
@@ -202,7 +201,7 @@ static void draw_segment(Segment *s)
    rect.x = 0;
    rect.y = ULK_fixed_32_to_int(y);
    rect.w = XRES;
-   rect.h = ULK_fixed_32_to_int((height))+1;
+   rect.h = ULK_fixed_32_to_int(ULK_fixed_32_ceil(height));
    SDL_RenderFillRect(renderer,&rect);
 
    if(!s->line)

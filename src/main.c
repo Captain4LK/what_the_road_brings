@@ -36,7 +36,6 @@ static Color grass0 = {83,80,10,255};
 static Color grass1 = {65,65,35,255};
 static Color border0 = {102,102,102,255};
 static Color border1 = {65,65,35,255};
-//static Color road0 = {34,34,34,255};
 static Color road0 = {59,45,31,255};
 static Color road1 = {59,45,31,255};
 //-------------------------------------
@@ -56,7 +55,6 @@ int main(int argc, char **arg)
    //Setup road
    segment_list_init(&segments);
    add_road(0,0,64,0,0);
-   //add_road(0,0,640,-ULK_fixed_32_from_int(4),0);
    add_road(0,0,16,0,0);
    add_road(0,0,64,-ULK_fixed_32_from_int(1),0);
    add_road(0,0,16,0,0);
@@ -151,7 +149,6 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)(start+length+i)/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
       COLOR_ROAD()
       s.texture = segments.used%4;
-      //Util.easeInOut(curve, 0, n/leave)
       s.curve = curve+ULK_fixed_32_mul(-curve,((-cos(((float)i/(float)end)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
       segment_list_add(&segments,&s);
    }
