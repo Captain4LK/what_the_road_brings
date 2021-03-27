@@ -16,6 +16,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //Internal includes
 #include "ULK_fixed.h"
 #include "config.h"
+#include "util.h"
 #include "sdl.h"
 #include "player.h"
 #include "segment.h"
@@ -52,7 +53,10 @@ int main(int argc, char **arg)
    load_assets();
 
    //Setup road
-   segment_list_init(&segments);
+   dyn_array_init(Segment,&segments,128);
+   dyn_array_free(Segment,&segments);
+   dyn_array_init(Segment,&segments,128);
+
    add_road(0,0,64,0,0);
    add_road(0,0,16,0,0);
    add_road(0,0,64,-ULK_fixed_32_from_int(1),0);
@@ -102,7 +106,7 @@ static void game_update()
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill)
 {
 
-   ULK_fixed_32 start_y = segments.used?segments.segments[segments.used-1].p1.y:0;
+   ULK_fixed_32 start_y = segments.used?dyn_array_element(Segment,&segments,segments.used-1).p1.y:0;
    ULK_fixed_32 end_y = start_y+hill;
    int total = start+end+length;
 
@@ -111,7 +115,7 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
        Segment s;
       memset(&s,0,sizeof(s));
       s.p0.z = segments.used*SEGLEN;
-      ULK_fixed_32 ly = segments.used?segments.segments[segments.used-1].p1.y:0;
+      ULK_fixed_32 ly = segments.used?dyn_array_element(Segment,&segments,segments.used-1).p1.y:0;
       s.p0.y = ly;
       s.p1.z = (segments.used+1)*SEGLEN;
       s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)i/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
@@ -119,7 +123,7 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       COLOR_ROAD()
       s.texture = segments.used%4;
       s.curve = ULK_fixed_32_mul(curve,ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(start)),ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(start))));
-      segment_list_add(&segments,&s);
+      dyn_array_add(Segment,&segments,128,s);
    }
 
    for(int i = 0;i<length;i++)
@@ -127,14 +131,14 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       Segment s;
       memset(&s,0,sizeof(s));
       s.p0.z = segments.used*SEGLEN;
-      ULK_fixed_32 ly = segments.used?segments.segments[segments.used-1].p1.y:0;
+      ULK_fixed_32 ly = segments.used?dyn_array_element(Segment,&segments,segments.used-1).p1.y:0;
       s.p0.y = ly;
       s.p1.z = (segments.used+1)*SEGLEN;
       s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)(start+i)/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
       COLOR_ROAD()
       s.texture = segments.used%4;
       s.curve = curve;
-      segment_list_add(&segments,&s);
+      dyn_array_add(Segment,&segments,128,s);
    }
 
    for(int i = 0;i<end;i++)
@@ -142,14 +146,14 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
        Segment s;
       memset(&s,0,sizeof(s));
       s.p0.z = segments.used*SEGLEN;
-      ULK_fixed_32 ly = segments.used?segments.segments[segments.used-1].p1.y:0;
+      ULK_fixed_32 ly = segments.used?dyn_array_element(Segment,&segments,segments.used).p1.y:0;
       s.p0.y = ly;
       s.p1.z = (segments.used+1)*SEGLEN;
       s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)(start+length+i)/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
       COLOR_ROAD()
       s.texture = segments.used%4;
       s.curve = curve+ULK_fixed_32_mul(-curve,((-cos(((float)i/(float)end)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
-      segment_list_add(&segments,&s);
+      dyn_array_add(Segment,&segments,128,s);
    }
 }
 //-------------------------------------

@@ -39,18 +39,9 @@ typedef struct
    ULK_fixed_32 curve;
 }Segment;
 
-typedef struct
-{
-   int used;
-   int space;
-   Segment *segments;
-}Segment_list;
+extern dyn_array segments;
 
-extern Segment_list segments;
-
-void     segment_list_init(Segment_list *list);
-void     segment_list_add(Segment_list *list, Segment *s);
-Segment *segment_list_get_pos(Segment_list *list, ULK_fixed pos, int *index);
-Segment *segment_list_get(Segment_list *list, int index);
+Segment *segment_list_get_pos(dyn_array *list, ULK_fixed pos, int *index);
+Segment *segment_list_get(dyn_array *list, int index);
 
 #endif

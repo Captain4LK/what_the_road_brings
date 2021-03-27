@@ -19,6 +19,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //Internal includes
 #include "ULK_fixed.h"
 #include "config.h"
+#include "util.h"
 #include "sdl.h"
 #include "player.h"
 #include "segment.h"

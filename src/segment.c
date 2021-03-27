@@ -19,6 +19,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //Internal includes
 #include "ULK_fixed.h"
 #include "config.h"
+#include "util.h"
 #include "sdl.h"
 #include "segment.h"
 //-------------------------------------
@@ -30,47 +31,21 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Variables
-Segment_list segments;
+dyn_array segments;
 //-------------------------------------
 
 //Function prototypes
 //-------------------------------------
 
 //Function implementations
-
-void segment_list_init(Segment_list *list)
-{
-   list->space = 200;
-   list->used = 0;
-   list->segments = malloc(sizeof(*list->segments)*list->space);
-}
-
-void segment_list_add(Segment_list *list, Segment *s)
-{
-   list->segments[list->used].p0 = s->p0;
-   list->segments[list->used].p1 = s->p1;
-   list->segments[list->used].color = s->color;
-   list->segments[list->used].color_road = s->color_road;
-   list->segments[list->used].color_border = s->color_border;
-   list->segments[list->used].line = s->line;
-   list->segments[list->used].texture = s->texture;
-   list->segments[list->used].curve = s->curve;
-   list->used++;
-   if(list->used==list->space)
-   {
-      list->space+=200;
-      list->segments = realloc(list->segments,sizeof(*list->segments)*list->space);
-   }
-}
-
-Segment *segment_list_get_pos(Segment_list *list, ULK_fixed pos, int *index)
+Segment *segment_list_get_pos(dyn_array *list, ULK_fixed pos, int *index)
 {
    *index = ULK_fixed_to_int(ULK_fixed_div(pos,SEGLEN))%list->used;
-   return &list->segments[*index];
+   return &dyn_array_element(Segment,list,*index);
 }
 
-Segment *segment_list_get(Segment_list *list, int index)
+Segment *segment_list_get(dyn_array *list, int index)
 {
-   return &list->segments[index%list->used];
+   return &dyn_array_element(Segment,list,index%list->used);
 }
 //-------------------------------------

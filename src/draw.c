@@ -19,6 +19,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //Internal includes
 #include "ULK_fixed.h"
 #include "config.h"
+#include "util.h"
 #include "sdl.h"
 #include "segment.h"
 #include "draw.h"
@@ -78,11 +79,11 @@ static struct
    }},
    .backdrop = 
    {
-      {.x = 0, .y = 144, .w = 320, .h = 160},
-      {.x = 320, .y = 144, .w = 272, .h = 160},
-      {.x = 592, .y = 144, .w = 544, .h = 160},
-      {.x = 1136, .y = 144, .w = 544, .h = 160},
-      {.x = 1680, .y = 144, .w = 544, .h = 160},
+      {.x = 0, .y = 96, .w = 320, .h = 160},
+      {.x = 320, .y = 96, .w = 272, .h = 160},
+      {.x = 592, .y = 96, .w = 544, .h = 160},
+      {.x = 1136, .y = 96, .w = 544, .h = 160},
+      {.x = 1680, .y = 96, .w = 544, .h = 160},
    },
 };
 
