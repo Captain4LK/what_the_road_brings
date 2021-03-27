@@ -43,6 +43,7 @@ static Color road1 = {59,45,31,255};
 //Function prototypes
 static void game_update();
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill);
+static void add_sprite(int seg, int index, ULK_fixed_32 pos);
 //-------------------------------------
 
 //Function implementations
@@ -54,20 +55,21 @@ int main(int argc, char **arg)
 
    //Setup road
    dyn_array_init(Segment,&segments,128);
-   dyn_array_free(Segment,&segments);
-   dyn_array_init(Segment,&segments,128);
 
    add_road(0,0,64,0,0);
    add_road(0,0,16,0,0);
-   add_road(0,0,64,-ULK_fixed_32_from_int(1),0);
+   add_road(4,4,56,-ULK_fixed_32_from_int(1),0);
    add_road(0,0,16,0,0);
-   add_road(0,0,64,ULK_fixed_32_from_int(1),0);
+   add_road(4,4,56,ULK_fixed_32_from_int(1),0);
    for(int i = 0;i<2;i++)
    {
       add_road(4,4,32,0,ULK_fixed_32_from_int(400));
-      add_road(0,0,64,ULK_fixed_32_from_int(1)/2,0);
+      add_road(4,4,56,ULK_fixed_32_from_int(1)/2,0);
       add_road(4,4,32,0,-ULK_fixed_32_from_int(400));
    }
+   for(int i = 0;i<320;i++)
+      add_sprite(i,0,-ULK_fixed_32_from_int(1)/6);
+   add_sprite(350,0,ULK_fixed_32_from_int(0));
 
    int fullscreen = 0;
    while(sdl_running())
@@ -123,6 +125,7 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       COLOR_ROAD()
       s.texture = segments.used%4;
       s.curve = ULK_fixed_32_mul(curve,ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(start)),ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(start))));
+      dyn_array_init(Sprite,&s.sprites,2);
       dyn_array_add(Segment,&segments,128,s);
    }
 
@@ -138,12 +141,13 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       COLOR_ROAD()
       s.texture = segments.used%4;
       s.curve = curve;
+      dyn_array_init(Sprite,&s.sprites,2);
       dyn_array_add(Segment,&segments,128,s);
    }
 
    for(int i = 0;i<end;i++)
    {
-       Segment s;
+      Segment s;
       memset(&s,0,sizeof(s));
       s.p0.z = segments.used*SEGLEN;
       ULK_fixed_32 ly = segments.used?dyn_array_element(Segment,&segments,segments.used).p1.y:0;
@@ -153,7 +157,16 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       COLOR_ROAD()
       s.texture = segments.used%4;
       s.curve = curve+ULK_fixed_32_mul(-curve,((-cos(((float)i/(float)end)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
+      dyn_array_init(Sprite,&s.sprites,2);
       dyn_array_add(Segment,&segments,128,s);
    }
+}
+
+static void add_sprite(int seg, int index, ULK_fixed_32 pos)
+{
+   Sprite sp;
+   sp.index = index;
+   sp.pos = pos;
+   dyn_array_add(Sprite,&dyn_array_element(Segment,&segments,seg).sprites,2,sp);
 }
 //-------------------------------------

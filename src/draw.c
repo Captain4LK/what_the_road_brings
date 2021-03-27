@@ -49,6 +49,7 @@ static struct
    SDL_Rect road03;
    SDL_Rect car_player[2][9];
    SDL_Rect backdrop[5];
+   SDL_Rect sprites[32];
 }texture_rects = 
 {
    .road00 = {.x = 0,.y = 0,.w = 128,.h = 16},
@@ -84,6 +85,10 @@ static struct
       {.x = 592, .y = 96, .w = 544, .h = 160},
       {.x = 1136, .y = 96, .w = 544, .h = 160},
       {.x = 1680, .y = 96, .w = 544, .h = 160},
+   },
+   .sprites = 
+   {
+      {.x = 0, .y = 256, .w = 64, .h = 64},
    },
 };
 
@@ -154,12 +159,14 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    ULK_fixed_32 cx = -cdx;
    ULK_fixed_32 py = base_player->p0.y+ULK_fixed_32_mul(base_player->p1.y-base_player->p0.y,ppos);
 
+   //Draw road segments
    Point cache;
    project_point(&base->p0,(x)-cx-cdx,py+CAM_HEIGHT,z-((is%segments.used<is)?segments.used*SEGLEN:0),CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
    cache = base->p0;
    for(;i<max;i++)
    {
       Segment *s = segment_list_get(&segments,i);
+      s->clip_y = max_y;
       int looped = (i%segments.used)<is?segments.used*SEGLEN:0;
       s->p0 = cache;
       project_point(&s->p1,(x)-cx-cdx,py+CAM_HEIGHT,z-looped,CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
@@ -180,6 +187,26 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
 
       max_y = s->p1.screen_y;
    }
+
+   //Draw sprites
+   for(i = max-1;i>is;i--)
+   {
+      Segment *s = segment_list_get(&segments,i);
+      SDL_RenderSetClipRect(renderer,&((SDL_Rect){0,0,XRES,ULK_fixed_32_to_int(ULK_fixed_32_round(s->clip_y))}));
+
+      for(int j = 0;j<s->sprites.used;j++)
+      {
+         Sprite *sp = &dyn_array_element(Sprite,&s->sprites,j);
+         SDL_FRect dst;
+         dst.w = texture_rects.sprites[sp->index].w*((float)CAM_DEPTH/(float)s->p1.camera_z);
+         dst.h = texture_rects.sprites[sp->index].h*((float)CAM_DEPTH/(float)s->p1.camera_z);
+         dst.y = ((float)s->p1.screen_y/65536.0f)-dst.h;
+         dst.x = ULK_fixed_32_to_int(s->p1.screen_x)+((float)CAM_DEPTH/(float)s->p1.camera_z)*((float)sp->pos/(float)65536.0f)*XRES-dst.w/2.0f;
+
+         SDL_RenderCopyF(renderer,texture,&texture_rects.sprites[sp->index],&dst);
+      }
+   }
+   SDL_RenderSetClipRect(renderer,NULL);
 
    if(base_player->p1.y-base_player->p0.y>ULK_fixed_32_from_int(1))
       SDL_RenderCopy(renderer,texture,&texture_rects.car_player[1][steer+4],&((SDL_Rect){.x = 115, .y = 180, .w = 90, .h = 48}));
