@@ -67,7 +67,6 @@ static int running = 1;
 //-------------------------------------
 
 //Function prototypes
-static void update_viewport();
 static int get_gamepad_index(int which); 
 //-------------------------------------
 
@@ -228,31 +227,6 @@ void sdl_init()
       memset(gamepads[i].new_button_state,0,sizeof(gamepads[i].new_button_state));
       memset(gamepads[i].old_button_state,0,sizeof(gamepads[i].old_button_state));
    }
-}
-
-static void update_viewport()
-{
-   SDL_GetWindowSize(sdl_window,&window_width,&window_height);
-
-   SDL_Rect rect;
-   if((float)window_width/(16.0f/9.0f)>=window_height)
-   {
-      rect.w = window_height*(16.0f/9.0f);
-      rect.h = window_height;
-   }
-   else
-   {
-      rect.w = window_width;
-      rect.h = window_width*(9.0f/16.0f);
-   }
-   rect.x = (window_width-rect.w)/2;
-   rect.y = (window_height-rect.h)/2;
-   window_width = rect.w;
-   window_height = rect.h;
-   SDL_RenderSetViewport(renderer,&rect);
-
-   SDL_SetRenderDrawColor(renderer,0,0,0,255);
-   SDL_RenderClear(renderer);
 }
 
 void sdl_update()

@@ -11,7 +11,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //External includes
 #include <math.h>
 #include <SDL2/SDL.h>
-//#include <SLK/SLK.h>
 //-------------------------------------
 
 //Internal includes
