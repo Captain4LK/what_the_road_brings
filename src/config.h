@@ -13,7 +13,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define _CONFIG_H_
 
 //0 for vsync
-#define FPS 60 
+#define FPS 60
 #define XRES 320
 #define YRES 240
 #define SEGLEN ULK_fixed_from_int(32)

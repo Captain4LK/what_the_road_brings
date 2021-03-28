@@ -62,7 +62,7 @@ void player_update()
 
    player.pz+=player.vz*dt;
 
-   ULK_fixed_32 speed_x = 2*ULK_fixed_32_div(player.vz,MAX_SPEED);
+   ULK_fixed_32 speed_x = 128*ULK_fixed_32_div(player.vz,MAX_SPEED)*dt;
    if(sdl_key_down(KEY_LEFT)||sdl_gamepad_down(0,PAD_LEFT))
    {
       if(player.steer==0)

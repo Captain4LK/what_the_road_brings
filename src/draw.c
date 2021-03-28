@@ -108,7 +108,7 @@ static struct
    },
    .speed = 
    {
-      0, 2.0f, 4.0f,
+      0, 128.0f, 256.0f,
    },
 };
 //-------------------------------------
@@ -129,6 +129,7 @@ void load_assets()
 
 void draw(ULK_fixed x, ULK_fixed z, int steer)
 {
+   float dt = sdl_get_delta();
    for(int i = 0;i<5;i++)
    {
       SDL_RenderCopyF(renderer,texture,&texture_rects.backdrop[i],&parallax_data.layers[i][0]);
@@ -148,7 +149,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    Segment *base_player = segment_list_get_pos(&segments,z+ULK_fixed_from_int(64),&i);
    Segment *base = segment_list_get_pos(&segments,z,&i);
    parallax_scroll(base_player->curve);
-   player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(base_player->curve,ULK_fixed_32_from_int(2)));
+   player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(base_player->curve,ULK_fixed_32_from_int(128)))*dt;
    int max = i+RENDER_DISTANCE;
    is = i;
    
@@ -370,9 +371,11 @@ static void draw_segment_frame(Segment *s)
 
 static void parallax_scroll(ULK_fixed_32 curve)
 {
+   float dt = sdl_get_delta();
+
    for(int i = 0;i<5;i++)
    {
-      float speed = -MIN(5.0f,parallax_data.speed[i]*(curve/65536.0f)*((float)player.vz/(float)MAX_SPEED));
+      float speed = -parallax_data.speed[i]*(curve/65536.0f)*((float)player.vz/(float)MAX_SPEED)*dt;
 
       parallax_data.layers[i][0].x+=speed;
       parallax_data.layers[i][1].x+=speed;
