@@ -14,6 +14,9 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <string.h>
 #include <stdint.h>
 #include <SDL2/SDL.h>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 //-------------------------------------
 
 //Internal includes
@@ -74,9 +77,13 @@ static int get_gamepad_index(int which);
 
 void sdl_init()
 {
+#ifdef __EMSCRIPTEN__
+   if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_TIMER)<0)
+#else
    if(SDL_Init(SDL_INIT_EVERYTHING)<0)
+#endif
    {
-      printf("FATAL ERROR: failed to init sdl\n");
+      printf("FATAL ERROR: failed to init sdl: %s\n",SDL_GetError());
       exit(-1);
    }
 
@@ -248,6 +255,10 @@ void sdl_update()
       {
       case SDL_QUIT:
          running = 0;
+#ifdef __EMSCRIPTEN__
+       emscripten_cancel_main_loop();
+#endif
+
          break;
       case SDL_KEYDOWN:
          if(event.key.state==SDL_PRESSED)
@@ -324,8 +335,10 @@ void sdl_update()
 
    frametime = SDL_GetTicks()-framestart;
 
+#ifndef __EMSCRIPTEN__
    if(framedelay>frametime)
       SDL_Delay(framedelay-frametime);
+#endif
 
    delta = (float)(SDL_GetTicks()-framestart)/1000.0f;
    framestart = SDL_GetTicks();
@@ -410,5 +423,10 @@ SDL_Texture *sdl_load_image(const char *path)
    cp_free_png(&img);
 
    return out;
+}
+
+float sdl_get_delta()
+{
+   return delta;
 }
 //-------------------------------------

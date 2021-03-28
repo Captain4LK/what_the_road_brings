@@ -12,6 +12,10 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <math.h>
 #include <time.h>
 #include <SDL2/SDL.h>
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 //-------------------------------------
 
 //Internal includes
@@ -39,12 +43,14 @@ static Color border0 = {102,102,102,255};
 static Color border1 = {59,115,73,255};
 static Color road0 = {59,45,31,255};
 static Color road1 = {59,45,31,255};
+static int fullscreen = 0;
 //-------------------------------------
 
 //Function prototypes
 static void game_update();
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill);
 static void add_sprite(int seg, int index, ULK_fixed_32 pos);
+static void main_loop();
 //-------------------------------------
 
 //Function implementations
@@ -79,29 +85,12 @@ int main(int argc, char **arg)
          add_sprite(i,0,-(ULK_fixed_32_from_int(1)/3)*(rand()%6+1));
    }
 
-   int fullscreen = 0;
+#ifndef __EMSCRIPTEN__
    while(sdl_running())
-   {
-      sdl_update();
-
-      SDL_SetRenderTarget(renderer,target);
-      if(sdl_key_pressed(KEY_M))
-      {
-         fullscreen = !fullscreen;
-         SDL_SetWindowFullscreen(sdl_window,fullscreen?SDL_WINDOW_FULLSCREEN_DESKTOP:0);
-      }
-
-      SDL_SetRenderDrawColor(renderer,0,0,0,255);
-      SDL_RenderClear(renderer);
-
-      game_update();
-      SDL_SetRenderTarget(renderer,NULL);
-
-      SDL_SetRenderDrawColor(renderer,0,0,0,255);
-      SDL_RenderClear(renderer);
-      SDL_RenderCopy(renderer,target,NULL,NULL);
-      SDL_RenderPresent(renderer);
-   }
+      main_loop();
+#else
+   emscripten_set_main_loop(main_loop,0,1);
+#endif
 
    return 0;
 }
@@ -173,5 +162,28 @@ static void add_sprite(int seg, int index, ULK_fixed_32 pos)
    sp.index = index;
    sp.pos = pos;
    dyn_array_add(Sprite,&dyn_array_element(Segment,&segments,seg).sprites,2,sp);
+}
+
+static void main_loop()
+{
+   sdl_update();
+
+   SDL_SetRenderTarget(renderer,target);
+   if(sdl_key_pressed(KEY_M))
+   {
+      fullscreen = !fullscreen;
+      SDL_SetWindowFullscreen(sdl_window,fullscreen?SDL_WINDOW_FULLSCREEN_DESKTOP:0);
+   }
+
+   SDL_SetRenderDrawColor(renderer,0,0,0,255);
+   SDL_RenderClear(renderer);
+
+   game_update();
+   SDL_SetRenderTarget(renderer,NULL);
+
+   SDL_SetRenderDrawColor(renderer,0,0,0,255);
+   SDL_RenderClear(renderer);
+   SDL_RenderCopy(renderer,target,NULL,NULL);
+   SDL_RenderPresent(renderer);
 }
 //-------------------------------------

@@ -71,6 +71,7 @@ int sdl_mouse_wheel_get_scroll();
 int sdl_gamepad_down(int index, int key);
 int sdl_gamepad_pressed(int index, int key);
 int sdl_gamepad_released(int index, int key);
+float sdl_get_delta();
 SDL_Texture *sdl_load_image(const char *path);
 
 #endif

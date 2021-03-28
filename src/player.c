@@ -43,19 +43,24 @@ static int frame = 0;
 
 void player_update()
 {
+   float dt = sdl_get_delta();
+   ULK_fixed_32 vz_acc = ACCEL*dt;
+   ULK_fixed_32 vz_dec = DECEL*dt;
+
    frame++;
    if(sdl_key_down(KEY_UP)||sdl_gamepad_down(0,PAD_B))
    {
-      if(player.vz<(MAX_SPEED-ACCEL))
-         player.vz+=ACCEL;
+      if(player.vz<(MAX_SPEED-vz_acc))
+         player.vz+=vz_acc;
    }
    else if(sdl_key_down(KEY_DOWN)||sdl_gamepad_down(0,PAD_A))
-      player.vz+=2*DECEL;
+      player.vz+=2*vz_dec;
    else
-      player.vz+=DECEL;
+      player.vz+=vz_dec;
    if(player.vz<0)
       player.vz = 0;
-   player.pz+=player.vz;
+
+   player.pz+=player.vz*dt;
 
    ULK_fixed_32 speed_x = 2*ULK_fixed_32_div(player.vz,MAX_SPEED);
    if(sdl_key_down(KEY_LEFT)||sdl_gamepad_down(0,PAD_LEFT))
