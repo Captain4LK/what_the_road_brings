@@ -1,5 +1,5 @@
 /*
-SoftLK-demos - a collection of bigger examples for SoftLK-lib
+what the road brings - a racing game
 
 Written in 2021 by Lukas Holzbeierlein (Captain4LK) email: captain4lk [at] tutanota [dot] com
 
@@ -26,6 +26,8 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //#defines
+#define MIN(a,b) \
+   ((a)<(b)?(a):(b))
 //-------------------------------------
 
 //Typedefs
@@ -50,8 +52,8 @@ void player_update()
    frame++;
    if(sdl_key_down(KEY_UP)||sdl_gamepad_down(0,PAD_B))
    {
-      if(player.vz<(MAX_SPEED-vz_acc))
-         player.vz+=vz_acc;
+      if(player.vz<(MAX_SPEED))
+         player.vz+=MIN(MAX_SPEED-player.vz,vz_acc);
    }
    else if(sdl_key_down(KEY_DOWN)||sdl_gamepad_down(0,PAD_A))
       player.vz+=2*vz_dec;

@@ -1,5 +1,5 @@
 /*
-SoftLK-demos - a collection of bigger examples for SoftLK-lib
+what the road brings - a racing game
 
 Written in 2021 by Lukas Holzbeierlein (Captain4LK) email: captain4lk [at] tutanota [dot] com
 
