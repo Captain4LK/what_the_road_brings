@@ -81,14 +81,14 @@ static struct
    .backdrop = 
    {
       {.x = 0, .y = 96, .w = 320, .h = 160},
-      {.x = 320, .y = 96, .w = 272, .h = 160},
-      {.x = 592, .y = 96, .w = 544, .h = 160},
-      {.x = 1136, .y = 96, .w = 544, .h = 160},
-      {.x = 1680, .y = 96, .w = 544, .h = 160},
+      {.x = 320, .y = 96, .w = 512, .h = 160},
+      {.x = 832, .y = 96, .w = 512, .h = 160},
+      //{.x = 1136, .y = 96, .w = 544, .h = 160},
+      //{.x = 1680, .y = 96, .w = 544, .h = 160},
    },
    .sprites = 
    {
-      {.x = 0, .y = 256, .w = 64, .h = 64},
+      {.x = 0, .y = 256, .w = 51, .h = 100},
    },
 };
 
@@ -100,15 +100,15 @@ static struct
 {
    .layers = 
    {
-      { {.x = 0, .y = -20, .w = 320, .h = 160}, {.x = 0, .y = -20, .w = 0, .h = 0 } },
-      { {.x = 0, .y = -20, .w = 272, .h = 160}, {.x = 272, .y = -20, .w = 272, .h = 160 } },
-      { {.x = 0, .y = -20, .w = 544, .h = 160}, {.x = 544, .y = -20, .w = 544, .h = 160 } },
-      { {.x = 0, .y = -20, .w = 544, .h = 160}, {.x = 544, .y = -20, .w = 544, .h = 160 } },
-      { {.x = 0, .y = -20, .w = 544, .h = 160}, {.x = 544, .y = -20, .w = 544, .h = 160 } },
+      { {.x = 0, .y = -0, .w = 320, .h = 160}, {.x = 0, .y = -0, .w = 0, .h = 0 } },
+      { {.x = 0, .y = -0, .w = 512, .h = 160}, {.x = 512, .y = -0, .w = 512, .h = 160 } },
+      { {.x = 0, .y = -0, .w = 512, .h = 160}, {.x = 512, .y = -0, .w = 512, .h = 160 } },
+      //{ {.x = 0, .y = -20, .w = 544, .h = 160}, {.x = 544, .y = -20, .w = 544, .h = 160 } },
+      //{ {.x = 0, .y = -20, .w = 544, .h = 160}, {.x = 544, .y = -20, .w = 544, .h = 160 } },
    },
    .speed = 
    {
-      0, 0.5f, 1.0f, 1.5f, 2.0f,
+      0, 1.5f, 2.0f,
    },
 };
 //-------------------------------------
@@ -192,7 +192,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    for(i = max-1;i>is;i--)
    {
       Segment *s = segment_list_get(&segments,i);
-      SDL_RenderSetClipRect(renderer,&((SDL_Rect){0,0,XRES,ULK_fixed_32_to_int(ULK_fixed_32_round(s->clip_y))}));
+      SDL_RenderSetClipRect(renderer,&((SDL_Rect){0,0,XRES,ULK_fixed_32_to_int(ULK_fixed_32_floor(s->clip_y))}));
 
       for(int j = 0;j<s->sprites.used;j++)
       {
@@ -201,7 +201,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
          dst.w = texture_rects.sprites[sp->index].w*((float)CAM_DEPTH/(float)s->p1.camera_z);
          dst.h = texture_rects.sprites[sp->index].h*((float)CAM_DEPTH/(float)s->p1.camera_z);
          dst.y = ((float)s->p1.screen_y/65536.0f)-dst.h;
-         dst.x = ULK_fixed_32_to_int(s->p1.screen_x)+((float)CAM_DEPTH/(float)s->p1.camera_z)*((float)sp->pos/(float)65536.0f)*XRES-dst.w/2.0f;
+         dst.x = ((float)s->p1.screen_x/65536.0f)+((float)CAM_DEPTH/(float)s->p1.camera_z)*((float)sp->pos/(float)65536.0f)*XRES-dst.w/2.0f;
 
          SDL_RenderCopyF(renderer,texture,&texture_rects.sprites[sp->index],&dst);
       }
@@ -374,7 +374,7 @@ static void parallax_scroll(ULK_fixed_32 curve)
 {
    for(int i = 0;i<5;i++)
    {
-      float speed = -MIN(2.0f,parallax_data.speed[i]*(curve/65536.0f)*((float)player.vz/(float)MAX_SPEED));
+      float speed = -MIN(5.0f,parallax_data.speed[i]*(curve/65536.0f)*((float)player.vz/(float)MAX_SPEED));
 
       parallax_data.layers[i][0].x+=speed;
       parallax_data.layers[i][1].x+=speed;

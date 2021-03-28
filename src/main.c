@@ -10,6 +10,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 //External includes
 #include <math.h>
+#include <time.h>
 #include <SDL2/SDL.h>
 //-------------------------------------
 
@@ -32,10 +33,10 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Variables
-static Color grass0 = {83,80,10,255};
-static Color grass1 = {65,65,35,255};
+static Color grass0 = {88,125,62,255};
+static Color grass1 = {59,115,73,255};
 static Color border0 = {102,102,102,255};
-static Color border1 = {65,65,35,255};
+static Color border1 = {59,115,73,255};
 static Color road0 = {59,45,31,255};
 static Color road1 = {59,45,31,255};
 //-------------------------------------
@@ -67,9 +68,15 @@ int main(int argc, char **arg)
       add_road(4,4,56,ULK_fixed_32_from_int(1)/2,0);
       add_road(4,4,32,0,-ULK_fixed_32_from_int(400));
    }
-   for(int i = 0;i<320;i++)
-      add_sprite(i,0,-ULK_fixed_32_from_int(1)/6);
-   add_sprite(350,0,ULK_fixed_32_from_int(0));
+
+   srand(time(NULL));
+   for(int i = 0;i<segments.used;i++)
+   {
+      if(rand()%10>6)
+         add_sprite(i,0,(ULK_fixed_32_from_int(1)/3)*(rand()%6+1));
+      if(rand()%10>6)
+         add_sprite(i,0,-(ULK_fixed_32_from_int(1)/3)*(rand()%6+1));
+   }
 
    int fullscreen = 0;
    while(sdl_running())
