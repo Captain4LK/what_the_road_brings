@@ -14,13 +14,9 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 typedef struct
 {
-   ULK_fixed_32 x;
    ULK_fixed_32 y;
    ULK_fixed z;
-   ULK_fixed_32 camera_x;
-   ULK_fixed_32 camera_y;
    ULK_fixed camera_z;
-   ULK_fixed_32 screen_scale;
    ULK_fixed_32 screen_x;
    ULK_fixed_32 screen_y;
    ULK_fixed_32 screen_w;
@@ -39,9 +35,7 @@ typedef struct
    Color color;
    Color color_road;
    Color color_border;
-   Color color_line;
-   int line;
-   int texture;
+   uint8_t line;
    ULK_fixed_32 curve;
    ULK_fixed_32 clip_y;
    dyn_array sprites;

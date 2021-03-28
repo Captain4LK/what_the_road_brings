@@ -68,6 +68,7 @@ int main(int argc, char **arg)
       add_road(4,4,56,ULK_fixed_32_from_int(1)/2,0);
       add_road(4,4,32,0,-ULK_fixed_32_from_int(400));
    }
+   printf("%ld\n",sizeof(Segment)*segments.used);
 
    srand(time(NULL));
    for(int i = 0;i<segments.used;i++)
@@ -130,7 +131,6 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)i/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
       s.curve = curve+ULK_fixed_32_mul(-curve,((-ULK_fixed_32_cos(ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(end))*4)/2)+ULK_fixed_32_from_int(1)/2));
       COLOR_ROAD()
-      s.texture = segments.used%4;
       s.curve = ULK_fixed_32_mul(curve,ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(start)),ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(start))));
       dyn_array_init(Sprite,&s.sprites,2);
       dyn_array_add(Segment,&segments,128,s);
@@ -146,7 +146,6 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       s.p1.z = (segments.used+1)*SEGLEN;
       s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)(start+i)/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
       COLOR_ROAD()
-      s.texture = segments.used%4;
       s.curve = curve;
       dyn_array_init(Sprite,&s.sprites,2);
       dyn_array_add(Segment,&segments,128,s);
@@ -162,7 +161,6 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       s.p1.z = (segments.used+1)*SEGLEN;
       s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)(start+length+i)/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
       COLOR_ROAD()
-      s.texture = segments.used%4;
       s.curve = curve+ULK_fixed_32_mul(-curve,((-cos(((float)i/(float)end)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
       dyn_array_init(Sprite,&s.sprites,2);
       dyn_array_add(Segment,&segments,128,s);

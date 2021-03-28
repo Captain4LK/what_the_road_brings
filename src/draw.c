@@ -100,15 +100,15 @@ static struct
 {
    .layers = 
    {
-      { {.x = 0, .y = -0, .w = 320, .h = 160}, {.x = 0, .y = -0, .w = 0, .h = 0 } },
-      { {.x = 0, .y = -0, .w = 512, .h = 160}, {.x = 512, .y = -0, .w = 512, .h = 160 } },
-      { {.x = 0, .y = -0, .w = 512, .h = 160}, {.x = 512, .y = -0, .w = 512, .h = 160 } },
+      { {.x = 0, .y = 0, .w = 320, .h = 160}, {.x = 0, .y = 0, .w = 0, .h = 0 } },
+      { {.x = 0, .y = 0, .w = 512, .h = 160}, {.x = 512, .y = 0, .w = 512, .h = 160 } },
+      { {.x = 0, .y = 0, .w = 512, .h = 160}, {.x = 512, .y = 0, .w = 512, .h = 160 } },
       //{ {.x = 0, .y = -20, .w = 544, .h = 160}, {.x = 544, .y = -20, .w = 544, .h = 160 } },
       //{ {.x = 0, .y = -20, .w = 544, .h = 160}, {.x = 544, .y = -20, .w = 544, .h = 160 } },
    },
    .speed = 
    {
-      0, 1.5f, 2.0f,
+      0, 2.0f, 4.0f,
    },
 };
 //-------------------------------------
@@ -116,7 +116,6 @@ static struct
 //Function prototypes
 static void project_point(Point *p, ULK_fixed cam_x, ULK_fixed cam_y, ULK_fixed cam_z, ULK_fixed cam_depth, int width, int height, int road_width);
 static void draw_segment(Segment *s);
-static void draw_segment_tex(Segment *s);
 static void draw_segment_frame(Segment *s);
 static void parallax_scroll(ULK_fixed_32 curve);
 //-------------------------------------
@@ -139,7 +138,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    if(sdl_key_pressed(KEY_Y))
    {
       draw_mode++;
-      if(draw_mode==3)
+      if(draw_mode==2)
          draw_mode = 0;
    }
 
@@ -182,7 +181,6 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       {
       case 0: draw_segment(s); break;
       case 1: draw_segment_frame(s); break;
-      case 2: draw_segment_tex(s); break;
       }
 
       max_y = s->p1.screen_y;
@@ -216,13 +214,13 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
 
 static void project_point(Point *p, ULK_fixed_32 cam_x, ULK_fixed_32 cam_y, ULK_fixed cam_z, ULK_fixed_32 cam_depth, int width, int height, int road_width)
 {
-p->camera_x = p->x-cam_x;
-   p->camera_y = p->y-cam_y;
+   ULK_fixed_32 camera_x = -cam_x;
+   ULK_fixed_32 camera_y = p->y-cam_y;
    p->camera_z = p->z-cam_z;
    if(p->camera_z==0)
       p->camera_z = INT16_MAX<<8;
-   p->screen_x = (ULK_fixed_32_from_int(width/2)+ULK_fixed_32_mul(ULK_fixed_32_from_int(width/2),ULK_fixed_32_mul(ULK_fixed_32_div(p->camera_x,p->camera_z<<8),cam_depth)));
-   p->screen_y = (ULK_fixed_32_from_int(height/2)-ULK_fixed_32_mul(ULK_fixed_32_from_int(height/2),ULK_fixed_32_mul(ULK_fixed_32_div(p->camera_y,p->camera_z<<8),cam_depth)));
+   p->screen_x = (ULK_fixed_32_from_int(width/2)+ULK_fixed_32_mul(ULK_fixed_32_from_int(width/2),ULK_fixed_32_mul(ULK_fixed_32_div(camera_x,p->camera_z<<8),cam_depth)));
+   p->screen_y = (ULK_fixed_32_from_int(height/2)-ULK_fixed_32_mul(ULK_fixed_32_from_int(height/2),ULK_fixed_32_mul(ULK_fixed_32_div(camera_y,p->camera_z<<8),cam_depth)));
    p->screen_w = ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(width),p->camera_z<<8)*48,cam_depth);
 }
 
@@ -314,7 +312,7 @@ static void draw_segment_frame(Segment *s)
    SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(s->p0.screen_x+s->p0.screen_w),ULK_fixed_32_to_int(s->p0.screen_y),ULK_fixed_32_to_int(s->p1.screen_x+s->p1.screen_w),ULK_fixed_32_to_int(s->p1.screen_y));
 }
 
-static void draw_segment_tex(Segment *s)
+/*static void draw_segment_tex(Segment *s)
 {
    ULK_fixed_32 height = s->p0.screen_y-s->p1.screen_y; 
    ULK_fixed_32 dx = ULK_fixed_32_div((s->p0.screen_x-s->p1.screen_x),(height));
@@ -368,7 +366,7 @@ static void draw_segment_tex(Segment *s)
       y_draw++;
       stripe_y+=stripe_height;
    }
-}
+}*/
 
 static void parallax_scroll(ULK_fixed_32 curve)
 {
