@@ -59,6 +59,8 @@ void player_update()
       player.vz+=2*vz_dec;
    else
       player.vz+=vz_dec;
+   if(player.vz>MAX_SPEED/4&&abs(player.px)>5898240)
+      player.vz+=2*vz_dec;
    if(player.vz<0)
       player.vz = 0;
 

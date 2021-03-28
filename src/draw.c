@@ -313,62 +313,6 @@ static void draw_segment_frame(Segment *s)
    SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(s->p0.screen_x+s->p0.screen_w),ULK_fixed_32_to_int(s->p0.screen_y),ULK_fixed_32_to_int(s->p1.screen_x+s->p1.screen_w),ULK_fixed_32_to_int(s->p1.screen_y));
 }
 
-/*static void draw_segment_tex(Segment *s)
-{
-   ULK_fixed_32 height = s->p0.screen_y-s->p1.screen_y; 
-   ULK_fixed_32 dx = ULK_fixed_32_div((s->p0.screen_x-s->p1.screen_x),(height));
-   ULK_fixed_32 dw = ULK_fixed_32_div((s->p0.screen_w-s->p1.screen_w),(height));
-   ULK_fixed_32 x = (s->p1.screen_x);
-   ULK_fixed_32 w = (s->p1.screen_w);
-   x+=ULK_fixed_32_mul(dx,ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
-   w+=ULK_fixed_32_mul(dw,ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
-   ULK_fixed_32 y = (s->p1.screen_y);//+ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
-
-   SDL_SetRenderDrawColor(renderer,s->color.r,s->color.g,s->color.b,s->color.a);
-   SDL_Rect rect;
-   SDL_Rect trect;
-   rect.x = 0;
-   rect.y = ULK_fixed_32_to_int(y);
-   rect.w = XRES;
-   rect.h = ULK_fixed_32_to_int((height))+1;
-   SDL_RenderFillRect(renderer,&rect);
-
-   ULK_fixed_32 stripe_height = 0;
-   ULK_fixed_32 stripe_y = 0;
-   switch(s->texture)
-   {
-   case 0: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road00.h),ULK_fixed_32_ceil(height)); stripe_y = ULK_fixed_32_from_int(texture_rects.road00.y); break;
-   case 1: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road01.h),ULK_fixed_32_ceil(height)); stripe_y = ULK_fixed_32_from_int(texture_rects.road01.y); break;
-   case 2: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road02.h),ULK_fixed_32_ceil(height)); stripe_y = ULK_fixed_32_from_int(texture_rects.road02.y); break;
-   case 3: stripe_height = ULK_fixed_32_div(ULK_fixed_32_from_int(texture_rects.road03.h),ULK_fixed_32_ceil(height)); stripe_y = ULK_fixed_32_from_int(texture_rects.road03.y); break;
-   }
-
-   int y_draw = ULK_fixed_32_to_int((y));
-   while(y<(s->p0.screen_y))
-   {
-      rect.w = ULK_fixed_32_to_int((2*w));
-      rect.x = ULK_fixed_32_to_int((x-w));
-      rect.y = y_draw;
-      rect.h = 1;
-      switch(s->texture)
-      {
-      case 0: trect.w = texture_rects.road00.w; break;
-      case 1: trect.w = texture_rects.road01.w; break;
-      case 2: trect.w = texture_rects.road02.w; break;
-      case 3: trect.w = texture_rects.road03.w; break;
-      }
-      trect.y = ULK_fixed_32_to_int((stripe_y));
-      trect.x = 0;
-      trect.h = MAX(1,ULK_fixed_32_to_int((stripe_height)-1));
-      SDL_RenderCopy(renderer,texture,&trect,&rect);
-      x+=dx;
-      w+=dw;
-      y+=ULK_fixed_32_from_int(1);
-      y_draw++;
-      stripe_y+=stripe_height;
-   }
-}*/
-
 static void parallax_scroll(ULK_fixed_32 curve)
 {
    float dt = sdl_get_delta();

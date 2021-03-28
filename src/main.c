@@ -22,6 +22,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "ULK_fixed.h"
 #include "config.h"
 #include "util.h"
+#include "mode.h"
 #include "sdl.h"
 #include "player.h"
 #include "segment.h"
@@ -47,7 +48,6 @@ static int fullscreen = 0;
 //-------------------------------------
 
 //Function prototypes
-static void game_update();
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill);
 static void add_sprite(int seg, int index, ULK_fixed_32 pos);
 static void main_loop();
@@ -74,6 +74,14 @@ int main(int argc, char **arg)
       add_road(4,4,56,ULK_fixed_32_from_int(1)/2,0);
       add_road(4,4,32,0,-ULK_fixed_32_from_int(400));
    }
+   add_road(4,4,56,-ULK_fixed_32_from_int(1),0);
+   add_road(0,0,16,0,0);
+   add_road(4,4,56,ULK_fixed_32_from_int(1),0);
+   add_road(4,4,160,ULK_fixed_32_from_int(1)/2,ULK_fixed_32_from_int(2000));
+   add_road(0,0,8,0,0);
+   add_road(4,4,160,0,-ULK_fixed_32_from_int(2000));
+   add_road(0,0,16,0,0);
+
    printf("%ld\n",sizeof(Segment)*segments.used);
 
    srand(time(NULL));
@@ -93,13 +101,6 @@ int main(int argc, char **arg)
 #endif
 
    return 0;
-}
-
-static void game_update()
-{
-   player_update();
-
-   draw(player.px,player.pz,player.steer);
 }
 
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill)
@@ -168,19 +169,19 @@ static void main_loop()
 {
    sdl_update();
 
-   SDL_SetRenderTarget(renderer,target);
    if(sdl_key_pressed(KEY_M))
    {
       fullscreen = !fullscreen;
       SDL_SetWindowFullscreen(sdl_window,fullscreen?SDL_WINDOW_FULLSCREEN_DESKTOP:0);
    }
 
-   SDL_SetRenderDrawColor(renderer,0,0,0,255);
+   SDL_SetRenderTarget(renderer,target);
+   SDL_SetRenderDrawColor(renderer,grass1.r,grass1.g,grass1.b,255);
    SDL_RenderClear(renderer);
 
-   game_update();
-   SDL_SetRenderTarget(renderer,NULL);
+   modes_update();
 
+   SDL_SetRenderTarget(renderer,NULL);
    SDL_SetRenderDrawColor(renderer,0,0,0,255);
    SDL_RenderClear(renderer);
    SDL_RenderCopy(renderer,target,NULL,NULL);

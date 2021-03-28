@@ -30,6 +30,13 @@ typedef struct
 
 typedef struct
 {
+   ULK_fixed_32 pos_x;
+   ULK_fixed_32 z;
+   uint32_t index;
+}Car;
+
+typedef struct
+{
    Point p0;
    Point p1;
    Color color;
@@ -39,6 +46,7 @@ typedef struct
    ULK_fixed_32 curve;
    ULK_fixed_32 clip_y;
    dyn_array sprites;
+   dyn_array cars;
 }Segment;
 
 extern dyn_array segments;
