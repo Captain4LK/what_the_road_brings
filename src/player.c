@@ -59,14 +59,15 @@ void player_update()
       player.vz+=2*vz_dec;
    else
       player.vz+=vz_dec;
-   if(player.vz>MAX_SPEED/4&&abs(player.px)>5898240)
+   if(player.vz>MAX_SPEED/4&&abs(player.px)>ULK_fixed_32_from_int(1))
       player.vz+=2*vz_dec;
    if(player.vz<0)
       player.vz = 0;
 
-   player.pz+=player.vz*dt;
+   if(!player.stopped)
+      player.pz+=player.vz*dt;
 
-   ULK_fixed_32 speed_x = 128*ULK_fixed_32_div(player.vz,MAX_SPEED)*dt;
+   ULK_fixed_32 speed_x = 2*ULK_fixed_32_div(player.vz,MAX_SPEED)*dt;
    if(sdl_key_down(KEY_LEFT)||sdl_gamepad_down(0,PAD_LEFT))
    {
       if(player.steer==0)
@@ -92,5 +93,6 @@ void player_update()
    }
 
    player.pz = player.pz%(segments.used*SEGLEN);
+   player.stopped = 0;
 }
 //-------------------------------------

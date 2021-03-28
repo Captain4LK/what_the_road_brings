@@ -88,9 +88,9 @@ int main(int argc, char **arg)
    for(int i = 0;i<segments.used;i++)
    {
       if(rand()%10>6)
-         add_sprite(i,0,(ULK_fixed_32_from_int(1)/3)*(rand()%6+1));
+         add_sprite(i,0,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1))*(rand()%6+1));
       if(rand()%10>6)
-         add_sprite(i,0,-(ULK_fixed_32_from_int(1)/3)*(rand()%6+1));
+         add_sprite(i,0,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(1))*(rand()%6+1))));
    }
 
 #ifndef __EMSCRIPTEN__

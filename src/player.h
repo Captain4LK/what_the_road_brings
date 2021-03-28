@@ -18,6 +18,7 @@ struct Player
    ULK_fixed_32 px;
    ULK_fixed vz;
    int steer;
+   int stopped;
 };
 
 extern struct Player player;

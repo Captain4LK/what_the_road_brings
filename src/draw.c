@@ -149,7 +149,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    Segment *base_player = segment_list_get_pos(&segments,z+ULK_fixed_from_int(64),&i);
    Segment *base = segment_list_get_pos(&segments,z,&i);
    parallax_scroll(base_player->curve);
-   player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(base_player->curve,ULK_fixed_32_from_int(128)))*dt;
+   player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(base_player->curve,ULK_fixed_32_from_int(2)))*dt;
    int max = i+RENDER_DISTANCE;
    is = i;
    
@@ -161,7 +161,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
 
    //Draw road segments
    Point cache;
-   project_point(&base->p0,(x)-cx-cdx,py+CAM_HEIGHT,z-((is%segments.used<is)?segments.used*SEGLEN:0),CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
+   project_point(&base->p0,(x*XRES/4)-cx-cdx,py+CAM_HEIGHT,z-((is%segments.used<is)?segments.used*SEGLEN:0),CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
    cache = base->p0;
    for(;i<max;i++)
    {
@@ -169,7 +169,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       s->clip_y = max_y;
       int looped = (i%segments.used)<is?segments.used*SEGLEN:0;
       s->p0 = cache;
-      project_point(&s->p1,(x)-cx-cdx,py+CAM_HEIGHT,z-looped,CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
+      project_point(&s->p1,(x*XRES/4)-cx-cdx,py+CAM_HEIGHT,z-looped,CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
       cache = s->p1;
       cx+=cdx;
       cdx+=s->curve;
@@ -200,7 +200,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
          dst.w = texture_rects.sprites[sp->index].w*((float)CAM_DEPTH/(float)s->p1.camera_z);
          dst.h = texture_rects.sprites[sp->index].h*((float)CAM_DEPTH/(float)s->p1.camera_z);
          dst.y = ((float)s->p1.screen_y/65536.0f)-dst.h;
-         dst.x = ((float)s->p1.screen_x/65536.0f)+((float)CAM_DEPTH/(float)s->p1.camera_z)*((float)sp->pos/(float)65536.0f)*XRES-dst.w/2.0f;
+         dst.x = ((float)s->p1.screen_x/65536.0f)+((float)CAM_DEPTH/(float)s->p1.camera_z)*((float)sp->pos/(float)65536.0f)*(XRES/4)-dst.w/2.0f;
 
          SDL_RenderCopyF(renderer,texture,&texture_rects.sprites[sp->index],&dst);
       }
