@@ -12,6 +12,18 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 #define _DRAW_H_
 
+struct Texture_Rects
+{
+   SDL_Rect road00;
+   SDL_Rect road01;
+   SDL_Rect road02;
+   SDL_Rect road03;
+   SDL_Rect car_player[2][9];
+   SDL_Rect backdrop[5];
+   SDL_Rect sprites[32];
+};
+extern struct Texture_Rects texture_rects;
+
 void load_assets();
 void draw(ULK_fixed x, ULK_fixed z, int steer);
 

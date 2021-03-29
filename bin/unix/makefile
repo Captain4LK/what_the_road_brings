@@ -21,7 +21,7 @@ ULK_fixed.o: ../../src/ULK_fixed.c ../../src/ULK_fixed.h
 draw.o: ../../src/draw.c ../../src/draw.h ../../src/segment.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-player.o: ../../src/player.c ../../src/player.h ../../src/segment.h ../../src/util.h ../../src/config.h
+player.o: ../../src/player.c ../../src/player.h ../../src/segment.h ../../src/util.h ../../src/draw.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 sdl.o: ../../src/sdl.c ../../src/sdl.h ../../src/config.h

@@ -41,16 +41,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 static int draw_mode = 0;
 static SDL_Texture *texture = NULL;
 
-static struct
-{
-   SDL_Rect road00;
-   SDL_Rect road01;
-   SDL_Rect road02;
-   SDL_Rect road03;
-   SDL_Rect car_player[2][9];
-   SDL_Rect backdrop[5];
-   SDL_Rect sprites[32];
-}texture_rects = 
+struct Texture_Rects texture_rects = 
 {
    .road00 = {.x = 0,.y = 0,.w = 128,.h = 16},
    .road01 = {.x = 0,.y = 16,.w = 128,.h = 16},
@@ -129,7 +120,6 @@ void load_assets()
 
 void draw(ULK_fixed x, ULK_fixed z, int steer)
 {
-   float dt = sdl_get_delta();
    for(int i = 0;i<5;i++)
    {
       SDL_RenderCopyF(renderer,texture,&texture_rects.backdrop[i],&parallax_data.layers[i][0]);
@@ -149,7 +139,6 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    Segment *base_player = segment_list_get_pos(&segments,z+ULK_fixed_from_int(64),&i);
    Segment *base = segment_list_get_pos(&segments,z,&i);
    parallax_scroll(base_player->curve);
-   player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(base_player->curve,ULK_fixed_32_from_int(2)))*dt;
    int max = i+RENDER_DISTANCE;
    is = i;
    
@@ -273,7 +262,25 @@ static void draw_segment(Segment *s)
          SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x-w)),y_draw,ULK_fixed_32_to_int((x-w+w16)),y_draw);
 
          ULK_fixed_32 start = x-w+w16;
-         ULK_fixed_32 end = x-w+10*w16;
+         ULK_fixed_32 end = x-w+7*w16;
+         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
+         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
+         start = end;
+         end+=w16;
+         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
+         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
+
+         start = end;
+         end+=7*w16;
+         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
+         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
+         start = end;
+         end+=w16;
+         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
+         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
+
+         start = end;
+         end+=7*w16;
          SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
          SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
          start = end;
@@ -281,15 +288,7 @@ static void draw_segment(Segment *s)
          SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
          SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
          start = end;
-         end+=10*w16;
-         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
-         start = end;
-         end+=w16;
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
-         start = end;
-         end+=10*w16;
+         end+=7*w16;
          SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
          SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
 
