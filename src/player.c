@@ -49,17 +49,23 @@ void player_update()
    float dt = sdl_get_delta();
    ULK_fixed_32 vz_acc = ACCEL*dt;
    ULK_fixed_32 vz_dec = DECEL*dt;
+   player.stopped = 0;
 
+   //Collision
+   SDL_SetRenderDrawColor(renderer,0,0,0,255);
    int i;
    Segment *bp = segment_list_get_pos(&segments,player.pz+ULK_fixed_from_int(64),&i);
-   player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(bp->curve,ULK_fixed_32_from_int(2)))*dt;
    for(int j = 0;j<bp->sprites.used;j++)
    {
       Sprite *sp = &dyn_array_element(Sprite,&bp->sprites,j);
       SDL_Rect dst;
       dst.w = texture_rects.sprites[sp->index].w*((float)CAM_DEPTH/(float)bp->p1.camera_z);
       dst.x = ((float)bp->p1.screen_x/65536.0f)+((float)CAM_DEPTH/(float)bp->p1.camera_z)*((float)sp->pos/(float)65536.0f)*(XRES/4)-dst.w/2.0f;
+      if((145+texture_rects.car_player[0][0].w-60)>dst.x&&145<dst.x+dst.w)
+         player.stopped = 1;
    }
+   if(!player.stopped)
+      player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(bp->curve,ULK_fixed_32_from_int(2)))*dt;
 
    frame++;
    if(sdl_key_down(KEY_UP)||sdl_gamepad_down(0,PAD_B))
@@ -105,6 +111,5 @@ void player_update()
    }
 
    player.pz = player.pz%(segments.used*SEGLEN);
-   player.stopped = 0;
 }
 //-------------------------------------

@@ -49,15 +49,15 @@ struct Texture_Rects texture_rects =
    .road03 = {.x = 0,.y = 48,.w = 128,.h = 16},
    .car_player = 
    {{
-      {.x = 0, .y = 0, .w = 90, .h = 48},
-      {.x = 90, .y = 0, .w = 90, .h = 48},
-      {.x = 180, .y = 0, .w = 90, .h = 48},
-      {.x = 270, .y = 0, .w = 90, .h = 48},
-      {.x = 360, .y = 0, .w = 90, .h = 48},
-      {.x = 450, .y = 0, .w = 90, .h = 48},
-      {.x = 540, .y = 0, .w = 90, .h = 48},
-      {.x = 630, .y = 0, .w = 90, .h = 48},
-      {.x = 720, .y = 0, .w = 90, .h = 48},
+      {.x = 0, .y = 0, .w = 90, .h = 60},
+      {.x = 90, .y = 0, .w = 90, .h = 60},
+      {.x = 180, .y = 0, .w = 90, .h = 60},
+      {.x = 270, .y = 0, .w = 90, .h = 60},
+      {.x = 360, .y = 0, .w = 90, .h = 60},
+      {.x = 450, .y = 0, .w = 90, .h = 60},
+      {.x = 540, .y = 0, .w = 90, .h = 60},
+      {.x = 630, .y = 0, .w = 90, .h = 60},
+      {.x = 720, .y = 0, .w = 90, .h = 60},
     },{
       {.x = 0, .y = 48, .w = 90, .h = 48},
       {.x = 90, .y = 48, .w = 90, .h = 48},
@@ -80,6 +80,7 @@ struct Texture_Rects texture_rects =
    .sprites = 
    {
       {.x = 0, .y = 256, .w = 51, .h = 100},
+      {.x = 51, .y = 256, .w = 37, .h = 46},
    },
 };
 
@@ -138,7 +139,8 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    ULK_fixed_32 max_y = ULK_fixed_32_from_int(YRES);
    Segment *base_player = segment_list_get_pos(&segments,z+ULK_fixed_from_int(64),&i);
    Segment *base = segment_list_get_pos(&segments,z,&i);
-   parallax_scroll(base_player->curve);
+   if(!player.stopped)
+      parallax_scroll(base_player->curve);
    int max = i+RENDER_DISTANCE;
    is = i;
    
@@ -197,9 +199,9 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    SDL_RenderSetClipRect(renderer,NULL);
 
    if(base_player->p1.y-base_player->p0.y>ULK_fixed_32_from_int(1))
-      SDL_RenderCopy(renderer,texture,&texture_rects.car_player[1][steer+4],&((SDL_Rect){.x = 115, .y = 180, .w = 90, .h = 48}));
+      SDL_RenderCopy(renderer,texture,&texture_rects.car_player[0][steer+4],&((SDL_Rect){.x = 115, .y = 170, .w = 90, .h = 60}));
    else
-      SDL_RenderCopy(renderer,texture,&texture_rects.car_player[0][steer+4],&((SDL_Rect){.x = 115, .y = 180, .w = 90, .h = 48}));
+      SDL_RenderCopy(renderer,texture,&texture_rects.car_player[0][steer+4],&((SDL_Rect){.x = 115, .y = 170, .w = 90, .h = 60}));
 }
 
 static void project_point(Point *p, ULK_fixed_32 cam_x, ULK_fixed_32 cam_y, ULK_fixed cam_z, ULK_fixed_32 cam_depth, int width, int height, int road_width)
@@ -262,25 +264,7 @@ static void draw_segment(Segment *s)
          SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x-w)),y_draw,ULK_fixed_32_to_int((x-w+w16)),y_draw);
 
          ULK_fixed_32 start = x-w+w16;
-         ULK_fixed_32 end = x-w+7*w16;
-         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
-         start = end;
-         end+=w16;
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
-
-         start = end;
-         end+=7*w16;
-         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
-         start = end;
-         end+=w16;
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
-
-         start = end;
-         end+=7*w16;
+         ULK_fixed_32 end = x-w+10*w16;
          SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
          SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
          start = end;
@@ -288,7 +272,15 @@ static void draw_segment(Segment *s)
          SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
          SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
          start = end;
-         end+=7*w16;
+         end+=10*w16;
+         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
+         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
+         start = end;
+         end+=w16;
+         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
+         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
+         start = end;
+         end+=10*w16;
          SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
          SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
 
