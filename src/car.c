@@ -22,9 +22,10 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "ULK_fixed.h"
 #include "config.h"
 #include "util.h"
-#include "mode.h"
 #include "sdl.h"
+#include "car.h"
 #include "player.h"
+#include "segment.h"
 #include "draw.h"
 //-------------------------------------
 
@@ -35,30 +36,32 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Variables
-int mode = 0;
+static Car_list *base_list_cars = NULL;
 //-------------------------------------
 
 //Function prototypes
-static void game_update();
 //-------------------------------------
 
 //Function implementations
 
-void modes_update()
+Car_list *car_list_new()
 {
-   switch(mode)
+   if(base_list_cars==NULL)
    {
-   case 0: //Title screen
-
-      break;
+      Car_list *l = malloc(sizeof(*l));
+      l->next = NULL;
+      return l;
    }
-   game_update();
+
+   Car_list *l = base_list_cars;
+   base_list_cars = l->next;
+   l->next = NULL;
+   return l;
 }
 
-static void game_update()
+void car_list_free(Car_list *l)
 {
-   player_update();
-
-   draw(player.px,player.pz,player.steer);
+   l->next = base_list_cars;
+   base_list_cars = l;
 }
 //-------------------------------------

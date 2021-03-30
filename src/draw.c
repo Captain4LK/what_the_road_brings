@@ -21,6 +21,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "config.h"
 #include "util.h"
 #include "sdl.h"
+#include "car.h"
 #include "segment.h"
 #include "draw.h"
 #include "player.h"
@@ -82,6 +83,15 @@ struct Texture_Rects texture_rects =
       {.x = 0, .y = 256, .w = 51, .h = 100},
       {.x = 51, .y = 256, .w = 32, .h = 16},
       {.x = 51, .y = 272, .w = 32, .h = 16},
+      {.x = 51, .y = 288, .w = 32, .h = 32},
+   },
+   .car_sprites = 
+   {
+      {
+         {.x = 180, .y = 0, .w = 90, .h = 60},
+         {.x = 360, .y = 0, .w = 90, .h = 60},
+         {.x = 540, .y = 0, .w = 90, .h = 60},
+      },
    },
 };
 
@@ -195,6 +205,20 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
          dst.x = ((float)s->p1.screen_x/65536.0f)+((float)CAM_DEPTH/(float)s->p1.camera_z)*((float)sp->pos/(float)65536.0f)*(XRES/4)-dst.w/2.0f;
 
          SDL_RenderCopyF(renderer,texture,&texture_rects.sprites[sp->index],&dst);
+      }
+      Car_list *l = s->cars;
+      while(l)
+      {
+         SDL_FRect dst;
+         int dir = (l->car.pos_x>player.px)*2;
+         dst.w = texture_rects.car_sprites[l->car.index][dir].w*((float)CAM_DEPTH/(float)s->p1.camera_z)*0.3f;
+         dst.h = texture_rects.car_sprites[l->car.index][dir].h*((float)CAM_DEPTH/(float)s->p1.camera_z)*0.3f;
+         dst.y = ((float)s->p1.screen_y/65536.0f)-dst.h;
+         dst.x = ((float)s->p1.screen_x/65536.0f)+((float)CAM_DEPTH/(float)s->p1.camera_z)*((float)l->car.pos_x/(float)65536.0f)*(XRES/4)-dst.w/2.0f;
+
+         SDL_RenderCopyF(renderer,texture,&texture_rects.car_sprites[l->car.index][dir],&dst);
+
+         l = l->next;
       }
    }
    SDL_RenderSetClipRect(renderer,NULL);

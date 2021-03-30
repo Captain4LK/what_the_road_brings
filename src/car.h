@@ -8,24 +8,24 @@ To the extent possible under law, the author(s) have dedicated all copyright and
 You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>. 
 */
 
-#ifndef _DRAW_H_
+#ifndef _CAR_H_
 
-#define _DRAW_H_
+#define _CAR_H_
 
-struct Texture_Rects
+typedef struct
 {
-   SDL_Rect road00;
-   SDL_Rect road01;
-   SDL_Rect road02;
-   SDL_Rect road03;
-   SDL_Rect car_player[2][9];
-   SDL_Rect backdrop[5];
-   SDL_Rect sprites[32];
-   SDL_Rect car_sprites[4][3];
-};
-extern struct Texture_Rects texture_rects;
+   ULK_fixed_32 pos_x;
+   ULK_fixed_32 z;
+   uint32_t index;
+}Car;
 
-void load_assets();
-void draw(ULK_fixed x, ULK_fixed z, int steer);
+typedef struct Car_list
+{
+   Car car;
+   struct Car_list *next;
+}Car_list;
+
+Car_list *car_list_new();
+void car_list_free(Car_list *l);
 
 #endif

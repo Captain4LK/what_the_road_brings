@@ -25,6 +25,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "mode.h"
 #include "sdl.h"
 #include "player.h"
+#include "car.h"
 #include "segment.h"
 #include "draw.h"
 //-------------------------------------
@@ -50,6 +51,7 @@ static int fullscreen = 0;
 //Function prototypes
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill);
 static void add_sprite(int seg, int index, ULK_fixed_32 pos);
+static void add_car(int seg, int index, ULK_fixed_32 pos);
 static void main_loop();
 //-------------------------------------
 
@@ -90,11 +92,13 @@ int main(int argc, char **arg)
       if(rand()%10>6)
          add_sprite(i,0,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1))*(rand()%6+1));
       else
-         add_sprite(i,1+rand()%2,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1))*(rand()%6+1));
+         add_sprite(i,1+rand()%3,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1))*(rand()%6+1));
       if(rand()%10>6)
          add_sprite(i,0,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(1))*(rand()%6+1))));
       else
-         add_sprite(i,1+rand()%2,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(1))*(rand()%6+1))));
+         add_sprite(i,1+rand()%3,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(1))*(rand()%6+1))));
+      if(rand()%20==0)
+         add_car(i,0,(1-rand()%3)*ULK_fixed_32_from_int(1)/2);
    }
 
 #ifndef __EMSCRIPTEN__
@@ -116,7 +120,7 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
 
    for(int i = 0;i<start;i++)
    {
-       Segment s;
+      Segment s;
       memset(&s,0,sizeof(s));
       s.p0.z = segments.used*SEGLEN;
       ULK_fixed_32 ly = segments.used?dyn_array_element(Segment,&segments,segments.used-1).p1.y:0;
@@ -167,6 +171,17 @@ static void add_sprite(int seg, int index, ULK_fixed_32 pos)
    sp.index = index;
    sp.pos = pos;
    dyn_array_add(Sprite,&dyn_array_element(Segment,&segments,seg).sprites,2,sp);
+}
+
+static void add_car(int seg, int index, ULK_fixed_32 pos)
+{
+   Segment *segment = &dyn_array_element(Segment,&segments,seg);
+   Car_list *l = car_list_new();
+   l->car.pos_x = pos;
+   l->car.index = index;
+   l->car.z = ULK_fixed_32_from_int(0);
+   l->next = segment->cars;
+   segment->cars = l;
 }
 
 static void main_loop()

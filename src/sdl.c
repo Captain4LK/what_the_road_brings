@@ -104,7 +104,7 @@ void sdl_init()
    SDL_SetRenderDrawColor(renderer,0,0,0,0);
    SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
    SDL_RenderSetLogicalSize(renderer,320,240);
-   SDL_RenderSetIntegerScale(renderer,1);
+   //SDL_RenderSetIntegerScale(renderer,1);
    target = SDL_CreateTexture(renderer,SDL_PIXELFORMAT_RGBA8888,SDL_TEXTUREACCESS_TARGET,XRES,YRES);
    SDL_RendererInfo info;
    SDL_GetRendererInfo(renderer,&info);
