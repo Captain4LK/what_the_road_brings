@@ -80,7 +80,8 @@ struct Texture_Rects texture_rects =
    .sprites = 
    {
       {.x = 0, .y = 256, .w = 51, .h = 100},
-      {.x = 51, .y = 256, .w = 37, .h = 46},
+      {.x = 51, .y = 256, .w = 32, .h = 16},
+      {.x = 51, .y = 272, .w = 32, .h = 16},
    },
 };
 

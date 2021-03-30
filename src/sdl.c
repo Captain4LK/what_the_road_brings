@@ -108,12 +108,11 @@ void sdl_init()
    target = SDL_CreateTexture(renderer,SDL_PIXELFORMAT_RGBA8888,SDL_TEXTUREACCESS_TARGET,XRES,YRES);
    SDL_RendererInfo info;
    SDL_GetRendererInfo(renderer,&info);
-   printf("%d\n",info.flags&SDL_RENDERER_TARGETTEXTURE);
+   if(!(info.flags&SDL_RENDERER_TARGETTEXTURE))
+      puts("WARNING: render to texture not supported!");
    SDL_SetHint("SDL_HINT_RENDER_SCALE_QUALITY","0");
 
-   //update_viewport();
-
-    key_map[0x00] = KEY_NONE;
+   key_map[0x00] = KEY_NONE;
    key_map[SDL_SCANCODE_A] = KEY_A;
    key_map[SDL_SCANCODE_B] = KEY_B;
    key_map[SDL_SCANCODE_C] = KEY_C;
@@ -258,7 +257,6 @@ void sdl_update()
 #ifdef __EMSCRIPTEN__
        emscripten_cancel_main_loop();
 #endif
-
          break;
       case SDL_KEYDOWN:
          if(event.key.state==SDL_PRESSED)

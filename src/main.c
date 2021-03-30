@@ -82,15 +82,19 @@ int main(int argc, char **arg)
    add_road(4,4,160,0,-ULK_fixed_32_from_int(2000));
    add_road(0,0,16,0,0);
 
-   printf("%ld\n",sizeof(Segment)*segments.used);
+   printf("Segment memory: %ld bytes\n",sizeof(Segment)*segments.used);
 
    srand(time(NULL));
    for(int i = 0;i<segments.used;i++)
    {
       if(rand()%10>6)
          add_sprite(i,0,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1))*(rand()%6+1));
+      else
+         add_sprite(i,1+rand()%2,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1))*(rand()%6+1));
       if(rand()%10>6)
          add_sprite(i,0,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(1))*(rand()%6+1))));
+      else
+         add_sprite(i,1+rand()%2,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(1))*(rand()%6+1))));
    }
 
 #ifndef __EMSCRIPTEN__
