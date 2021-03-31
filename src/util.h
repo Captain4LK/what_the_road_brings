@@ -36,4 +36,7 @@ typedef struct
    (((type *)((dyn_array *)(array)->data))[index])
 //-------------------------------------
 
+#define interpolate(a,b,t) \
+   ((1-(t))*(a)+(t)*(b))
+
 #endif

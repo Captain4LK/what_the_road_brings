@@ -15,8 +15,10 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 typedef struct
 {
    ULK_fixed_32 pos_x;
-   ULK_fixed_32 z;
-   uint32_t index;
+   ULK_fixed z;
+   uint16_t id;
+   uint8_t index;
+   uint8_t counter;
 }Car;
 
 typedef struct Car_list
@@ -27,5 +29,8 @@ typedef struct Car_list
 
 Car_list *car_list_new();
 void car_list_free(Car_list *l);
+Car car_list_remove(Car_list **l, uint16_t id);
+void cars_update();
+uint16_t cars_id_counter();
 
 #endif

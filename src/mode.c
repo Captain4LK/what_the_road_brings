@@ -25,6 +25,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "mode.h"
 #include "sdl.h"
 #include "player.h"
+#include "car.h"
 #include "draw.h"
 //-------------------------------------
 
@@ -58,6 +59,7 @@ void modes_update()
 static void game_update()
 {
    player_update();
+   cars_update();
 
    draw(player.px,player.pz,player.steer);
 }

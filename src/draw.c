@@ -211,10 +211,11 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       {
          SDL_FRect dst;
          int dir = (l->car.pos_x>player.px)*2;
-         dst.w = texture_rects.car_sprites[l->car.index][dir].w*((float)CAM_DEPTH/(float)s->p1.camera_z)*0.3f;
-         dst.h = texture_rects.car_sprites[l->car.index][dir].h*((float)CAM_DEPTH/(float)s->p1.camera_z)*0.3f;
-         dst.y = ((float)s->p1.screen_y/65536.0f)-dst.h;
-         dst.x = ((float)s->p1.screen_x/65536.0f)+((float)CAM_DEPTH/(float)s->p1.camera_z)*((float)l->car.pos_x/(float)65536.0f)*(XRES/4)-dst.w/2.0f;
+         float scale = interpolate(((float)CAM_DEPTH/(float)s->p0.camera_z),((float)CAM_DEPTH/(float)s->p1.camera_z),((float)l->car.z/(float)SEGLEN));
+         dst.w = texture_rects.car_sprites[l->car.index][dir].w*scale*0.35f;
+         dst.h = texture_rects.car_sprites[l->car.index][dir].h*scale*0.35f;
+         dst.y = interpolate(((float)s->p0.screen_y/65536.0f),((float)s->p1.screen_y/65536.0f),((float)l->car.z/(float)SEGLEN))-dst.h;
+         dst.x = interpolate(((float)s->p0.screen_x/65536.0f),((float)s->p1.screen_x/65536.0f),((float)l->car.z/(float)SEGLEN))+scale*((float)l->car.pos_x/(float)65536.0f)*(XRES/4)-dst.w/2.0f;
 
          SDL_RenderCopyF(renderer,texture,&texture_rects.car_sprites[l->car.index][dir],&dst);
 
