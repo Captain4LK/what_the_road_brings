@@ -120,9 +120,10 @@ void cars_update()
                   {
                      int dir = 0;
                      if(player.px>ULK_fixed_32_from_int(1)/2) dir = -1;
-                     else if(player.px<ULK_fixed_32_from_int(1)/2) dir = 1;
+                     else if(player.px<-ULK_fixed_32_from_int(1)/2) dir = 1;
                      else dir = (l->car.pos_x>player.px)?1:-1;
-                     l->car.pos_x+=ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(dir),ULK_fixed_32_from_int(j)),ULK_fixed_32_div((l->car.speed-player.vz)<<8,MAX_SPEED<<8));//ULK_fixed_32_div(l->car.speed<<8,CAR_MAX_SPEED<<8)*dir*2*dt;
+                     //l->car.pos_x+=ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(dir),ULK_fixed_32_from_int(j)),ULK_fixed_32_div((l->car.speed-player.vz)<<8,MAX_SPEED<<8));//ULK_fixed_32_div(l->car.speed<<8,CAR_MAX_SPEED<<8)*dir*2*dt;
+                     l->car.pos_x+=ULK_fixed_32_div(l->car.speed<<8,CAR_MAX_SPEED<<8)*dir*dt*2;
 
                      break;
                   }
@@ -135,7 +136,7 @@ void cars_update()
                      {
                         int dir = 0;
                         if(cl->car.pos_x>ULK_fixed_32_from_int(1)/2) dir = -1;
-                        else if(cl->car.pos_x<ULK_fixed_32_from_int(1)/2) dir = 1;
+                        else if(cl->car.pos_x<-ULK_fixed_32_from_int(1)/2) dir = 1;
                         else dir = (l->car.pos_x>cl->car.pos_x)?1:-1;
                         //l->car.pos_x+=ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(dir),ULK_fixed_32_from_int(j)),((-l->car.speed+cl->car.speed)<<8))*dt;
                         l->car.pos_x+=ULK_fixed_32_div(l->car.speed<<8,CAR_MAX_SPEED<<8)*dir*dt;
