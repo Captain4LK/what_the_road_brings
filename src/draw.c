@@ -148,10 +148,9 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    int i = 0;
    int is = 0;
    ULK_fixed_32 max_y = ULK_fixed_32_from_int(YRES);
-   Segment *base_player = segment_list_get_pos(&segments,z+ULK_fixed_from_int(64),&i);
    Segment *base = segment_list_get_pos(&segments,z,&i);
    if(!player.stopped)
-      parallax_scroll(base_player->curve);
+      parallax_scroll(segment_player->curve);
    int max = i+RENDER_DISTANCE;
    is = i;
    
@@ -159,11 +158,11 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    ULK_fixed_32 ppos = ULK_fixed_32_div(((z+ULK_fixed_from_int(64))%SEGLEN)<<8,SEGLEN<<8);
    ULK_fixed_32 cdx = -(ULK_fixed_32_mul(base->curve,pos));
    ULK_fixed_32 cx = -cdx;
-   ULK_fixed_32 py = base_player->p0.y+ULK_fixed_32_mul(base_player->p1.y-base_player->p0.y,ppos);
+   ULK_fixed_32 py = segment_player->p0.y+ULK_fixed_32_mul(segment_player->p1.y-segment_player->p0.y,ppos);
 
    //Draw road segments
    Point cache;
-   project_point(&base->p0,(x*XRES/4)-cx-cdx,py+CAM_HEIGHT,z-((is%segments.used<is)?segments.used*SEGLEN:0),CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
+   project_point(&base->p0,(x*ROAD_WIDTH)-cx-cdx,py+CAM_HEIGHT,z-(((is%segments.used)<is)?segments.used*SEGLEN:0),CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
    cache = base->p0;
    for(;i<max;i++)
    {
@@ -171,7 +170,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       s->clip_y = max_y;
       int looped = (i%segments.used)<is?segments.used*SEGLEN:0;
       s->p0 = cache;
-      project_point(&s->p1,(x*XRES/4)-cx-cdx,py+CAM_HEIGHT,z-looped,CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
+      project_point(&s->p1,(x*ROAD_WIDTH)-cx-cdx,py+CAM_HEIGHT,z-looped,CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
       cache = s->p1;
       cx+=cdx;
       cdx+=s->curve;
@@ -193,41 +192,49 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    for(i = max-1;i>is;i--)
    {
       Segment *s = segment_list_get(&segments,i);
+      SDL_FRect dst;
       SDL_RenderSetClipRect(renderer,&((SDL_Rect){0,0,XRES,ULK_fixed_32_to_int(ULK_fixed_32_floor(s->clip_y))}));
+      float scale_0 = (float)CAM_DEPTH/(float)(s->p0.camera_z<<8);
+      float scale_1 = (float)CAM_DEPTH/(float)(s->p1.camera_z<<8);
 
       for(int j = 0;j<s->sprites.used;j++)
       {
          Sprite *sp = &dyn_array_element(Sprite,&s->sprites,j);
-         SDL_FRect dst;
-         dst.w = texture_rects.sprites[sp->index].w*((float)CAM_DEPTH/(float)s->p1.camera_z);
-         dst.h = texture_rects.sprites[sp->index].h*((float)CAM_DEPTH/(float)s->p1.camera_z);
-         dst.y = ((float)s->p1.screen_y/65536.0f)-dst.h;
-         dst.x = ((float)s->p1.screen_x/65536.0f)+((float)CAM_DEPTH/(float)s->p1.camera_z)*((float)sp->pos/(float)65536.0f)*(XRES/4)-dst.w/2.0f;
+         dst.w = (float)texture_rects.sprites[sp->index].w*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*1.5f;
+         dst.h = (float)texture_rects.sprites[sp->index].h*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*1.5f;
+         dst.x = (s->p1.screen_x/65536.0f)+(scale_1*(sp->pos/65536.0f)*ROAD_WIDTH*XRES/2)-(sp->pos<0?dst.w:0);
+         dst.y = (s->p1.screen_y/65536.0f)-dst.h;
 
          SDL_RenderCopyF(renderer,texture,&texture_rects.sprites[sp->index],&dst);
       }
       Car_list *l = s->cars;
       while(l)
       {
-         SDL_FRect dst;
          int dir = (l->car.pos_x>player.px)*2;
-         float scale = interpolate(((float)CAM_DEPTH/(float)s->p0.camera_z),((float)CAM_DEPTH/(float)s->p1.camera_z),((float)l->car.z/(float)SEGLEN));
-         dst.w = texture_rects.car_sprites[l->car.index][dir].w*scale*0.35f;
-         dst.h = texture_rects.car_sprites[l->car.index][dir].h*scale*0.35f;
-         dst.y = interpolate(((float)s->p0.screen_y/65536.0f),((float)s->p1.screen_y/65536.0f),((float)l->car.z/(float)SEGLEN))-dst.h;
-         dst.x = interpolate(((float)s->p0.screen_x/65536.0f),((float)s->p1.screen_x/65536.0f),((float)l->car.z/(float)SEGLEN))+scale*((float)l->car.pos_x/(float)65536.0f)*(XRES/4)-dst.w/2.0f;
+         float t = (float)(l->car.z%SEGLEN)/(float)SEGLEN;
+         float sc = interpolate(scale_0,scale_1,t);
+         
+         dst.w = (float)texture_rects.car_sprites[l->car.index][dir].w*sc*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*0.5;
+         dst.h = (float)texture_rects.car_sprites[l->car.index][dir].h*sc*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*0.5;
+         dst.x = interpolate(s->p0.screen_x/65536.0f,s->p1.screen_x/65536.0f,t)+(sc*(l->car.pos_x/65536.0f)*ROAD_WIDTH*XRES/2)-dst.w/2;
+         dst.y = interpolate(s->p0.screen_y/65536.0f,s->p1.screen_y/65536.0f,t)-dst.h;
 
          SDL_RenderCopyF(renderer,texture,&texture_rects.car_sprites[l->car.index][dir],&dst);
 
          l = l->next;
       }
-   }
-   SDL_RenderSetClipRect(renderer,NULL);
 
-   if(base_player->p1.y-base_player->p0.y>ULK_fixed_32_from_int(1))
-      SDL_RenderCopy(renderer,texture,&texture_rects.car_player[0][steer+4],&((SDL_Rect){.x = 115, .y = 170, .w = 90, .h = 60}));
-   else
-      SDL_RenderCopy(renderer,texture,&texture_rects.car_player[0][steer+4],&((SDL_Rect){.x = 115, .y = 170, .w = 90, .h = 60}));
+      if(s==segment_player)
+      {
+         SDL_RenderSetClipRect(renderer,NULL);
+         if(segment_player->p1.y-segment_player->p0.y>ULK_fixed_32_from_int(1))
+            SDL_RenderCopy(renderer,texture,&texture_rects.car_player[0][steer+4],&((SDL_Rect){.x = 115, .y = 170, .w = 90, .h = 60}));
+         else
+            SDL_RenderCopy(renderer,texture,&texture_rects.car_player[0][steer+4],&((SDL_Rect){.x = 115, .y = 170, .w = 90, .h = 60}));
+      }
+   }
+
+   SDL_RenderSetClipRect(renderer,NULL);
 }
 
 static void project_point(Point *p, ULK_fixed_32 cam_x, ULK_fixed_32 cam_y, ULK_fixed cam_z, ULK_fixed_32 cam_depth, int width, int height, int road_width)

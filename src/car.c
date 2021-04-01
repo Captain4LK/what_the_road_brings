@@ -106,10 +106,61 @@ void cars_update()
          if(l->car.counter!=car_update_counter)
          {
             l->car.counter++;
-            l->car.z+=CAR_MAX_SPEED*dt;
+
+            //Steering 
+            //TODO: skip if far away from player
+            int j;
+            for(j = 1;j<16;j++)
+            {
+               Segment *sl = segment_list_get(&segments,j+i);
+               //Steer arround player
+               //Only when faster than player
+               if(sl==segment_player&&l->car.speed>player.vz&&overlap(player.px/65536.0f,texture_rects.car_player[0][0].w*SPRITE_SCALE,l->car.pos_x/65536.0f,texture_rects.car_sprites[l->car.index][0].w*SPRITE_SCALE,1.2f)) //Pointer comparison...
+               {
+                  int dir = 0;
+                  if(player.px>ULK_fixed_32_from_int(1)/2) dir = -1;
+                  else if(player.px<ULK_fixed_32_from_int(1)/2) dir = 1;
+                  else dir = (l->car.pos_x>player.px)?1:-1;
+                  l->car.pos_x+=ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(dir),ULK_fixed_32_from_int(j)),ULK_fixed_32_div((l->car.speed-player.vz)<<8,MAX_SPEED<<8));//ULK_fixed_32_div(l->car.speed<<8,CAR_MAX_SPEED<<8)*dir*2*dt;
+
+                  break;
+               }
+               
+               Car_list *cl = sl->cars;
+               int end = 0;
+               while(cl)
+               {
+                  if(l->car.speed>=cl->car.speed&&overlap(cl->car.pos_x/65536.0f,texture_rects.car_sprites[cl->car.index][0].w*SPRITE_SCALE,l->car.pos_x/65536.0f,texture_rects.car_sprites[l->car.index][0].w*SPRITE_SCALE,0.8f))
+                  {
+                     int dir = 0;
+                     if(cl->car.pos_x>ULK_fixed_32_from_int(1)/2) dir = -1;
+                     else if(cl->car.pos_x<ULK_fixed_32_from_int(1)/2) dir = 1;
+                     else dir = (l->car.pos_x>cl->car.pos_x)?1:-1;
+                     //l->car.pos_x+=ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(dir),ULK_fixed_32_from_int(j)),((-l->car.speed+cl->car.speed)<<8))*dt;
+                     l->car.pos_x+=ULK_fixed_32_div(l->car.speed<<8,CAR_MAX_SPEED<<8)*dir*dt;
+                     end = 1;
+
+                     break;
+                  }
+
+                  cl = cl->next;
+               }
+               if(end)
+                  break;
+            }
+            if(j==16) //Nothing found
+            {
+               if(l->car.pos_x>(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(4)/10))
+                  l->car.pos_x-=2*ULK_fixed_32_div(l->car.speed,CAR_MAX_SPEED)*dt;
+               else if(l->car.pos_x<-(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(4)/10))
+                  l->car.pos_x+=2*ULK_fixed_32_div(l->car.speed,CAR_MAX_SPEED)*dt;
+            }
+
+            //Update z position/segment
+            l->car.z+=l->car.speed*dt;
             if(l->car.z>=SEGLEN)
             {
-               l->car.z-=SEGLEN;
+               l->car.z = l->car.z%SEGLEN;
                Car car = car_list_remove(&s->cars,l->car.id);                
                Segment *n = segment_list_get(&segments,i+1);
                Car_list *cn = car_list_new();

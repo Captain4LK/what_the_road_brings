@@ -180,10 +180,11 @@ static void add_car(int seg, int index, ULK_fixed_32 pos)
    Car_list *l = car_list_new();
    l->car.pos_x = pos;
    l->car.index = index;
-   l->car.z = ULK_fixed_from_int(0);
+   l->car.z = ULK_fixed_from_int(1)+1;
    l->next = segment->cars;
    l->car.counter = 0;
    l->car.id = cars_id_counter();
+   l->car.speed = ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED);
    segment->cars = l;
 }
 

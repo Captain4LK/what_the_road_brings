@@ -39,4 +39,7 @@ typedef struct
 #define interpolate(a,b,t) \
    ((1-(t))*(a)+(t)*(b))
 
+#define overlap(xa,wa,xb,wb,p) \
+   (!((((xa)+(wa)*((p)/2.0))<((xb)-(wb)*((p)/2.0)))||(((xa)-(wa)*((p)/2.0))>((xb)+(wb)*((p)/2.0)))))
+
 #endif

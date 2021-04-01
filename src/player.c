@@ -55,18 +55,29 @@ void player_update()
    //Collision
    SDL_SetRenderDrawColor(renderer,0,0,0,255);
    int i;
-   Segment *bp = segment_list_get_pos(&segments,player.pz+ULK_fixed_from_int(64),&i);
-   for(int j = 0;j<bp->sprites.used;j++)
+   segment_player = segment_list_get_pos(&segments,player.pz+ULK_fixed_from_int(64),&i);
+   for(int j = 0;j<segment_player->sprites.used;j++)
    {
-      Sprite *sp = &dyn_array_element(Sprite,&bp->sprites,j);
-      SDL_Rect dst;
-      dst.w = texture_rects.sprites[sp->index].w*((float)CAM_DEPTH/(float)bp->p1.camera_z);
-      dst.x = ((float)bp->p1.screen_x/65536.0f)+((float)CAM_DEPTH/(float)bp->p1.camera_z)*((float)sp->pos/(float)65536.0f)*(XRES/4)-dst.w/2.0f;
-      if((145+texture_rects.car_player[0][0].w-60)>dst.x&&145<dst.x+dst.w)
+      Sprite *sp = &dyn_array_element(Sprite,&segment_player->sprites,j);
+      float width_0 = (float)texture_rects.car_player[0][0].w*SPRITE_SCALE;
+      float width_1 = (float)texture_rects.sprites[sp->index].w*SPRITE_SCALE;
+
+      if(overlap((float)player.px/65536.0f,width_0,(float)(sp->pos/65536.0f)+(sp->pos>0?1:-1)*(width_1/2.0f),width_1,0.5))
          player.stopped = 1;
    }
+   Car_list *cl = segment_player->cars;
+   while(cl)
+   {
+      //if(player.vz>cl->car.speed&&(145+texture_rects.car_player[0][0].w-60)>cl->car.pos.x&&145<cl->car.pos.x+cl->car.pos.w)
+      //{
+         //player.vz = ULK_fixed_mul(cl->car.speed,ULK_fixed_div(cl->car.speed,player.vz));
+      //}
+
+      cl = cl->next;
+   }
+
    if(!player.stopped)
-      player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(bp->curve,ULK_fixed_32_from_int(2)))*dt;
+      player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(segment_player->curve,ULK_fixed_32_from_int(2)))*dt;
 
    frame++;
    if(sdl_key_down(KEY_UP)||sdl_gamepad_down(0,PAD_B))
@@ -112,5 +123,6 @@ void player_update()
    }
 
    player.pz = player.pz%(segments.used*SEGLEN);
+   segment_player = segment_list_get_pos(&segments,player.pz+ULK_fixed_from_int(64),&i);
 }
 //-------------------------------------

@@ -16,6 +16,7 @@ typedef struct
 {
    ULK_fixed_32 pos_x;
    ULK_fixed z;
+   ULK_fixed speed;
    uint16_t id;
    uint8_t index;
    uint8_t counter;

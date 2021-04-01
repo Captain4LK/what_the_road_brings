@@ -43,6 +43,7 @@ typedef struct
 }Segment;
 
 extern dyn_array segments;
+extern Segment *segment_player;
 
 Segment *segment_list_get_pos(dyn_array *list, ULK_fixed pos, int *index);
 Segment *segment_list_get(dyn_array *list, int index);

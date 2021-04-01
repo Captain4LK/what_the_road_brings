@@ -33,6 +33,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 //Variables
 dyn_array segments;
+Segment *segment_player = NULL;
 //-------------------------------------
 
 //Function prototypes
