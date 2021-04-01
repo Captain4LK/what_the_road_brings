@@ -68,10 +68,10 @@ void player_update()
    Car_list *cl = segment_player->cars;
    while(cl)
    {
-      //if(player.vz>cl->car.speed&&(145+texture_rects.car_player[0][0].w-60)>cl->car.pos.x&&145<cl->car.pos.x+cl->car.pos.w)
-      //{
-         //player.vz = ULK_fixed_mul(cl->car.speed,ULK_fixed_div(cl->car.speed,player.vz));
-      //}
+      if(player.vz>cl->car.speed&&overlap((float)player.px/65536.0f,(float)texture_rects.car_player[0][0].w*SPRITE_SCALE,(float)cl->car.pos_x/65536.0f,(float)texture_rects.car_sprites[cl->car.index][0].w*SPRITE_SCALE,0.3f))
+      {
+         player.vz = ULK_fixed_mul(cl->car.speed,ULK_fixed_div(cl->car.speed,player.vz));
+      }
 
       cl = cl->next;
    }

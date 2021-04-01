@@ -193,9 +193,9 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    {
       Segment *s = segment_list_get(&segments,i);
       SDL_FRect dst;
-      SDL_RenderSetClipRect(renderer,&((SDL_Rect){0,0,XRES,ULK_fixed_32_to_int(ULK_fixed_32_floor(s->clip_y))}));
       float scale_0 = (float)CAM_DEPTH/(float)(s->p0.camera_z<<8);
       float scale_1 = (float)CAM_DEPTH/(float)(s->p1.camera_z<<8);
+      SDL_RenderSetClipRect(renderer,&((SDL_Rect){0,0,XRES,ULK_fixed_32_to_int(ULK_fixed_32_floor(s->clip_y))}));
 
       for(int j = 0;j<s->sprites.used;j++)
       {
@@ -207,6 +207,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
 
          SDL_RenderCopyF(renderer,texture,&texture_rects.sprites[sp->index],&dst);
       }
+
       Car_list *l = s->cars;
       while(l)
       {
