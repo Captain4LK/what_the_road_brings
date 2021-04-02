@@ -23,6 +23,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define DECEL ULK_fixed_div(-MAX_SPEED,ULK_fixed_from_int(10))
 #define RENDER_DISTANCE 64
 #define CAM_HEIGHT ULK_fixed_32_from_int(64)
+#define PLAYER_OFFSET (ULK_fixed_32_mul(CAM_HEIGHT,CAM_DEPTH)>>8)
 #define CAM_DEPTH 54991
 #define CAM_DEPTHF 0.83909963f
 

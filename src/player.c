@@ -55,7 +55,7 @@ void player_update()
    //Collision
    SDL_SetRenderDrawColor(renderer,0,0,0,255);
    int i;
-   segment_player = segment_list_get_pos(&segments,player.pz+ULK_fixed_from_int(64),&i);
+   segment_player = segment_list_get_pos(&segments,player.pz+PLAYER_OFFSET,&i);
    for(int j = 0;j<segment_player->sprites.used;j++)
    {
       Sprite *sp = &dyn_array_element(Sprite,&segment_player->sprites,j);

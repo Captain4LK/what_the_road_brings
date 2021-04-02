@@ -148,6 +148,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    int i = 0;
    int is = 0;
    ULK_fixed_32 max_y = ULK_fixed_32_from_int(YRES);
+   segment_player = segment_list_get_pos(&segments,player.pz+PLAYER_OFFSET,&i);
    Segment *base = segment_list_get_pos(&segments,z,&i);
    if(!player.stopped)
       parallax_scroll(segment_player->curve);
@@ -155,7 +156,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    is = i;
    
    ULK_fixed_32 pos = ULK_fixed_32_div((z%SEGLEN)<<8,SEGLEN<<8);
-   ULK_fixed_32 ppos = ULK_fixed_32_div(((z+ULK_fixed_from_int(64))%SEGLEN)<<8,SEGLEN<<8);
+   ULK_fixed_32 ppos = ULK_fixed_32_div(((z+PLAYER_OFFSET)%SEGLEN)<<8,SEGLEN<<8);
    ULK_fixed_32 cdx = -(ULK_fixed_32_mul(base->curve,pos));
    ULK_fixed_32 cx = -cdx;
    ULK_fixed_32 py = segment_player->p0.y+ULK_fixed_32_mul(segment_player->p1.y-segment_player->p0.y,ppos);
