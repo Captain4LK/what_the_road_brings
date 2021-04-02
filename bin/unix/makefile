@@ -1,8 +1,8 @@
 CC = gcc
-CFLAGS+=-lm -Wall
+CFLAGS+=-Wall -lraylib -lGL -lm -lpthread -lrt -ldl -lX11
 
-pseudo_3d_racer: main.o mode.o segment.o ULK_fixed.o car.o draw.o player.o sdl.o
-	gcc -o pseudo_3d_racer $^ -lm -lSDL2 -Wall
+pseudo_3d_racer: main.o mode.o segment.o ULK_fixed.o car.o draw.o player.o
+	gcc -o pseudo_3d_racer $^  $(CFLAGS)
 	chmod +x pseudo_3d_racer
 	mv pseudo_3d_racer ../
 
@@ -25,9 +25,6 @@ car.o: ../../src/car.c ../../src/car.h ../../src/draw.h ../../src/segment.h ../.
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 player.o: ../../src/player.c ../../src/player.h ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/draw.h ../../src/config.h
-	$(CC) -O3 -c $< $(CFLAGS) 
-
-sdl.o: ../../src/sdl.c ../../src/sdl.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 clean:

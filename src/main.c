@@ -10,9 +10,11 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 //External includes
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include <SDL2/SDL.h>
+#include <string.h>
+#include <raylib.h>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -24,7 +26,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "config.h"
 #include "util.h"
 #include "mode.h"
-#include "sdl.h"
 #include "player.h"
 #include "car.h"
 #include "segment.h"
@@ -60,8 +61,11 @@ static void main_loop();
 
 int main(int argc, char **arg)
 {
-   sdl_init();
+   SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+   InitWindow(XRES,YRES,"What the road brings");
+   SetTargetFPS(FPS);
    load_assets();
+   clear_texture = grass1;
 
    //Setup road
    dyn_array_init(Segment,&segments,128);
@@ -103,7 +107,7 @@ int main(int argc, char **arg)
    }
 
 #ifndef __EMSCRIPTEN__
-   while(sdl_running())
+   while(!WindowShouldClose())
       main_loop();
 #else
    emscripten_set_main_loop(main_loop,0,1);
@@ -190,24 +194,31 @@ static void add_car(int seg, int index, ULK_fixed_32 pos)
 
 static void main_loop()
 {
-   sdl_update();
+   //sdl_update();
 
-   if(sdl_key_pressed(KEY_M))
+   if(IsKeyPressed(KEY_M))
    {
       fullscreen = !fullscreen;
-      SDL_SetWindowFullscreen(sdl_window,fullscreen?SDL_WINDOW_FULLSCREEN_DESKTOP:0);
+
+      static int main_loop_owidth,main_loop_oheight;
+      static int main_loop_ox,main_loop_oy;
+      if(fullscreen)
+      {
+         main_loop_owidth = GetScreenWidth();
+         main_loop_oheight = GetScreenHeight();
+         main_loop_ox = GetWindowPosition().x;
+         main_loop_oy = GetWindowPosition().y;
+         SetWindowState(FLAG_WINDOW_UNDECORATED);
+         SetWindowSize(GetMonitorWidth(0),GetMonitorHeight(0));
+      }
+      else
+      {
+         ClearWindowState(FLAG_WINDOW_UNDECORATED);
+         SetWindowSize(main_loop_owidth,main_loop_oheight);
+         SetWindowPosition(main_loop_ox,main_loop_oy);
+      }
    }
 
-   SDL_SetRenderTarget(renderer,target);
-   SDL_SetRenderDrawColor(renderer,grass1.r,grass1.g,grass1.b,255);
-   SDL_RenderClear(renderer);
-
    modes_update();
-
-   SDL_SetRenderTarget(renderer,NULL);
-   SDL_SetRenderDrawColor(renderer,0,0,0,255);
-   SDL_RenderClear(renderer);
-   SDL_RenderCopy(renderer,target,NULL,NULL);
-   SDL_RenderPresent(renderer);
 }
 //-------------------------------------

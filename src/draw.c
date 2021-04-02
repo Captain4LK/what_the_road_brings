@@ -13,14 +13,14 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include <SDL2/SDL.h>
+#include <math.h>
+#include <raylib.h>
 //-------------------------------------
 
 //Internal includes
 #include "ULK_fixed.h"
 #include "config.h"
 #include "util.h"
-#include "sdl.h"
 #include "car.h"
 #include "segment.h"
 #include "draw.h"
@@ -39,75 +39,75 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Variables
-static int draw_mode = 0;
-static SDL_Texture *texture = NULL;
+Texture2D texture;
+RenderTexture2D texture_viewport;
 
 struct Texture_Rects texture_rects = 
 {
-   .road00 = {.x = 0,.y = 0,.w = 128,.h = 16},
-   .road01 = {.x = 0,.y = 16,.w = 128,.h = 16},
-   .road02 = {.x = 0,.y = 32,.w = 128,.h = 16},
-   .road03 = {.x = 0,.y = 48,.w = 128,.h = 16},
+   .road00 = {.x = 0,.y = 0,.width = 128,.height = 16},
+   .road01 = {.x = 0,.y = 16,.width = 128,.height = 16},
+   .road02 = {.x = 0,.y = 32,.width = 128,.height = 16},
+   .road03 = {.x = 0,.y = 48,.width = 128,.height = 16},
    .car_player = 
    {{
-      {.x = 0, .y = 0, .w = 90, .h = 60},
-      {.x = 90, .y = 0, .w = 90, .h = 60},
-      {.x = 180, .y = 0, .w = 90, .h = 60},
-      {.x = 270, .y = 0, .w = 90, .h = 60},
-      {.x = 360, .y = 0, .w = 90, .h = 60},
-      {.x = 450, .y = 0, .w = 90, .h = 60},
-      {.x = 540, .y = 0, .w = 90, .h = 60},
-      {.x = 630, .y = 0, .w = 90, .h = 60},
-      {.x = 720, .y = 0, .w = 90, .h = 60},
+      {.x = 0, .y = 0, .width = 90, .height = 60},
+      {.x = 90, .y = 0, .width = 90, .height = 60},
+      {.x = 180, .y = 0, .width = 90, .height = 60},
+      {.x = 270, .y = 0, .width = 90, .height = 60},
+      {.x = 360, .y = 0, .width = 90, .height = 60},
+      {.x = 450, .y = 0, .width = 90, .height = 60},
+      {.x = 540, .y = 0, .width = 90, .height = 60},
+      {.x = 630, .y = 0, .width = 90, .height = 60},
+      {.x = 720, .y = 0, .width = 90, .height = 60},
     },{
-      {.x = 0, .y = 48, .w = 90, .h = 48},
-      {.x = 90, .y = 48, .w = 90, .h = 48},
-      {.x = 180, .y = 48, .w = 90, .h = 48},
-      {.x = 270, .y = 48, .w = 90, .h = 48},
-      {.x = 360, .y = 48, .w = 90, .h = 48},
-      {.x = 450, .y = 48, .w = 90, .h = 48},
-      {.x = 540, .y = 48, .w = 90, .h = 48},
-      {.x = 630, .y = 48, .w = 90, .h = 48},
-      {.x = 720, .y = 48, .w = 90, .h = 48},
+      {.x = 0, .y = 48, .width = 90, .height = 48},
+      {.x = 90, .y = 48, .width = 90, .height = 48},
+      {.x = 180, .y = 48, .width = 90, .height = 48},
+      {.x = 270, .y = 48, .width = 90, .height = 48},
+      {.x = 360, .y = 48, .width = 90, .height = 48},
+      {.x = 450, .y = 48, .width = 90, .height = 48},
+      {.x = 540, .y = 48, .width = 90, .height = 48},
+      {.x = 630, .y = 48, .width = 90, .height = 48},
+      {.x = 720, .y = 48, .width = 90, .height = 48},
    }},
    .backdrop = 
    {
-      {.x = 0, .y = 96, .w = 320, .h = 160},
-      {.x = 320, .y = 96, .w = 512, .h = 160},
-      {.x = 832, .y = 96, .w = 512, .h = 160},
-      //{.x = 1136, .y = 96, .w = 544, .h = 160},
-      //{.x = 1680, .y = 96, .w = 544, .h = 160},
+      {.x = 0, .y = 96, .width = 320, .height = 160},
+      {.x = 320, .y = 96, .width = 512, .height = 160},
+      {.x = 832, .y = 96, .width = 512, .height = 160},
+      //{.x = 1136, .y = 96, .w = 544, .height = 160},
+      //{.x = 1680, .y = 96, .w = 544, .height = 160},
    },
    .sprites = 
    {
-      {.x = 0, .y = 256, .w = 51, .h = 100},
-      {.x = 51, .y = 256, .w = 32, .h = 16},
-      {.x = 51, .y = 272, .w = 32, .h = 16},
-      {.x = 51, .y = 288, .w = 32, .h = 32},
+      {.x = 0, .y = 256, .width = 51, .height = 100},
+      {.x = 51, .y = 256, .width = 32, .height = 16},
+      {.x = 51, .y = 272, .width = 32, .height = 16},
+      {.x = 51, .y = 288, .width = 32, .height = 32},
    },
    .car_sprites = 
    {
       {
-         {.x = 180, .y = 0, .w = 90, .h = 60},
-         {.x = 360, .y = 0, .w = 90, .h = 60},
-         {.x = 540, .y = 0, .w = 90, .h = 60},
+         {.x = 180, .y = 0, .width = 90, .height = 60},
+         {.x = 360, .y = 0, .width = 90, .height = 60},
+         {.x = 540, .y = 0, .width = 90, .height = 60},
       },
    },
 };
 
 static struct
 {
-   SDL_FRect layers[5][2];
+   Rectangle layers[5][2];
    float speed[5];
 }parallax_data = 
 {
    .layers = 
    {
-      { {.x = 0, .y = 0, .w = 320, .h = 160}, {.x = 0, .y = 0, .w = 0, .h = 0 } },
-      { {.x = 0, .y = 0, .w = 512, .h = 160}, {.x = 512, .y = 0, .w = 512, .h = 160 } },
-      { {.x = 0, .y = 0, .w = 512, .h = 160}, {.x = 512, .y = 0, .w = 512, .h = 160 } },
-      //{ {.x = 0, .y = -20, .w = 544, .h = 160}, {.x = 544, .y = -20, .w = 544, .h = 160 } },
-      //{ {.x = 0, .y = -20, .w = 544, .h = 160}, {.x = 544, .y = -20, .w = 544, .h = 160 } },
+      { {.x = 0, .y = 0, .width = 320, .height = 160}, {.x = 0, .y = 0, .width = 0, .height = 0 } },
+      { {.x = 0, .y = 0, .width = 512, .height = 160}, {.x = 512, .y = 0, .width = 512, .height = 160 } },
+      { {.x = 0, .y = 0, .width = 512, .height = 160}, {.x = 512, .y = 0, .width = 512, .height = 160 } },
+      //{ {.x = 0, .y = -20, .w = 544, .height = 160}, {.x = 544, .y = -20, .w = 544, .height = 160 } },
+      //{ {.x = 0, .y = -20, .w = 544, .height = 160}, {.x = 544, .y = -20, .w = 544, .height = 160 } },
    },
    .speed = 
    {
@@ -119,7 +119,6 @@ static struct
 //Function prototypes
 static void project_point(Point *p, ULK_fixed cam_x, ULK_fixed cam_y, ULK_fixed cam_z, ULK_fixed cam_depth, int width, int height, int road_width);
 static void draw_segment(Segment *s);
-static void draw_segment_frame(Segment *s);
 static void parallax_scroll(ULK_fixed_32 curve);
 //-------------------------------------
 
@@ -127,22 +126,16 @@ static void parallax_scroll(ULK_fixed_32 curve);
 
 void load_assets()
 {
-   texture = sdl_load_image("assets/textures.png");
+   texture = LoadTexture("assets/textures.png");
+   texture_viewport = LoadRenderTexture(XRES,YRES);
 }
 
 void draw(ULK_fixed x, ULK_fixed z, int steer)
 {
    for(int i = 0;i<5;i++)
    {
-      SDL_RenderCopyF(renderer,texture,&texture_rects.backdrop[i],&parallax_data.layers[i][0]);
-      SDL_RenderCopyF(renderer,texture,&texture_rects.backdrop[i],&parallax_data.layers[i][1]);
-   }
-
-   if(sdl_key_pressed(KEY_Y))
-   {
-      draw_mode++;
-      if(draw_mode==2)
-         draw_mode = 0;
+      DrawTextureRec(texture,texture_rects.backdrop[i],(Vector2){parallax_data.layers[i][0].x,parallax_data.layers[i][0].y},WHITE);
+      DrawTextureRec(texture,texture_rects.backdrop[i],(Vector2){parallax_data.layers[i][1].x,parallax_data.layers[i][1].y},WHITE);
    }
 
    int i = 0;
@@ -179,12 +172,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
          continue;
       if(ULK_fixed_32_floor(s->p0.screen_y)<ULK_fixed_32_ceil(s->p1.screen_y))
          continue;
-
-      switch(draw_mode)
-      {
-      case 0: draw_segment(s); break;
-      case 1: draw_segment_frame(s); break;
-      }
+      draw_segment(s);
 
       max_y = s->p1.screen_y;
    }
@@ -193,20 +181,26 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    for(i = max-1;i>is;i--)
    {
       Segment *s = segment_list_get(&segments,i);
-      SDL_FRect dst;
+      Rectangle dst;
       float scale_0 = (float)CAM_DEPTH/(float)(s->p0.camera_z<<8);
       float scale_1 = (float)CAM_DEPTH/(float)(s->p1.camera_z<<8);
-      SDL_RenderSetClipRect(renderer,&((SDL_Rect){0,0,XRES,ULK_fixed_32_to_int(ULK_fixed_32_floor(s->clip_y))}));
 
       for(int j = 0;j<s->sprites.used;j++)
       {
          Sprite *sp = &dyn_array_element(Sprite,&s->sprites,j);
-         dst.w = (float)texture_rects.sprites[sp->index].w*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*1.5f;
-         dst.h = (float)texture_rects.sprites[sp->index].h*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*1.5f;
-         dst.x = (s->p1.screen_x/65536.0f)+(scale_1*(sp->pos/65536.0f)*ROAD_WIDTH*XRES/2)-(sp->pos<0?dst.w:0);
-         dst.y = (s->p1.screen_y/65536.0f)-dst.h;
+         dst.width = (float)texture_rects.sprites[sp->index].width*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*1.5f;
+         dst.height = (float)texture_rects.sprites[sp->index].height*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*1.5f;
+         dst.x = (s->p1.screen_x/65536.0f)+(scale_1*(sp->pos/65536.0f)*ROAD_WIDTH*XRES/2)-(sp->pos<0?dst.width:0);
+         dst.y = (s->p1.screen_y/65536.0f)-dst.height+1;
 
-         SDL_RenderCopyF(renderer,texture,&texture_rects.sprites[sp->index],&dst);
+         float clip = MAX(dst.y+dst.height-(s->clip_y/65536.0f),0.0f);
+         if(clip<dst.height)
+         {
+            Rectangle src = texture_rects.sprites[sp->index];
+            src.height-=src.height*clip/dst.height;
+            dst.height-=clip;
+            DrawTexturePro(texture,src,dst,(Vector2){0,0},0.0f,WHITE);
+         }
       }
 
       Car_list *l = s->cars;
@@ -216,27 +210,31 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
          float t = (float)(l->car.z%SEGLEN)/(float)SEGLEN;
          float sc = interpolate(scale_0,scale_1,t);
          
-         dst.w = (float)texture_rects.car_sprites[l->car.index][dir].w*sc*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*0.5;
-         dst.h = (float)texture_rects.car_sprites[l->car.index][dir].h*sc*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*0.5;
-         dst.x = interpolate(s->p0.screen_x/65536.0f,s->p1.screen_x/65536.0f,t)+(sc*(l->car.pos_x/65536.0f)*ROAD_WIDTH*XRES/2)-dst.w/2;
-         dst.y = interpolate(s->p0.screen_y/65536.0f,s->p1.screen_y/65536.0f,t)-dst.h;
+         dst.width = (float)texture_rects.car_sprites[l->car.index][dir].width*sc*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*0.5;
+         dst.height = (float)texture_rects.car_sprites[l->car.index][dir].height*sc*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*0.5;
+         dst.x = interpolate(s->p0.screen_x/65536.0f,s->p1.screen_x/65536.0f,t)+(sc*(l->car.pos_x/65536.0f)*ROAD_WIDTH*XRES/2)-dst.width/2;
+         dst.y = interpolate(s->p0.screen_y/65536.0f,s->p1.screen_y/65536.0f,t)-dst.height+1;
 
-         SDL_RenderCopyF(renderer,texture,&texture_rects.car_sprites[l->car.index][dir],&dst);
+         float clip = MAX(dst.y+dst.height-(s->clip_y/65536.0f),0.0f);
+         if(clip<dst.height)
+         {
+            Rectangle src = texture_rects.car_sprites[l->car.index][dir];
+            src.height-=src.height*clip/dst.height;
+            dst.height-=clip;
+            DrawTexturePro(texture,src,dst,(Vector2){0,0},0.0f,WHITE);
+         }
 
          l = l->next;
       }
 
       if(s==segment_player)
       {
-         SDL_RenderSetClipRect(renderer,NULL);
          if(segment_player->p1.y-segment_player->p0.y>ULK_fixed_32_from_int(1))
-            SDL_RenderCopy(renderer,texture,&texture_rects.car_player[0][steer+4],&((SDL_Rect){.x = 115, .y = 170, .w = 90, .h = 60}));
+            DrawTextureRec(texture,texture_rects.car_player[0][steer+4],(Vector2){115,170},WHITE);
          else
-            SDL_RenderCopy(renderer,texture,&texture_rects.car_player[0][steer+4],&((SDL_Rect){.x = 115, .y = 170, .w = 90, .h = 60}));
+            DrawTextureRec(texture,texture_rects.car_player[0][steer+4],(Vector2){115,170},WHITE);
       }
    }
-
-   SDL_RenderSetClipRect(renderer,NULL);
 }
 
 static void project_point(Point *p, ULK_fixed_32 cam_x, ULK_fixed_32 cam_y, ULK_fixed cam_z, ULK_fixed_32 cam_depth, int width, int height, int road_width)
@@ -253,95 +251,189 @@ static void project_point(Point *p, ULK_fixed_32 cam_x, ULK_fixed_32 cam_y, ULK_
 
 static void draw_segment(Segment *s)
 {
-   ULK_fixed_32 height = s->p0.screen_y-s->p1.screen_y; 
-   ULK_fixed_32 dx = ULK_fixed_32_div((s->p0.screen_x-s->p1.screen_x),(height));
-   ULK_fixed_32 dw = ULK_fixed_32_div((s->p0.screen_w-s->p1.screen_w),(height));
-   ULK_fixed_32 x = (s->p1.screen_x);
-   ULK_fixed_32 w = (s->p1.screen_w);
-   x+=ULK_fixed_32_mul(dx,ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
-   w+=ULK_fixed_32_mul(dw,ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
-   ULK_fixed_32 y = (s->p1.screen_y);//+ULK_fixed_32_ceil(s->p1.screen_y)-s->p1.screen_y);
-
-   SDL_SetRenderDrawColor(renderer,s->color.r,s->color.g,s->color.b,s->color.a);
-   SDL_Rect rect;
-   rect.x = 0;
-   rect.y = ULK_fixed_32_to_int(y);
-   rect.w = XRES;
-   rect.h = ULK_fixed_32_to_int(ULK_fixed_32_ceil(height));
-   SDL_RenderFillRect(renderer,&rect);
-
    if(!s->line)
    {
-      int y_draw = ULK_fixed_32_to_int((y));
-      while(y<(s->p0.screen_y))
-      {
-         ULK_fixed_32 w16 = w/16;
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x-w)),y_draw,ULK_fixed_32_to_int((x-w+w16)),y_draw);
-         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x-w+w16)),y_draw,ULK_fixed_32_to_int((x+w-w16)),y_draw);
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x+w-w16)),y_draw,ULK_fixed_32_to_int((x+w)),y_draw);
-         x+=dx;
-         w+=dw;
-         y+=ULK_fixed_32_from_int(1);
-         y_draw++;
-      }
+      Vector2 a,b,c;
+
+      //Grass
+      a.y = ((s->p1.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = 0.0f;
+      b.x = 0.0f;
+      c.x = XRES;
+      DrawTriangle(a,b,c,s->color);
+
+      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = 0.0f;
+      b.x = XRES;
+      c.x = XRES;
+      DrawTriangle(a,b,c,s->color);
+
+      //Left border
+      a.y = ((s->p1.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p1.screen_x-s->p1.screen_w))/65536.0f;
+      b.x = ((s->p0.screen_x-s->p0.screen_w))/65536.0f;
+      c.x = ((s->p1.screen_x-s->p1.screen_w+s->p1.screen_w/16))/65536.0f;
+      DrawTriangle(a,b,c,s->color_border);
+
+      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p0.screen_x-s->p0.screen_w))/65536.0f;
+      b.x = ((s->p0.screen_x-s->p0.screen_w+s->p0.screen_w/16))/65536.0f;
+      c.x = ((s->p1.screen_x-s->p1.screen_w+s->p1.screen_w/16))/65536.0f;
+      DrawTriangle(a,b,c,s->color_border);
+
+      //Road
+      a.y = ((s->p1.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p1.screen_x-s->p1.screen_w+s->p1.screen_w/16))/65536.0f;
+      b.x = ((s->p0.screen_x-s->p0.screen_w+s->p0.screen_w/16))/65536.0f;
+      c.x = ((s->p1.screen_x+s->p1.screen_w-s->p1.screen_w/16))/65536.0f;
+      DrawTriangle(a,b,c,s->color_road);
+
+      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p0.screen_x-s->p0.screen_w+s->p0.screen_w/16))/65536.0f;
+      b.x = ((s->p0.screen_x+s->p0.screen_w-s->p0.screen_w/16))/65536.0f;
+      c.x = ((s->p1.screen_x+s->p1.screen_w-s->p1.screen_w/16))/65536.0f;
+      DrawTriangle(a,b,c,s->color_road);
+
+      //Right border
+      a.y = ((s->p1.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p1.screen_x+s->p1.screen_w-s->p1.screen_w/16))/65536.0f;
+      b.x = ((s->p0.screen_x+s->p0.screen_w-s->p0.screen_w/16))/65536.0f;
+      c.x = ((s->p1.screen_x+s->p1.screen_w))/65536.0f;
+      DrawTriangle(a,b,c,s->color_border);
+
+      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p0.screen_x+s->p0.screen_w-s->p0.screen_w/16))/65536.0f;
+      b.x = ((s->p0.screen_x+s->p0.screen_w))/65536.0f;
+      c.x = ((s->p1.screen_x+s->p1.screen_w))/65536.0f;
+      DrawTriangle(a,b,c,s->color_border);
    }
    else
    {
-      int y_draw = ULK_fixed_32_to_int((y));
-      while(y<(s->p0.screen_y))
-      {
-         ULK_fixed_32 w16 = w/16;
+      Vector2 a,b,c;
 
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x-w)),y_draw,ULK_fixed_32_to_int((x-w+w16)),y_draw);
+      //Grass
+      a.y = ((s->p1.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = 0.0f;
+      b.x = 0.0f;
+      c.x = XRES;
+      DrawTriangle(a,b,c,s->color);
 
-         ULK_fixed_32 start = x-w+w16;
-         ULK_fixed_32 end = x-w+10*w16;
-         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
-         start = end;
-         end+=w16;
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
-         start = end;
-         end+=10*w16;
-         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
-         start = end;
-         end+=w16;
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
-         start = end;
-         end+=10*w16;
-         SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((start)),y_draw,ULK_fixed_32_to_int((end)),y_draw);
+      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = 0.0f;
+      b.x = XRES;
+      c.x = XRES;
+      DrawTriangle(a,b,c,s->color);
 
-         SDL_SetRenderDrawColor(renderer,s->color_border.r,s->color_border.g,s->color_border.b,s->color_border.a);
-         SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int((x+w-w16)),y_draw,ULK_fixed_32_to_int((x+w)),y_draw);
+      //Left border
+      a.y = ((s->p1.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p1.screen_x-s->p1.screen_w))/65536.0f;
+      b.x = ((s->p0.screen_x-s->p0.screen_w))/65536.0f;
+      c.x = ((s->p1.screen_x-s->p1.screen_w+s->p1.screen_w/16))/65536.0f;
+      DrawTriangle(a,b,c,s->color_border);
 
-         x+=dx;
-         w+=dw;
-         y+=ULK_fixed_32_from_int(1);
-         y_draw++;
-      }
+      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p0.screen_x-s->p0.screen_w))/65536.0f;
+      b.x = ((s->p0.screen_x-s->p0.screen_w+s->p0.screen_w/16))/65536.0f;
+      c.x = ((s->p1.screen_x-s->p1.screen_w+s->p1.screen_w/16))/65536.0f;
+      DrawTriangle(a,b,c,s->color_border);
+
+      //Road
+      a.y = ((s->p1.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p1.screen_x-s->p1.screen_w+s->p1.screen_w/16))/65536.0f;
+      b.x = ((s->p0.screen_x-s->p0.screen_w+s->p0.screen_w/16))/65536.0f;
+      c.x = ((s->p1.screen_x+s->p1.screen_w-s->p1.screen_w/16))/65536.0f;
+      DrawTriangle(a,b,c,s->color_road);
+
+      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p0.screen_x-s->p0.screen_w+s->p0.screen_w/16))/65536.0f;
+      b.x = ((s->p0.screen_x+s->p0.screen_w-s->p0.screen_w/16))/65536.0f;
+      c.x = ((s->p1.screen_x+s->p1.screen_w-s->p1.screen_w/16))/65536.0f;
+      DrawTriangle(a,b,c,s->color_road);
+
+      //Right border
+      a.y = ((s->p1.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p1.screen_x+s->p1.screen_w-s->p1.screen_w/16))/65536.0f;
+      b.x = ((s->p0.screen_x+s->p0.screen_w-s->p0.screen_w/16))/65536.0f;
+      c.x = ((s->p1.screen_x+s->p1.screen_w))/65536.0f;
+      DrawTriangle(a,b,c,s->color_border);
+
+      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p0.screen_x+s->p0.screen_w-s->p0.screen_w/16))/65536.0f;
+      b.x = ((s->p0.screen_x+s->p0.screen_w))/65536.0f;
+      c.x = ((s->p1.screen_x+s->p1.screen_w))/65536.0f;
+      DrawTriangle(a,b,c,s->color_border);
+
+      //Left marker 
+      a.y = ((s->p1.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p1.screen_x-s->p1.screen_w+11*s->p1.screen_w/16))/65536.0f;
+      b.x = ((s->p0.screen_x-s->p0.screen_w+11*s->p0.screen_w/16))/65536.0f;
+      c.x = ((s->p1.screen_x-s->p1.screen_w+12*s->p1.screen_w/16))/65536.0f;
+      DrawTriangle(a,b,c,s->color_border);
+
+      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p0.screen_x-s->p0.screen_w+11*s->p0.screen_w/16))/65536.0f;
+      b.x = ((s->p0.screen_x-s->p0.screen_w+12*s->p0.screen_w/16))/65536.0f;
+      c.x = ((s->p1.screen_x-s->p1.screen_w+12*s->p1.screen_w/16))/65536.0f;
+      DrawTriangle(a,b,c,s->color_border);
+
+      //Right marker 
+      a.y = ((s->p1.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p1.screen_x-s->p1.screen_w+21*s->p1.screen_w/16))/65536.0f;
+      b.x = ((s->p0.screen_x-s->p0.screen_w+21*s->p0.screen_w/16))/65536.0f;
+      c.x = ((s->p1.screen_x-s->p1.screen_w+22*s->p1.screen_w/16))/65536.0f;
+      DrawTriangle(a,b,c,s->color_border);
+
+      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      c.y = ((s->p1.screen_y))/65536.0f;
+      a.x = ((s->p0.screen_x-s->p0.screen_w+21*s->p0.screen_w/16))/65536.0f;
+      b.x = ((s->p0.screen_x-s->p0.screen_w+22*s->p0.screen_w/16))/65536.0f;
+      c.x = ((s->p1.screen_x-s->p1.screen_w+22*s->p1.screen_w/16))/65536.0f;
+      DrawTriangle(a,b,c,s->color_border);
    }
-}
-
-static void draw_segment_frame(Segment *s)
-{
-   SDL_SetRenderDrawColor(renderer,s->color_road.r,s->color_road.g,s->color_road.b,s->color_road.a);
-   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(s->p1.screen_x-s->p1.screen_w),ULK_fixed_32_to_int(s->p1.screen_y),ULK_fixed_32_to_int(s->p1.screen_x+s->p1.screen_w),ULK_fixed_32_to_int(s->p1.screen_y));
-   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(s->p0.screen_x-s->p1.screen_w),ULK_fixed_32_to_int(s->p0.screen_y),ULK_fixed_32_to_int(s->p0.screen_x+s->p0.screen_w),ULK_fixed_32_to_int(s->p0.screen_y));
-   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(s->p1.screen_x-s->p1.screen_w),ULK_fixed_32_to_int(s->p1.screen_y),ULK_fixed_32_to_int(s->p0.screen_x-s->p0.screen_w),ULK_fixed_32_to_int(s->p0.screen_y));
-   SDL_RenderDrawLine(renderer,ULK_fixed_32_to_int(s->p0.screen_x+s->p0.screen_w),ULK_fixed_32_to_int(s->p0.screen_y),ULK_fixed_32_to_int(s->p1.screen_x+s->p1.screen_w),ULK_fixed_32_to_int(s->p1.screen_y));
 }
 
 static void parallax_scroll(ULK_fixed_32 curve)
 {
-   float dt = sdl_get_delta();
+   float dt = GetFrameTime();
 
    for(int i = 0;i<5;i++)
    {
@@ -351,20 +443,20 @@ static void parallax_scroll(ULK_fixed_32 curve)
       parallax_data.layers[i][1].x+=speed;
 
       //Clip layer
-      SDL_FRect tmp;
+      Rectangle tmp;
       if(parallax_data.layers[i][0].x<0.0f)
       {
          tmp = parallax_data.layers[i][0];
          parallax_data.layers[i][0] = parallax_data.layers[i][1];
          parallax_data.layers[i][1] = tmp;
-         parallax_data.layers[i][0].x = parallax_data.layers[i][1].x+parallax_data.layers[i][1].w;
+         parallax_data.layers[i][0].x = parallax_data.layers[i][1].x+parallax_data.layers[i][1].width;
       }
       else if(parallax_data.layers[i][0].x>0.0f)
       {
          tmp = parallax_data.layers[i][0];
          parallax_data.layers[i][0] = parallax_data.layers[i][1];
          parallax_data.layers[i][1] = tmp;
-         parallax_data.layers[i][0].x = parallax_data.layers[i][1].x-parallax_data.layers[i][1].w;
+         parallax_data.layers[i][0].x = parallax_data.layers[i][1].x-parallax_data.layers[i][1].width;
       }
    }
 }

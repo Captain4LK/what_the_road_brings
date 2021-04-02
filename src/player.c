@@ -13,14 +13,13 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include <SDL2/SDL.h>
+#include <raylib.h>
 //-------------------------------------
 
 //Internal includes
 #include "ULK_fixed.h"
 #include "config.h"
 #include "util.h"
-#include "sdl.h"
 #include "car.h"
 #include "player.h"
 #include "draw.h"
@@ -47,20 +46,19 @@ static int frame = 0;
 
 void player_update()
 {
-   float dt = sdl_get_delta();
+   float dt = GetFrameTime();
    ULK_fixed_32 vz_acc = ACCEL*dt;
    ULK_fixed_32 vz_dec = DECEL*dt;
    player.stopped = 0;
 
    //Collision
-   SDL_SetRenderDrawColor(renderer,0,0,0,255);
    int i;
    segment_player = segment_list_get_pos(&segments,player.pz+PLAYER_OFFSET,&i);
    for(int j = 0;j<segment_player->sprites.used;j++)
    {
       Sprite *sp = &dyn_array_element(Sprite,&segment_player->sprites,j);
-      float width_0 = (float)texture_rects.car_player[0][0].w*SPRITE_SCALE;
-      float width_1 = (float)texture_rects.sprites[sp->index].w*SPRITE_SCALE;
+      float width_0 = (float)texture_rects.car_player[0][0].width*SPRITE_SCALE;
+      float width_1 = (float)texture_rects.sprites[sp->index].width*SPRITE_SCALE;
 
       if(overlap((float)player.px/65536.0f,width_0,(float)(sp->pos/65536.0f)+(sp->pos>0?1:-1)*(width_1/2.0f),width_1,0.5))
          player.stopped = 1;
@@ -68,7 +66,7 @@ void player_update()
    Car_list *cl = segment_player->cars;
    while(cl)
    {
-      if(player.vz>cl->car.speed&&overlap((float)player.px/65536.0f,(float)texture_rects.car_player[0][0].w*SPRITE_SCALE,(float)cl->car.pos_x/65536.0f,(float)texture_rects.car_sprites[cl->car.index][0].w*SPRITE_SCALE,0.3f))
+      if(player.vz>cl->car.speed&&overlap((float)player.px/65536.0f,(float)texture_rects.car_player[0][0].width*SPRITE_SCALE,(float)cl->car.pos_x/65536.0f,(float)texture_rects.car_sprites[cl->car.index][0].width*SPRITE_SCALE,0.3f))
       {
          player.vz = ULK_fixed_mul(cl->car.speed,ULK_fixed_div(cl->car.speed,player.vz));
       }
@@ -80,12 +78,14 @@ void player_update()
       player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(segment_player->curve,ULK_fixed_32_from_int(2)))*dt;
 
    frame++;
-   if(sdl_key_down(KEY_UP)||sdl_gamepad_down(0,PAD_B))
+   if(IsKeyDown(KEY_UP))
+   //if(sdl_key_down(KEY_UP)||sdl_gamepad_down(0,PAD_B))
    {
       if(player.vz<(MAX_SPEED))
          player.vz+=MIN(MAX_SPEED-player.vz,vz_acc);
    }
-   else if(sdl_key_down(KEY_DOWN)||sdl_gamepad_down(0,PAD_A))
+   else if(IsKeyDown(KEY_DOWN))
+   //else if(sdl_key_down(KEY_DOWN)||sdl_gamepad_down(0,PAD_A))
       player.vz+=2*vz_dec;
    else
       player.vz+=vz_dec;
@@ -98,7 +98,8 @@ void player_update()
       player.pz+=player.vz*dt;
 
    ULK_fixed_32 speed_x = 2*ULK_fixed_32_div(player.vz,MAX_SPEED)*dt;
-   if(sdl_key_down(KEY_LEFT)||sdl_gamepad_down(0,PAD_LEFT))
+   if(IsKeyDown(KEY_LEFT))
+   //if(sdl_key_down(KEY_LEFT)||sdl_gamepad_down(0,PAD_LEFT))
    {
       if(player.steer==0)
          frame = 0;
@@ -106,7 +107,8 @@ void player_update()
       if(player.steer<2&&frame%6==0)
          player.steer++;
    }
-   else if(sdl_key_down(KEY_RIGHT)||sdl_gamepad_down(0,PAD_RIGHT))
+   else if(IsKeyDown(KEY_RIGHT))
+   //else if(sdl_key_down(KEY_RIGHT)||sdl_gamepad_down(0,PAD_RIGHT))
    {
       if(player.steer==0)
          frame = 0;

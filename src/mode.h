@@ -13,6 +13,8 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define _MODE_H_
 
 extern int mode;
+extern Color clear_texture;
+extern Color clear_screen;
 
 void modes_update();
 

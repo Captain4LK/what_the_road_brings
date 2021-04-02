@@ -14,16 +14,19 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 struct Texture_Rects
 {
-   SDL_Rect road00;
-   SDL_Rect road01;
-   SDL_Rect road02;
-   SDL_Rect road03;
-   SDL_Rect car_player[2][9];
-   SDL_Rect backdrop[5];
-   SDL_Rect sprites[32];
-   SDL_Rect car_sprites[4][3];
+   Rectangle road00;
+   Rectangle road01;
+   Rectangle road02;
+   Rectangle road03;
+   Rectangle car_player[2][9];
+   Rectangle backdrop[5];
+   Rectangle sprites[32];
+   Rectangle car_sprites[4][3];
 };
 extern struct Texture_Rects texture_rects;
+
+extern Texture2D texture;
+extern RenderTexture2D texture_viewport;
 
 void load_assets();
 void draw(ULK_fixed x, ULK_fixed z, int steer);

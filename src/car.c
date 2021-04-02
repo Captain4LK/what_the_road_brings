@@ -9,9 +9,10 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 */
 
 //External includes
+#include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include <SDL2/SDL.h>
+#include <raylib.h>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -22,7 +23,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "ULK_fixed.h"
 #include "config.h"
 #include "util.h"
-#include "sdl.h"
 #include "car.h"
 #include "player.h"
 #include "segment.h"
@@ -85,46 +85,61 @@ Car car_list_remove(Car_list **l, uint16_t id)
          break;
       }
 
-   last = &in->next;
-   in = in->next;
-}
+      last = &in->next;
+      in = in->next;
+   }
 
-return out;
+   return out;
 }
 
 void cars_update()
 {
-   float dt = sdl_get_delta();
+   float dt = GetFrameTime();
+
+   //The counter is used to keep track of which cars have already been updated this frame
+   //It intensionally overflows, since only the difference between two numbers matters
    car_update_counter++;
+
    for(int i = 0;i<segments.used;i++)
    {
       Segment *s = segment_list_get(&segments,i);
       Car_list *l = s->cars;
       while(l)
       {
+         //Store the next element, since the current
+         //element might be deleted during updating
          Car_list *next = l->next;
+
+         //Only update car if not updated already
+         //Cars may be accessed twice since they can
+         //be moved forward one segment
          if(l->car.counter!=car_update_counter)
          {
             l->car.counter++;
 
             //Steering 
+            //Only when close to the player
             if(1)
             {
                int j;
                for(j = 1;j<16;j++)
                {
-                  Segment *sl = segment_list_get(&segments,j+i);
-                  //Steer arround player
+                  //Steer around player
                   //Only when faster than player
-                  if(sl==segment_player&&l->car.speed>player.vz&&overlap(player.px/65536.0f,texture_rects.car_player[0][0].w*SPRITE_SCALE,l->car.pos_x/65536.0f,texture_rects.car_sprites[l->car.index][0].w*SPRITE_SCALE,1.2f)) //Pointer comparison...
+                  //Steering around player has the highes priority, 
+                  //since a car driving through the player would
+                  //look very weird
+                  Segment *sl = segment_list_get(&segments,j+i);
+                  if(sl==segment_player&&l->car.speed>player.vz //Pointer comparison...
+                     &&overlap(player.px/65536.0f,texture_rects.car_player[0][0].width*SPRITE_SCALE,l->car.pos_x/65536.0f,texture_rects.car_sprites[l->car.index][0].width*SPRITE_SCALE,1.0f))
                   {
+                     //Calculate steering direction
                      int dir = 0;
-                     if(player.px>ULK_fixed_32_from_int(1)/2) dir = -1;
-                     else if(player.px<-ULK_fixed_32_from_int(1)/2) dir = 1;
+                     if(player.px>ULK_fixed_32_from_int(1)/3) dir = -1;
+                     else if(player.px<-ULK_fixed_32_from_int(1)/3) dir = 1;
                      else dir = (l->car.pos_x>player.px)?1:-1;
-                     //l->car.pos_x+=ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(dir),ULK_fixed_32_from_int(j)),ULK_fixed_32_div((l->car.speed-player.vz)<<8,MAX_SPEED<<8));//ULK_fixed_32_div(l->car.speed<<8,CAR_MAX_SPEED<<8)*dir*2*dt;
-                     l->car.pos_x+=ULK_fixed_32_div(l->car.speed<<8,CAR_MAX_SPEED<<8)*dir*dt*2;
 
+                     l->car.pos_x+=ULK_fixed_32_div(l->car.speed<<8,CAR_MAX_SPEED<<8)*dir*dt*4;
                      break;
                   }
                   
@@ -132,16 +147,16 @@ void cars_update()
                   int end = 0;
                   while(cl)
                   {
-                     if(l->car.speed>=cl->car.speed&&overlap(cl->car.pos_x/65536.0f,texture_rects.car_sprites[cl->car.index][0].w*SPRITE_SCALE,l->car.pos_x/65536.0f,texture_rects.car_sprites[l->car.index][0].w*SPRITE_SCALE,0.8f))
+                     if(l->car.speed>=cl->car.speed&&overlap(cl->car.pos_x/65536.0f,texture_rects.car_sprites[cl->car.index][0].width*SPRITE_SCALE,l->car.pos_x/65536.0f,texture_rects.car_sprites[l->car.index][0].width*SPRITE_SCALE,0.8f))
                      {
+                        //Calculate steering direction
                         int dir = 0;
-                        if(cl->car.pos_x>ULK_fixed_32_from_int(1)/2) dir = -1;
-                        else if(cl->car.pos_x<-ULK_fixed_32_from_int(1)/2) dir = 1;
+                        if(cl->car.pos_x>ULK_fixed_32_from_int(1)/3) dir = -1;
+                        else if(cl->car.pos_x<-ULK_fixed_32_from_int(1)/3) dir = 1;
                         else dir = (l->car.pos_x>cl->car.pos_x)?1:-1;
-                        //l->car.pos_x+=ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(dir),ULK_fixed_32_from_int(j)),((-l->car.speed+cl->car.speed)<<8))*dt;
+
                         l->car.pos_x+=ULK_fixed_32_div(l->car.speed<<8,CAR_MAX_SPEED<<8)*dir*dt;
                         end = 1;
-
                         break;
                      }
 
