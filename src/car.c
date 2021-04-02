@@ -119,6 +119,7 @@ void cars_update()
 
             //Steering 
             //Only when close to the player
+            //TODO
             if(1)
             {
                int j;
@@ -147,7 +148,7 @@ void cars_update()
                   int end = 0;
                   while(cl)
                   {
-                     if(l->car.speed>=cl->car.speed&&overlap(cl->car.pos_x/65536.0f,texture_rects.car_sprites[cl->car.index][0].width*SPRITE_SCALE,l->car.pos_x/65536.0f,texture_rects.car_sprites[l->car.index][0].width*SPRITE_SCALE,0.8f))
+                     if(l->car.speed>=cl->car.speed&&overlap(cl->car.pos_x/65536.0f,texture_rects.car_sprites[cl->car.index][0].width*SPRITE_SCALE,l->car.pos_x/65536.0f,texture_rects.car_sprites[l->car.index][0].width*SPRITE_SCALE,0.9f))
                      {
                         //Calculate steering direction
                         int dir = 0;

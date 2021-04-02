@@ -194,8 +194,6 @@ static void add_car(int seg, int index, ULK_fixed_32 pos)
 
 static void main_loop()
 {
-   //sdl_update();
-
    if(IsKeyPressed(KEY_M))
    {
       fullscreen = !fullscreen;
