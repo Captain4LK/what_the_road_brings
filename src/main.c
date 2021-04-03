@@ -25,6 +25,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "ULK_fixed.h"
 #include "config.h"
 #include "util.h"
+#include "audio.h"
 #include "mode.h"
 #include "player.h"
 #include "car.h"
@@ -48,7 +49,6 @@ static Color border1 = {59,115,73,255};
 static Color road0 = {59,45,31,255};
 static Color road1 = {59,45,31,255};
 static int fullscreen = 0;
-static Music music;
 //-------------------------------------
 
 //Function prototypes
@@ -67,19 +67,17 @@ int main(int argc, char **arg)
    InitWindow(XRES*2,YRES*2,"What the road brings");
    InitAudioDevice();
    SetTargetFPS(FPS);
+
    load_assets();
+   audio_load();
    clear_texture = grass1;
-
-   music = LoadMusicStream("music/track1.mp3");
-
-   PlayMusicStream(music);
 
    //Setup road
    dyn_array_init(Segment,&segments,128);
 
    add_road(0,0,64,0,0);
    add_road(0,0,16,0,0);
-   add_road(4,4,56,-ULK_fixed_32_from_int(1),0);
+   add_road(4,4,56,-ULK_fixed_32_from_int(2),0);
    add_road(0,0,16,0,0);
    add_road(4,4,56,ULK_fixed_32_from_int(1),0);
    for(int i = 0;i<2;i++)
@@ -115,6 +113,7 @@ int main(int argc, char **arg)
          add_car(i,0,(1-rand()%3)*ULK_fixed_32_from_int(1)/2);
    }
 
+   audio_set_track(0);
 #ifndef __EMSCRIPTEN__
    while(!WindowShouldClose())
       main_loop();
@@ -218,17 +217,6 @@ static void main_loop()
          SetWindowState(FLAG_WINDOW_UNDECORATED|FLAG_WINDOW_RESIZABLE);
          SetWindowSize(GetMonitorWidth(0),GetMonitorHeight(0));
          SetWindowPosition(0,0);
-         /*if(GetMonitorWidth(0)==GetScreenWidth()&&GetMonitorHeight(0)==GetScreenHeight())
-         {
-            fullscreen = 1;
-            printf("%d %d\n",GetScreenWidth(),GetScreenHeight());
-            ToggleFullscreen();
-         }
-         else
-         {
-            //fullscreen = 0;
-            puts("FUCK");
-         }*/
       }
       else
       {
@@ -238,7 +226,6 @@ static void main_loop()
       }
    }
    
-   UpdateMusicStream(music);
    modes_update();
 }
 //-------------------------------------

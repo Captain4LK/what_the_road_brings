@@ -1,15 +1,15 @@
 CC = gcc
 CFLAGS+=-Wall -lraylib -lGL -lm -lpthread -lrt -ldl -lX11
 
-pseudo_3d_racer: main.o mode.o segment.o ULK_fixed.o car.o draw.o player.o
+pseudo_3d_racer: main.o audio.o mode.o segment.o ULK_fixed.o car.o draw.o player.o
 	gcc -o pseudo_3d_racer $^  $(CFLAGS)
 	chmod +x pseudo_3d_racer
 	mv pseudo_3d_racer ../
 
-main.o: ../../src/main.c ../../src/mode.h ../../src/segment.h ../../src/car.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
+main.o: ../../src/main.c ../../src/audio.h ../../src/mode.h ../../src/segment.h ../../src/car.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-mode.o: ../../src/mode.c ../../src/mode.h ../../src/car.h ../../src/segment.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
+mode.o: ../../src/mode.c ../../src/audio.h ../../src/mode.h ../../src/car.h ../../src/segment.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 segment.o: ../../src/segment.c ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/config.h
@@ -21,10 +21,13 @@ ULK_fixed.o: ../../src/ULK_fixed.c ../../src/ULK_fixed.h
 draw.o: ../../src/draw.c ../../src/draw.h ../../src/car.h ../../src/segment.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-car.o: ../../src/car.c ../../src/car.h ../../src/draw.h ../../src/segment.h ../../src/player.h ../../src/util.h ../../src/config.h
+car.o: ../../src/car.c ../../src/car.h ../../src/audio.h ../../src/draw.h ../../src/segment.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-player.o: ../../src/player.c ../../src/player.h ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/draw.h ../../src/config.h
+player.o: ../../src/player.c ../../src/player.h ../../src/audio.h ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/draw.h ../../src/config.h
+	$(CC) -O3 -c $< $(CFLAGS) 
+
+audio.o: ../../src/audio.c ../../src/audio.h ../../src/mode.h ../../src/segment.h ../../src/car.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 clean:

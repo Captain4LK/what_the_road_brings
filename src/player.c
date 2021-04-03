@@ -20,6 +20,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "ULK_fixed.h"
 #include "config.h"
 #include "util.h"
+#include "audio.h"
 #include "car.h"
 #include "player.h"
 #include "draw.h"
@@ -73,33 +74,34 @@ void player_update()
 
       cl = cl->next;
    }
-
    if(!player.stopped)
       player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(segment_player->curve,ULK_fixed_32_from_int(2)))*dt;
 
    frame++;
    if(IsKeyDown(KEY_UP))
-   //if(sdl_key_down(KEY_UP)||sdl_gamepad_down(0,PAD_B))
    {
       if(player.vz<(MAX_SPEED))
          player.vz+=MIN(MAX_SPEED-player.vz,vz_acc);
    }
    else if(IsKeyDown(KEY_DOWN))
-   //else if(sdl_key_down(KEY_DOWN)||sdl_gamepad_down(0,PAD_A))
       player.vz+=2*vz_dec;
    else
       player.vz+=vz_dec;
    if(player.vz>MAX_SPEED/4&&abs(player.px)>ULK_fixed_32_from_int(1))
-      player.vz+=2*vz_dec;
+      player.vz+=4*vz_dec;
    if(player.vz<0)
       player.vz = 0;
 
    if(!player.stopped)
       player.pz+=player.vz*dt;
+   if(player.vz==0&&IsMusicPlaying(sound_drive))
+      StopMusicStream(sound_drive);
+   else if(player.vz>0&&!IsMusicPlaying(sound_drive))
+      PlayMusicStream(sound_drive);
+   SetMusicPitch(sound_drive,0.5f+((float)player.vz/(float)MAX_SPEED));
 
    ULK_fixed_32 speed_x = 3*MIN(ULK_fixed_32_from_int(1),ULK_fixed_32_div(player.vz,MAX_SPEED/3))*dt;
    if(IsKeyDown(KEY_LEFT))
-   //if(sdl_key_down(KEY_LEFT)||sdl_gamepad_down(0,PAD_LEFT))
    {
       if(player.steer==0)
          frame = 0;
@@ -108,7 +110,6 @@ void player_update()
          player.steer++;
    }
    else if(IsKeyDown(KEY_RIGHT))
-   //else if(sdl_key_down(KEY_RIGHT)||sdl_gamepad_down(0,PAD_RIGHT))
    {
       if(player.steer==0)
          frame = 0;

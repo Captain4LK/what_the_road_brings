@@ -22,6 +22,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "ULK_fixed.h"
 #include "config.h"
 #include "util.h"
+#include "audio.h"
 #include "mode.h"
 #include "player.h"
 #include "car.h"
@@ -59,6 +60,10 @@ void modes_update()
 
 static void game_update()
 {
+   UpdateMusicStream(sound_drive);
+   if(music_current!=NULL)
+      UpdateMusicStream(*music_current);
+
    player_update();
    cars_update();
 
