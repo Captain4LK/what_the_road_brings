@@ -48,6 +48,7 @@ static Color border1 = {59,115,73,255};
 static Color road0 = {59,45,31,255};
 static Color road1 = {59,45,31,255};
 static int fullscreen = 0;
+static Music music;
 //-------------------------------------
 
 //Function prototypes
@@ -62,10 +63,16 @@ static void main_loop();
 int main(int argc, char **arg)
 {
    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-   InitWindow(XRES,YRES,"What the road brings");
+   //SetConfigFlags(FLAG_FULLSCREEN_MODE);
+   InitWindow(XRES*2,YRES*2,"What the road brings");
+   InitAudioDevice();
    SetTargetFPS(FPS);
    load_assets();
    clear_texture = grass1;
+
+   music = LoadMusicStream("music/track1.mp3");
+
+   PlayMusicStream(music);
 
    //Setup road
    dyn_array_init(Segment,&segments,128);
@@ -88,6 +95,8 @@ int main(int argc, char **arg)
    add_road(0,0,8,0,0);
    add_road(4,4,160,0,-ULK_fixed_32_from_int(2000));
    add_road(0,0,16,0,0);
+
+   segment_list_get_pos(&segments,PLAYER_OFFSET,NULL)->color_road = WHITE;
 
    printf("Segment memory: %ld bytes\n",sizeof(Segment)*segments.used);
 
@@ -206,17 +215,30 @@ static void main_loop()
          main_loop_oheight = GetScreenHeight();
          main_loop_ox = GetWindowPosition().x;
          main_loop_oy = GetWindowPosition().y;
-         SetWindowState(FLAG_WINDOW_UNDECORATED);
+         SetWindowState(FLAG_WINDOW_UNDECORATED|FLAG_WINDOW_RESIZABLE);
          SetWindowSize(GetMonitorWidth(0),GetMonitorHeight(0));
+         SetWindowPosition(0,0);
+         /*if(GetMonitorWidth(0)==GetScreenWidth()&&GetMonitorHeight(0)==GetScreenHeight())
+         {
+            fullscreen = 1;
+            printf("%d %d\n",GetScreenWidth(),GetScreenHeight());
+            ToggleFullscreen();
+         }
+         else
+         {
+            //fullscreen = 0;
+            puts("FUCK");
+         }*/
       }
       else
       {
-         ClearWindowState(FLAG_WINDOW_UNDECORATED);
          SetWindowSize(main_loop_owidth,main_loop_oheight);
          SetWindowPosition(main_loop_ox,main_loop_oy);
+         ClearWindowState(FLAG_WINDOW_UNDECORATED);
       }
    }
-
+   
+   UpdateMusicStream(music);
    modes_update();
 }
 //-------------------------------------

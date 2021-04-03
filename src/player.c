@@ -97,7 +97,7 @@ void player_update()
    if(!player.stopped)
       player.pz+=player.vz*dt;
 
-   ULK_fixed_32 speed_x = 2*ULK_fixed_32_div(player.vz,MAX_SPEED)*dt;
+   ULK_fixed_32 speed_x = 3*MIN(ULK_fixed_32_from_int(1),ULK_fixed_32_div(player.vz,MAX_SPEED/3))*dt;
    if(IsKeyDown(KEY_LEFT))
    //if(sdl_key_down(KEY_LEFT)||sdl_gamepad_down(0,PAD_LEFT))
    {

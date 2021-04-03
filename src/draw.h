@@ -18,7 +18,7 @@ struct Texture_Rects
    Rectangle road01;
    Rectangle road02;
    Rectangle road03;
-   Rectangle car_player[2][9];
+   Rectangle car_player[2][5];
    Rectangle backdrop[5];
    Rectangle sprites[32];
    Rectangle car_sprites[4][3];

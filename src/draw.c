@@ -55,42 +55,32 @@ struct Texture_Rects texture_rects =
       {.x = 180, .y = 0, .width = 90, .height = 60},
       {.x = 270, .y = 0, .width = 90, .height = 60},
       {.x = 360, .y = 0, .width = 90, .height = 60},
-      {.x = 450, .y = 0, .width = 90, .height = 60},
-      {.x = 540, .y = 0, .width = 90, .height = 60},
-      {.x = 630, .y = 0, .width = 90, .height = 60},
-      {.x = 720, .y = 0, .width = 90, .height = 60},
     },{
-      {.x = 0, .y = 48, .width = 90, .height = 48},
-      {.x = 90, .y = 48, .width = 90, .height = 48},
-      {.x = 180, .y = 48, .width = 90, .height = 48},
-      {.x = 270, .y = 48, .width = 90, .height = 48},
-      {.x = 360, .y = 48, .width = 90, .height = 48},
-      {.x = 450, .y = 48, .width = 90, .height = 48},
-      {.x = 540, .y = 48, .width = 90, .height = 48},
-      {.x = 630, .y = 48, .width = 90, .height = 48},
-      {.x = 720, .y = 48, .width = 90, .height = 48},
+      {.x = 0, .y = 60, .width = 90, .height = 60},
+      {.x = 90, .y = 60, .width = 90, .height = 60},
+      {.x = 180, .y = 60, .width = 90, .height = 60},
+      {.x = 270, .y = 60, .width = 90, .height = 60},
+      {.x = 360, .y = 60, .width = 90, .height = 60},
    }},
    .backdrop = 
    {
-      {.x = 0, .y = 96, .width = 320, .height = 160},
-      {.x = 320, .y = 96, .width = 512, .height = 160},
-      {.x = 832, .y = 96, .width = 512, .height = 160},
-      //{.x = 1136, .y = 96, .w = 544, .height = 160},
-      //{.x = 1680, .y = 96, .w = 544, .height = 160},
+      {.x = 0, .y = 120, .width = 320, .height = 160},
+      {.x = 320, .y = 120, .width = 512, .height = 160},
+      {.x = 832, .y = 120, .width = 512, .height = 160},
    },
    .sprites = 
    {
-      {.x = 0, .y = 256, .width = 51, .height = 100},
-      {.x = 51, .y = 256, .width = 32, .height = 16},
-      {.x = 51, .y = 272, .width = 32, .height = 16},
-      {.x = 51, .y = 288, .width = 32, .height = 32},
+      {.x = 0, .y = 280, .width = 51, .height = 100},
+      {.x = 51, .y = 280, .width = 32, .height = 16},
+      {.x = 51, .y = 296, .width = 32, .height = 16},
+      {.x = 51, .y = 312, .width = 32, .height = 32},
    },
    .car_sprites = 
    {
       {
+         {.x = 90, .y = 0, .width = 90, .height = 60},
          {.x = 180, .y = 0, .width = 90, .height = 60},
-         {.x = 360, .y = 0, .width = 90, .height = 60},
-         {.x = 540, .y = 0, .width = 90, .height = 60},
+         {.x = 270, .y = 0, .width = 90, .height = 60},
       },
    },
 };
@@ -106,8 +96,6 @@ static struct
       { {.x = 0, .y = 0, .width = 320, .height = 160}, {.x = 0, .y = 0, .width = 0, .height = 0 } },
       { {.x = 0, .y = 0, .width = 512, .height = 160}, {.x = 512, .y = 0, .width = 512, .height = 160 } },
       { {.x = 0, .y = 0, .width = 512, .height = 160}, {.x = 512, .y = 0, .width = 512, .height = 160 } },
-      //{ {.x = 0, .y = -20, .w = 544, .height = 160}, {.x = 544, .y = -20, .w = 544, .height = 160 } },
-      //{ {.x = 0, .y = -20, .w = 544, .height = 160}, {.x = 544, .y = -20, .w = 544, .height = 160 } },
    },
    .speed = 
    {
@@ -230,9 +218,9 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       if(s==segment_player)
       {
          if(segment_player->p1.y-segment_player->p0.y>ULK_fixed_32_from_int(1))
-            DrawTextureRec(texture,texture_rects.car_player[0][steer+4],(Vector2){115,170},WHITE);
+            DrawTextureRec(texture,texture_rects.car_player[1][steer+2],(Vector2){115,170},WHITE);
          else
-            DrawTextureRec(texture,texture_rects.car_player[0][steer+4],(Vector2){115,170},WHITE);
+            DrawTextureRec(texture,texture_rects.car_player[0][steer+2],(Vector2){115,170},WHITE);
       }
    }
 }

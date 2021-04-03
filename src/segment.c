@@ -41,8 +41,10 @@ Segment *segment_player = NULL;
 //Function implementations
 Segment *segment_list_get_pos(dyn_array *list, ULK_fixed pos, int *index)
 {
-   *index = ULK_fixed_to_int(ULK_fixed_div(pos,SEGLEN))%list->used;
-   return &dyn_array_element(Segment,list,*index);
+   int in = ULK_fixed_to_int(ULK_fixed_div(pos,SEGLEN))%list->used;
+   if(index)
+      *index = in;
+   return &dyn_array_element(Segment,list,in);
 }
 
 Segment *segment_list_get(dyn_array *list, int index)
