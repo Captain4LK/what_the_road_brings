@@ -27,6 +27,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "player.h"
 #include "car.h"
 #include "draw.h"
+#include "menu.h"
 //-------------------------------------
 
 //#defines
@@ -42,6 +43,7 @@ Color clear_screen = BLACK;
 //-------------------------------------
 
 //Function prototypes
+static void mode_title_update();
 static void game_update();
 //-------------------------------------
 
@@ -52,10 +54,45 @@ void modes_update()
    switch(mode)
    {
    case 0: //Title screen
-
+      mode_title_update();
+      break;
+   case 11:
+      game_update();
       break;
    }
-   game_update();
+}
+
+static void mode_title_update()
+{
+   if(music_current!=NULL)
+      UpdateMusicStream(*music_current);
+   title_update();
+
+   BeginDrawing();
+      ClearBackground(clear_screen);
+      BeginTextureMode(texture_viewport);
+         ClearBackground(clear_texture);
+         title_draw();
+      EndTextureMode();
+
+      float window_width = GetScreenWidth();
+      float window_height = GetScreenHeight();
+      Rectangle rect;
+      if((float)window_width/(4.0f/3.0f)>=window_height)
+      {
+         rect.width = window_height*(4.0f/3.0f);
+         rect.height = window_height;
+      }
+      else
+      {
+         rect.width = window_width;
+         rect.height = window_width*(3.0f/4.0f);
+      }
+      rect.x = (window_width-rect.width)/2;
+      rect.y = (window_height-rect.height)/2;
+      DrawTexturePro(texture_viewport.texture,(Rectangle){0,0,(float)texture_viewport.texture.width,(float)-texture_viewport.texture.height},rect,(Vector2){0,0},0.0f,WHITE);
+
+   EndDrawing();
 }
 
 static void game_update()

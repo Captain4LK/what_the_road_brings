@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS+=-Wall -lraylib -lGL -lm -lpthread -lrt -ldl -lX11
 
-pseudo_3d_racer: main.o audio.o mode.o segment.o ULK_fixed.o car.o draw.o player.o
+pseudo_3d_racer: main.o audio.o mode.o segment.o ULK_fixed.o car.o draw.o player.o menu.o
 	gcc -o pseudo_3d_racer $^  $(CFLAGS)
 	chmod +x pseudo_3d_racer
 	mv pseudo_3d_racer ../
@@ -9,7 +9,7 @@ pseudo_3d_racer: main.o audio.o mode.o segment.o ULK_fixed.o car.o draw.o player
 main.o: ../../src/main.c ../../src/audio.h ../../src/mode.h ../../src/segment.h ../../src/car.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-mode.o: ../../src/mode.c ../../src/audio.h ../../src/mode.h ../../src/car.h ../../src/segment.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
+mode.o: ../../src/mode.c ../../src/menu.h ../../src/audio.h ../../src/mode.h ../../src/car.h ../../src/segment.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 segment.o: ../../src/segment.c ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/config.h
@@ -28,6 +28,9 @@ player.o: ../../src/player.c ../../src/player.h ../../src/audio.h ../../src/segm
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 audio.o: ../../src/audio.c ../../src/audio.h ../../src/mode.h ../../src/segment.h ../../src/car.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
+	$(CC) -O3 -c $< $(CFLAGS) 
+
+menu.o: ../../src/menu.c ../../src/menu.h ../../src/audio.h ../../src/mode.h ../../src/draw.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 clean:

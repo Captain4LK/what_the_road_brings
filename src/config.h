@@ -16,6 +16,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define FPS 60
 #define XRES 320
 #define YRES 240
+
 #define SEGLEN ULK_fixed_from_int(32)
 #define MAX_SPEED ULK_fixed_from_int(24*60)
 #define CAR_MAX_SPEED ULK_fixed_from_int(24*60)

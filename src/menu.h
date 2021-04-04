@@ -8,28 +8,11 @@ To the extent possible under law, the author(s) have dedicated all copyright and
 You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>. 
 */
 
-#ifndef _DRAW_H_
+#ifndef _MENU_H_
 
-#define _DRAW_H_
+#define _MENU_H_
 
-struct Texture_Rects
-{
-   Rectangle road00;
-   Rectangle road01;
-   Rectangle road02;
-   Rectangle road03;
-   Rectangle car_player[2][5];
-   Rectangle backdrop[5];
-   Rectangle sprites[32];
-   Rectangle car_sprites[4][3];
-};
-extern struct Texture_Rects texture_rects;
-
-extern Texture2D texture;
-extern Texture2D texture_menu;
-extern RenderTexture2D texture_viewport;
-
-void load_assets();
-void draw(ULK_fixed x, ULK_fixed z, int steer);
+void title_draw();
+void title_update();
 
 #endif

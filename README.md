@@ -7,6 +7,8 @@
 |Source|License|Author|
 |---|---|---|
 |[Sideview Fantasy Patreon Collection](https://opengameart.org/content/sideview-fantasy-patreon-collection)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[ansimuz](https://opengameart.org/users/ansimuz)|
+|[Gothicvania Patreon's Collection](https://opengameart.org/content/gothicvania-patreons-collection)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[ansimuz](https://opengameart.org/users/ansimuz)|
+|[GothicVania Cemetery Pack](https://opengameart.org/content/gothicvania-cemetery-pack)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[ansimuz](https://opengameart.org/users/ansimuz)|
 |[Generic Platformer Tiles](https://opengameart.org/content/generic-platformer-tiles)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[surt](https://opengameart.org/users/surt)|
 |[Car Kit](https://opengameart.org/content/car-kit)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[Kenney](https://opengameart.org/users/kenney)|
 
@@ -14,4 +16,5 @@
 
 |Source|License|Author|
 |---|---|---|
+|[Sci-Fi Sounds](https://opengameart.org/content/sci-fi-sounds)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[Kenney](https://opengameart.org/users/kenney)|
 

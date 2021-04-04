@@ -42,10 +42,10 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Variables
-static Color grass0 = {88,125,62,255};
-static Color grass1 = {59,115,73,255};
+static Color grass0 = {28,38,60,255};
+static Color grass1 = {11,31,60,255};
 static Color border0 = {102,102,102,255};
-static Color border1 = {59,115,73,255};
+static Color border1 = {11,31,60,255};
 static Color road0 = {59,45,31,255};
 static Color road1 = {59,45,31,255};
 static int fullscreen = 0;
@@ -94,7 +94,7 @@ int main(int argc, char **arg)
    add_road(4,4,160,0,-ULK_fixed_32_from_int(2000));
    add_road(0,0,16,0,0);
 
-   segment_list_get_pos(&segments,PLAYER_OFFSET,NULL)->color_road = WHITE;
+   segment_list_get_pos(&segments,PLAYER_OFFSET+8*SEGLEN,NULL)->color_road = WHITE;
 
    printf("Segment memory: %ld bytes\n",sizeof(Segment)*segments.used);
 
@@ -103,23 +103,32 @@ int main(int argc, char **arg)
    {
       if(rand()%10>6)
          add_sprite(i,0,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1))*(rand()%6+1));
-      else
-         add_sprite(i,1+rand()%3,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1))*(rand()%6+1));
+      //else
+         //add_sprite(i,1+rand()%3,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1))*(rand()%6+1));
       if(rand()%10>6)
          add_sprite(i,0,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(1))*(rand()%6+1))));
-      else
-         add_sprite(i,1+rand()%3,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(1))*(rand()%6+1))));
+      //else
+         //add_sprite(i,1+rand()%3,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(1))*(rand()%6+1))));
+      for(int x = 0;x<8;x++)
+      {
+         add_sprite(i,3,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(16)/16)*x)));
+         add_sprite(i,3,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(16)/16)*x);
+      }
       if(rand()%20==0)
          add_car(i,0,(1-rand()%3)*ULK_fixed_32_from_int(1)/2);
    }
 
    audio_set_track(0);
+
 #ifndef __EMSCRIPTEN__
    while(!WindowShouldClose())
       main_loop();
 #else
    emscripten_set_main_loop(main_loop,0,1);
 #endif
+
+   audio_unload();
+   CloseWindow();
 
    return 0;
 }

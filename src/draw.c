@@ -40,6 +40,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 //Variables
 Texture2D texture;
+Texture2D texture_menu;
 RenderTexture2D texture_viewport;
 
 struct Texture_Rects texture_rects = 
@@ -64,16 +65,17 @@ struct Texture_Rects texture_rects =
    }},
    .backdrop = 
    {
-      {.x = 0, .y = 120, .width = 320, .height = 160},
-      {.x = 320, .y = 120, .width = 512, .height = 160},
-      {.x = 832, .y = 120, .width = 512, .height = 160},
+      {.x = 0, .y = 120, .width = 320, .height = 224},
+      {.x = 320, .y = 120, .width = 384, .height = 224},
+      {.x = 704, .y = 120, .width = 384, .height = 224},
    },
    .sprites = 
    {
-      {.x = 0, .y = 280, .width = 51, .height = 100},
-      {.x = 51, .y = 280, .width = 32, .height = 16},
-      {.x = 51, .y = 296, .width = 32, .height = 16},
-      {.x = 51, .y = 312, .width = 32, .height = 32},
+      {.x = 0, .y = 344, .width = 51, .height = 100},
+      {.x = 51, .y = 344, .width = 32, .height = 16},
+      {.x = 51, .y = 360, .width = 32, .height = 16},
+      {.x = 51, .y = 408, .width = 34, .height = 29},
+      {.x = 51, .y = 376, .width = 32, .height = 32},
    },
    .car_sprites = 
    {
@@ -93,9 +95,9 @@ static struct
 {
    .layers = 
    {
-      { {.x = 0, .y = 0, .width = 320, .height = 160}, {.x = 0, .y = 0, .width = 0, .height = 0 } },
-      { {.x = 0, .y = 0, .width = 512, .height = 160}, {.x = 512, .y = 0, .width = 512, .height = 160 } },
-      { {.x = 0, .y = 0, .width = 512, .height = 160}, {.x = 512, .y = 0, .width = 512, .height = 160 } },
+      { {.x = 0, .y = 0, .width = 320, .height = 224}, {.x = 0, .y = 0, .width = 0, .height = 0 } },
+      { {.x = 0, .y = 0, .width = 384, .height = 224}, {.x = 384, .y = 0, .width = 384, .height = 224 } },
+      { {.x = 0, .y = 0, .width = 384, .height = 224}, {.x = 384, .y = 0, .width = 384, .height = 224 } },
    },
    .speed = 
    {
@@ -115,6 +117,7 @@ static void parallax_scroll(ULK_fixed_32 curve);
 void load_assets()
 {
    texture = LoadTexture("assets/textures.png");
+   texture_menu = LoadTexture("assets/sheet_menu.png");
    texture_viewport = LoadRenderTexture(XRES,YRES);
 }
 
