@@ -27,5 +27,6 @@ extern struct Player player;
 
 void player_reset();
 void player_update();
+int player_pos();
 
 #endif

@@ -45,6 +45,7 @@ Color clear_screen = BLACK;
 //Function prototypes
 static void mode_title_update();
 static void mode_credits_update();
+static void mode_game_start_update();
 static void mode_game_update();
 //-------------------------------------
 
@@ -59,6 +60,9 @@ void modes_update()
       break;
    case 1: //Credits
       mode_credits_update();
+      break;
+   case 10:
+      mode_game_start_update();
       break;
    case 11:
       mode_game_update();
@@ -132,14 +136,12 @@ static void mode_credits_update()
    EndDrawing();
 }
 
-static void mode_game_update()
+static void mode_game_start_update()
 {
-   UpdateMusicStream(sound_drive);
    if(music_current!=NULL)
       UpdateMusicStream(*music_current);
 
-   player_update();
-   cars_update();
+   cars_update(0);
 
    BeginDrawing();
       ClearBackground(clear_screen);
@@ -147,6 +149,44 @@ static void mode_game_update()
          ClearBackground(clear_texture);
          draw(player.px,player.pz,player.steer);
          DrawText(TextFormat("Lap\n%02d",player.lap),4,4,1,WHITE);
+      EndTextureMode();
+
+      float window_width = GetScreenWidth();
+      float window_height = GetScreenHeight();
+      Rectangle rect;
+      if((float)window_width/(4.0f/3.0f)>=window_height)
+      {
+         rect.width = window_height*(4.0f/3.0f);
+         rect.height = window_height;
+      }
+      else
+      {
+         rect.width = window_width;
+         rect.height = window_width*(3.0f/4.0f);
+      }
+      rect.x = (window_width-rect.width)/2;
+      rect.y = (window_height-rect.height)/2;
+      DrawTexturePro(texture_viewport.texture,(Rectangle){0,0,(float)texture_viewport.texture.width,(float)-texture_viewport.texture.height},rect,(Vector2){0,0},0.0f,WHITE);
+
+   EndDrawing();
+}
+
+static void mode_game_update()
+{
+   UpdateMusicStream(sound_drive);
+   if(music_current!=NULL)
+      UpdateMusicStream(*music_current);
+
+   player_update();
+   cars_update(1);
+
+   BeginDrawing();
+      ClearBackground(clear_screen);
+      BeginTextureMode(texture_viewport);
+         ClearBackground(clear_texture);
+         draw(player.px,player.pz,player.steer);
+         DrawText(TextFormat("Lap\n%02d",player.lap),4,4,1,WHITE);
+         DrawText(TextFormat("Pos\n   %01d",player_pos()),298,4,1,WHITE);
          //DrawText(TextFormat("      Time\n%02d:%02d:%03d",(ULK_fixed_32_to_int(player.time)/60),ULK_fixed_32_to_int(player.time)%60,ULK_fixed_32_to_int(1000*(player.time%ULK_fixed_32_from_int(1)))),270,4,1,WHITE);
       EndTextureMode();
 

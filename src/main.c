@@ -54,7 +54,7 @@ static int fullscreen = 0;
 //Function prototypes
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill);
 static void add_sprite(int seg, int index, ULK_fixed_32 pos);
-static void add_car(int seg, int index, ULK_fixed_32 pos);
+static void add_car(int seg, int index, ULK_fixed_32 pos, uint8_t type, ULK_fixed speed);
 static void main_loop();
 //-------------------------------------
 
@@ -94,7 +94,7 @@ int main(int argc, char **arg)
    add_road(4,4,160,0,-ULK_fixed_32_from_int(2000));
    add_road(0,0,16,0,0);
 
-   segment_list_get_pos(&segments,GOAL_POS,NULL)->color_road = WHITE;
+   segment_list_get_pos(&segments,0,NULL)->color_road = WHITE;
 
    printf("Segment memory: %ld bytes\n",sizeof(Segment)*segments.used);
 
@@ -115,8 +115,16 @@ int main(int argc, char **arg)
          add_sprite(i,3,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(16)/16)*x);
       }
       if(rand()%20==0)
-         add_car(i,0,(1-rand()%3)*ULK_fixed_32_from_int(1)/2);
+         add_car(i,1,(1-rand()%3)*ULK_fixed_32_from_int(1)/2,0,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
    }
+
+   add_car(segments.used-1,0,0,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
+   add_car(segments.used-2,0,-ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
+   add_car(segments.used-2,0,ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
+   add_car(segments.used-3,0,0,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
+   add_car(segments.used-4,0,-ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
+   add_car(segments.used-4,0,ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
+   add_car(segments.used-5,0,0,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
 
    audio_set_track(0);
 
@@ -195,7 +203,7 @@ static void add_sprite(int seg, int index, ULK_fixed_32 pos)
    dyn_array_add(Sprite,&dyn_array_element(Segment,&segments,seg).sprites,2,sp);
 }
 
-static void add_car(int seg, int index, ULK_fixed_32 pos)
+static void add_car(int seg, int index, ULK_fixed_32 pos, uint8_t type, ULK_fixed speed)
 {
    Segment *segment = &dyn_array_element(Segment,&segments,seg);
    Car_list *l = car_list_new();
@@ -204,10 +212,21 @@ static void add_car(int seg, int index, ULK_fixed_32 pos)
    l->car->pos_x = pos;
    l->car->index = index;
    l->car->z = ULK_fixed_from_int(1)+1;
-   l->next = segment->cars;
    l->car->counter = 0;
    l->car->id = cars_id_counter();
-   l->car->speed = ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED);
+   l->car->speed = speed;
+   l->car->type = type;
+   l->car->segment = seg;
+   l->car->lap = 0;
+   if(type==1)
+   {
+      Car_list *lo = car_list_new();
+      lo->car = l->car;
+      lo->next = cars_opponents;
+      cars_opponents = lo;
+   }
+
+   l->next = segment->cars;
    segment->cars = l;
 }
 

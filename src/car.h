@@ -14,12 +14,18 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 typedef struct Car
 {
+   //Universall for all cars
    ULK_fixed_32 pos_x;
    ULK_fixed z;
    ULK_fixed speed;
    uint16_t id;
    uint8_t index;
    uint8_t counter;
+   uint8_t type;
+
+   //Mostly used for opponent cars
+   int segment;
+   int lap;
 
    //Internal use, do not touch
    struct Car *next;
@@ -31,6 +37,8 @@ typedef struct Car_list
    struct Car_list *next;
 }Car_list;
 
+extern Car_list *cars_opponents;
+
 Car_list *car_list_new();
 void car_list_free(Car_list *l);
 Car *car_list_remove(Car_list **l, uint16_t id);
@@ -38,7 +46,7 @@ Car *car_list_remove(Car_list **l, uint16_t id);
 Car *car_new();
 void car_free(Car *l);
 
-void cars_update();
+void cars_update(uint8_t op);
 uint16_t cars_id_counter();
 
 #endif

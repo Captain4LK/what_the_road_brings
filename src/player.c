@@ -47,7 +47,7 @@ static int frame = 0;
 
 void player_reset()
 {
-   player.pz = 0;
+   player.pz = segments.used*SEGLEN-GOAL_POS;
    player.px = 0;
    player.vz = 0;
    player.steer = 0;
@@ -102,11 +102,12 @@ void player_update()
    if(player.vz<0)
       player.vz = 0;
 
-   ULK_fixed old_z = player.pz+PLAYER_OFFSET;
+   ULK_fixed old_z = player.pz;
    if(!player.stopped)
       player.pz+=player.vz*dt;
    player.time+=ULK_fixed_32_from_int(1)*dt;
-   if(old_z<GOAL_POS&&player.pz+PLAYER_OFFSET>GOAL_POS)
+   player.pz = player.pz%(segments.used*SEGLEN);
+   if(old_z>player.pz)
    {
       player.time = 0;
       player.lap++;
@@ -143,7 +144,28 @@ void player_update()
          player.steer--;
    }
 
-   player.pz = player.pz%(segments.used*SEGLEN);
    segment_player = segment_list_get_pos(&segments,player.pz+ULK_fixed_from_int(64),&i);
+}
+
+int player_pos()
+{
+   int pos = 8;
+   Car_list *l = cars_opponents;
+   while(l)
+   {
+      if(player.lap>l->car->lap)
+      {
+         pos--;
+      }
+      else if(player.lap==l->car->lap)
+      {
+         if(player.pz+PLAYER_OFFSET>l->car->segment*SEGLEN+l->car->z)
+            pos--;
+      }
+      //printf("%d\n",l->car->lap);
+      l = l->next;
+   }
+
+   return pos;
 }
 //-------------------------------------
