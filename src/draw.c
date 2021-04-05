@@ -197,19 +197,19 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       Car_list *l = s->cars;
       while(l)
       {
-         int dir = (l->car.pos_x>player.px)*2;
-         float t = (float)(l->car.z%SEGLEN)/(float)SEGLEN;
+         int dir = (l->car->pos_x>player.px)*2;
+         float t = (float)(l->car->z%SEGLEN)/(float)SEGLEN;
          float sc = interpolate(scale_0,scale_1,t);
          
-         dst.width = (float)texture_rects.car_sprites[l->car.index][dir].width*sc*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*0.5;
-         dst.height = (float)texture_rects.car_sprites[l->car.index][dir].height*sc*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*0.5;
-         dst.x = interpolate(s->p0.screen_x/65536.0f,s->p1.screen_x/65536.0f,t)+(sc*(l->car.pos_x/65536.0f)*ROAD_WIDTH*XRES/2)-dst.width/2;
+         dst.width = (float)texture_rects.car_sprites[l->car->index][dir].width*sc*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*0.5;
+         dst.height = (float)texture_rects.car_sprites[l->car->index][dir].height*sc*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*0.5;
+         dst.x = interpolate(s->p0.screen_x/65536.0f,s->p1.screen_x/65536.0f,t)+(sc*(l->car->pos_x/65536.0f)*ROAD_WIDTH*XRES/2)-dst.width/2;
          dst.y = interpolate(s->p0.screen_y/65536.0f,s->p1.screen_y/65536.0f,t)-dst.height+1;
 
          float clip = MAX(dst.y+dst.height-(s->clip_y/65536.0f),0.0f);
          if(clip<dst.height)
          {
-            Rectangle src = texture_rects.car_sprites[l->car.index][dir];
+            Rectangle src = texture_rects.car_sprites[l->car->index][dir];
             src.height-=src.height*clip/dst.height;
             dst.height-=clip;
             DrawTexturePro(texture,src,dst,(Vector2){0,0},0.0f,WHITE);

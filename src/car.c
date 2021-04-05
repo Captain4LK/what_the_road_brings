@@ -36,7 +36,8 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Variables
-static Car_list *base_list_cars = NULL;
+static Car_list *base_cars_list = NULL;
+static Car *base_cars = NULL;
 static uint8_t car_update_counter = 0;
 static uint16_t car_id_counter = 0;
 //-------------------------------------
@@ -48,36 +49,36 @@ static uint16_t car_id_counter = 0;
 
 Car_list *car_list_new()
 {
-   if(base_list_cars==NULL)
+   if(base_cars_list==NULL)
    {
       Car_list *l = malloc(sizeof(*l));
       l->next = NULL;
       return l;
    }
 
-   Car_list *l = base_list_cars;
-   base_list_cars = l->next;
+   Car_list *l = base_cars_list;
+   base_cars_list = l->next;
    l->next = NULL;
    return l;
 }
 
 void car_list_free(Car_list *l)
 {
-   l->next = base_list_cars;
-   base_list_cars = l;
+   l->next = base_cars_list;
+   base_cars_list = l;
 }
 
-Car car_list_remove(Car_list **l, uint16_t id)
+Car *car_list_remove(Car_list **l, uint16_t id)
 {
    if(l==NULL)
-      return (Car){0};
+      return NULL;
 
    Car_list *in = *l;
    Car_list **last = l;
-   Car out = (Car){0};
+   Car *out = NULL;
    while(in)
    {
-      if(in->car.id==id)
+      if(in->car->id==id)
       {
          *last = in->next;
          out = in->car;
@@ -90,6 +91,27 @@ Car car_list_remove(Car_list **l, uint16_t id)
    }
 
    return out;
+}
+
+Car *car_new()
+{
+   if(base_cars==NULL)
+   {
+      Car *l = malloc(sizeof(*l));
+      l->next = NULL;
+      return l;
+   }
+
+   Car *l = base_cars;
+   base_cars = l->next;
+   l->next = NULL;
+   return l;
+}
+
+void car_free(Car *l)
+{
+   l->next = base_cars;
+   base_cars = l;
 }
 
 void cars_update()
@@ -113,9 +135,9 @@ void cars_update()
          //Only update car if not updated already
          //Cars may be accessed twice since they can
          //be moved forward one segment
-         if(l->car.counter!=car_update_counter)
+         if(l->car->counter!=car_update_counter)
          {
-            l->car.counter++;
+            l->car->counter++;
 
             //Steering 
             //Only when close to the player
@@ -131,16 +153,16 @@ void cars_update()
                   //since a car driving through the player would
                   //look very weird
                   Segment *sl = segment_list_get(&segments,j+i);
-                  if(sl==segment_player&&l->car.speed>player.vz //Pointer comparison...
-                     &&overlap(player.px/65536.0f,texture_rects.car_player[0][0].width*SPRITE_SCALE,l->car.pos_x/65536.0f,texture_rects.car_sprites[l->car.index][0].width*SPRITE_SCALE,1.0f))
+                  if(sl==segment_player&&l->car->speed>player.vz //Pointer comparison...
+                     &&overlap(player.px/65536.0f,texture_rects.car_player[0][0].width*SPRITE_SCALE,l->car->pos_x/65536.0f,texture_rects.car_sprites[l->car->index][0].width*SPRITE_SCALE,1.0f))
                   {
                      //Calculate steering direction
                      int dir = 0;
                      if(player.px>ULK_fixed_32_from_int(1)/3) dir = -1;
                      else if(player.px<-ULK_fixed_32_from_int(1)/3) dir = 1;
-                     else dir = (l->car.pos_x>player.px)?1:-1;
+                     else dir = (l->car->pos_x>player.px)?1:-1;
 
-                     l->car.pos_x+=ULK_fixed_32_div(l->car.speed<<8,CAR_MAX_SPEED<<8)*dir*dt*4;
+                     l->car->pos_x+=ULK_fixed_32_div(l->car->speed<<8,CAR_MAX_SPEED<<8)*dir*dt*4;
                      break;
                   }
                   
@@ -148,15 +170,15 @@ void cars_update()
                   int end = 0;
                   while(cl)
                   {
-                     if(l->car.speed>=cl->car.speed&&overlap(cl->car.pos_x/65536.0f,texture_rects.car_sprites[cl->car.index][0].width*SPRITE_SCALE,l->car.pos_x/65536.0f,texture_rects.car_sprites[l->car.index][0].width*SPRITE_SCALE,0.9f))
+                     if(l->car->speed>=cl->car->speed&&overlap(cl->car->pos_x/65536.0f,texture_rects.car_sprites[cl->car->index][0].width*SPRITE_SCALE,l->car->pos_x/65536.0f,texture_rects.car_sprites[l->car->index][0].width*SPRITE_SCALE,0.9f))
                      {
                         //Calculate steering direction
                         int dir = 0;
-                        if(cl->car.pos_x>ULK_fixed_32_from_int(1)/3) dir = -1;
-                        else if(cl->car.pos_x<-ULK_fixed_32_from_int(1)/3) dir = 1;
-                        else dir = (l->car.pos_x>cl->car.pos_x)?1:-1;
+                        if(cl->car->pos_x>ULK_fixed_32_from_int(1)/3) dir = -1;
+                        else if(cl->car->pos_x<-ULK_fixed_32_from_int(1)/3) dir = 1;
+                        else dir = (l->car->pos_x>cl->car->pos_x)?1:-1;
 
-                        l->car.pos_x+=ULK_fixed_32_div(l->car.speed<<8,CAR_MAX_SPEED<<8)*dir*dt;
+                        l->car->pos_x+=ULK_fixed_32_div(l->car->speed<<8,CAR_MAX_SPEED<<8)*dir*dt;
                         end = 1;
                         break;
                      }
@@ -168,19 +190,19 @@ void cars_update()
                }
                if(j==16) //Nothing found
                {
-                  if(l->car.pos_x>(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(4)/10))
-                     l->car.pos_x-=2*ULK_fixed_32_div(l->car.speed,CAR_MAX_SPEED)*dt;
-                  else if(l->car.pos_x<-(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(4)/10))
-                     l->car.pos_x+=2*ULK_fixed_32_div(l->car.speed,CAR_MAX_SPEED)*dt;
+                  if(l->car->pos_x>(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(4)/10))
+                     l->car->pos_x-=2*ULK_fixed_32_div(l->car->speed,CAR_MAX_SPEED)*dt;
+                  else if(l->car->pos_x<-(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(4)/10))
+                     l->car->pos_x+=2*ULK_fixed_32_div(l->car->speed,CAR_MAX_SPEED)*dt;
                }
             }
 
             //Update z position/segment
-            l->car.z+=l->car.speed*dt;
-            if(l->car.z>=SEGLEN)
+            l->car->z+=l->car->speed*dt;
+            if(l->car->z>=SEGLEN)
             {
-               l->car.z = l->car.z%SEGLEN;
-               Car car = car_list_remove(&s->cars,l->car.id);                
+               l->car->z = l->car->z%SEGLEN;
+               Car *car = car_list_remove(&s->cars,l->car->id);                
                Segment *n = segment_list_get(&segments,i+1);
                Car_list *cn = car_list_new();
                cn->car = car;

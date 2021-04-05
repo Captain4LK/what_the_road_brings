@@ -12,7 +12,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 #define _CAR_H_
 
-typedef struct
+typedef struct Car
 {
    ULK_fixed_32 pos_x;
    ULK_fixed z;
@@ -20,17 +20,24 @@ typedef struct
    uint16_t id;
    uint8_t index;
    uint8_t counter;
+
+   //Internal use, do not touch
+   struct Car *next;
 }Car;
 
 typedef struct Car_list
 {
-   Car car;
+   Car *car;
    struct Car_list *next;
 }Car_list;
 
 Car_list *car_list_new();
 void car_list_free(Car_list *l);
-Car car_list_remove(Car_list **l, uint16_t id);
+Car *car_list_remove(Car_list **l, uint16_t id);
+
+Car *car_new();
+void car_free(Car *l);
+
 void cars_update();
 uint16_t cars_id_counter();
 
