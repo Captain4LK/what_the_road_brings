@@ -30,7 +30,7 @@ player.o: ../../src/player.c ../../src/player.h ../../src/audio.h ../../src/segm
 audio.o: ../../src/audio.c ../../src/audio.h ../../src/mode.h ../../src/segment.h ../../src/car.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-menu.o: ../../src/menu.c ../../src/menu.h ../../src/audio.h ../../src/mode.h ../../src/draw.h ../../src/util.h ../../src/config.h
+menu.o: ../../src/menu.c ../../src/menu.h ../../src/audio.h ../../src/player.h ../../src/mode.h ../../src/draw.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 clean:

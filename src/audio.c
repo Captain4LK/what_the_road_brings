@@ -60,7 +60,9 @@ static const char *tracks[] =
 void audio_load()
 {
    sound_drive = LoadMusicStream("sounds/drive.ogg");
-   SetMusicVolume(sound_drive,0.2f);
+   SetMusicVolume(sound_drive,0.3f);
+
+   SetMasterVolume(0.4f);
 }
 
 void audio_set_track(unsigned track)

@@ -45,6 +45,16 @@ static int frame = 0;
 
 //Function implementations
 
+void player_reset()
+{
+   player.pz = 0;
+   player.px = 0;
+   player.vz = 0;
+   player.steer = 0;
+   player.stopped = 0;
+   player.lap = 0;
+}
+
 void player_update()
 {
    float dt = GetFrameTime();
@@ -92,8 +102,16 @@ void player_update()
    if(player.vz<0)
       player.vz = 0;
 
+   ULK_fixed old_z = player.pz+PLAYER_OFFSET;
    if(!player.stopped)
       player.pz+=player.vz*dt;
+   player.time+=ULK_fixed_32_from_int(1)*dt;
+   if(old_z<GOAL_POS&&player.pz+PLAYER_OFFSET>GOAL_POS)
+   {
+      player.time = 0;
+      player.lap++;
+   }
+
    if(player.vz==0&&IsMusicPlaying(sound_drive))
       StopMusicStream(sound_drive);
    else if(player.vz>0&&!IsMusicPlaying(sound_drive))

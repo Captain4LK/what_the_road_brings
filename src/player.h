@@ -19,10 +19,13 @@ struct Player
    ULK_fixed vz;
    int steer;
    int stopped;
+   int lap;
+   ULK_fixed_32 time;
 };
 
 extern struct Player player;
 
+void player_reset();
 void player_update();
 
 #endif

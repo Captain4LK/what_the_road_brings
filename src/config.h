@@ -27,6 +27,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define PLAYER_OFFSET (ULK_fixed_32_mul(CAM_HEIGHT,CAM_DEPTH)>>8)
 #define CAM_DEPTH 54991
 #define CAM_DEPTHF 0.83909963f
+#define GOAL_POS (PLAYER_OFFSET+8*SEGLEN)
 
 #define ROAD_WIDTH 96
 #define SPRITE_SCALE (1.0/90.0f)

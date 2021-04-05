@@ -15,4 +15,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 void title_draw();
 void title_update();
 
+void credits_draw();
+void credits_update();
+
 #endif

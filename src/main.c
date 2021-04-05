@@ -94,7 +94,7 @@ int main(int argc, char **arg)
    add_road(4,4,160,0,-ULK_fixed_32_from_int(2000));
    add_road(0,0,16,0,0);
 
-   segment_list_get_pos(&segments,PLAYER_OFFSET+8*SEGLEN,NULL)->color_road = WHITE;
+   segment_list_get_pos(&segments,GOAL_POS,NULL)->color_road = WHITE;
 
    printf("Segment memory: %ld bytes\n",sizeof(Segment)*segments.used);
 

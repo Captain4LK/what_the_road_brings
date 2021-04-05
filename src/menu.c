@@ -23,6 +23,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "config.h"
 #include "util.h"
 #include "audio.h"
+#include "player.h"
 #include "mode.h"
 #include "draw.h"
 #include "menu.h"
@@ -36,22 +37,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 //Variables
 
-static struct
-{
-   Rectangle layers[3][2];
-   float speed[3];
-}title_parallax = 
-{
-   .layers = 
-   {
-      { {.x = 0, .y = 0, .width = 384, .height = 240}, {.x = 384, .y = 0, .width = 384, .height = 240 } },
-      { {.x = 0, .y = 0, .width = 320, .height = 240}, {.x = 320, .y = 0, .width = 320, .height = 240 } },
-      { {.x = 0, .y = 0, .width = 512, .height = 240}, {.x = 512, .y = 0, .width = 512, .height = 240 } },
-   },
-   { 
-      8.0f, 16.0f, 32.0f,
-   },
-};
+static int title_select = 0;
 //-------------------------------------
 
 //Function prototypes
@@ -64,46 +50,35 @@ void title_draw()
    DrawTextureRec(texture_menu,(Rectangle){0,0,320,240},(Vector2){0,0},WHITE);
    DrawTextureRec(texture_menu,(Rectangle){320,0,320,240},(Vector2){0,0},WHITE);
 
-   /*DrawTextureRec(texture_menu,(Rectangle){320,0,384,240},(Vector2){title_parallax.layers[0][0].x,title_parallax.layers[0][0].y},WHITE);
-   DrawTextureRec(texture_menu,(Rectangle){320,0,384,240},(Vector2){title_parallax.layers[0][1].x,title_parallax.layers[0][1].y},WHITE);
-
-   DrawTextureRec(texture_menu,(Rectangle){704,0,320,240},(Vector2){title_parallax.layers[1][0].x,title_parallax.layers[1][0].y},WHITE);
-   DrawTextureRec(texture_menu,(Rectangle){704,0,320,240},(Vector2){title_parallax.layers[1][1].x,title_parallax.layers[1][1].y},WHITE);
-
-   DrawTextureRec(texture_menu,(Rectangle){1024,0,512,240},(Vector2){title_parallax.layers[2][0].x,title_parallax.layers[2][0].y},WHITE);
-   DrawTextureRec(texture_menu,(Rectangle){1024,0,512,240},(Vector2){title_parallax.layers[2][1].x,title_parallax.layers[2][1].y},WHITE);*/
+   DrawTextureRec(texture_menu,(Rectangle){0,240,8,9},(Vector2){4,163+23*title_select},WHITE);
 }
 
 void title_update()
 {
-   if(IsKeyPressed(KEY_N))
-      mode = 11;
+   //Select
+   if(IsKeyPressed(KEY_DOWN)&&title_select<2)
+      title_select++;
+   if(IsKeyPressed(KEY_UP)&&title_select>0)
+      title_select--;
 
-   float dt = GetFrameTime();
-
-   for(int i = 0;i<3;i++)
+   if(IsKeyPressed(KEY_ENTER))
    {
-      float speed = -title_parallax.speed[i]*dt;
-
-      title_parallax.layers[i][0].x+=speed;
-      title_parallax.layers[i][1].x+=speed;
-
-      //Clip layer
-      Rectangle tmp;
-      if(title_parallax.layers[i][0].x<0.0f)
+      switch(title_select)
       {
-         tmp = title_parallax.layers[i][0];
-         title_parallax.layers[i][0] = title_parallax.layers[i][1];
-         title_parallax.layers[i][1] = tmp;
-         title_parallax.layers[i][0].x = title_parallax.layers[i][1].x+title_parallax.layers[i][1].width;
-      }
-      else if(title_parallax.layers[i][0].x>0.0f)
-      {
-         tmp = title_parallax.layers[i][0];
-         title_parallax.layers[i][0] = title_parallax.layers[i][1];
-         title_parallax.layers[i][1] = tmp;
-         title_parallax.layers[i][0].x = title_parallax.layers[i][1].x-title_parallax.layers[i][1].width;
+      case 0: mode = 11; player_reset(); break;
+      case 1: mode = 1; break;
+      case 2: CloseWindow(); break;
       }
    }
+}
+
+void credits_draw()
+{
+   DrawTextureRec(texture_menu,(Rectangle){0,0,320,240},(Vector2){0,0},WHITE);
+}
+
+void credits_update()
+{
+
 }
 //-------------------------------------
