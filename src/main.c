@@ -53,7 +53,7 @@ static int fullscreen = 0;
 
 //Function prototypes
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill);
-static void add_sprite(int seg, int index, ULK_fixed_32 pos);
+static void add_sprite(int seg, int index, ULK_fixed_32 pos, uint8_t type);
 static void add_car(int seg, int index, ULK_fixed_32 pos, uint8_t type, ULK_fixed speed);
 static void main_loop();
 //-------------------------------------
@@ -102,17 +102,17 @@ int main(int argc, char **arg)
    for(int i = 0;i<segments.used;i++)
    {
       if(rand()%10>6)
-         add_sprite(i,0,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1))*(rand()%6+1));
+         add_sprite(i,0,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1))*(rand()%6+1),0);
       //else
          //add_sprite(i,1+rand()%3,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1))*(rand()%6+1));
       if(rand()%10>6)
-         add_sprite(i,0,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(1))*(rand()%6+1))));
+         add_sprite(i,0,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(1))*(rand()%6+1))),0);
       //else
          //add_sprite(i,1+rand()%3,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(1))*(rand()%6+1))));
       for(int x = 0;x<8;x++)
       {
-         add_sprite(i,3,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(16)/16)*x)));
-         add_sprite(i,3,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(16)/16)*x);
+         add_sprite(i,3,-(ULK_fixed_32_from_int(1)+((ULK_fixed_32_from_int(16)/16)*x)),1);
+         add_sprite(i,3,ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(16)/16)*x,1);
       }
       if(rand()%20==0)
          add_car(i,1,(1-rand()%3)*ULK_fixed_32_from_int(1)/2,0,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
@@ -195,11 +195,12 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
    }
 }
 
-static void add_sprite(int seg, int index, ULK_fixed_32 pos)
+static void add_sprite(int seg, int index, ULK_fixed_32 pos, uint8_t type)
 {
    Sprite sp;
    sp.index = index;
    sp.pos = pos;
+   sp.type = type;
    dyn_array_add(Sprite,&dyn_array_element(Segment,&segments,seg).sprites,2,sp);
 }
 

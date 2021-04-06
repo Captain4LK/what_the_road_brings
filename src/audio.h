@@ -14,6 +14,9 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 extern Music *music_current;
 extern Music sound_drive;
+extern Sound sound_hit;
+extern Sound sound_countdown_0;
+extern Sound sound_countdown_1;
 
 void audio_load();
 void audio_set_track(unsigned track);

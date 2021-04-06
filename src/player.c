@@ -60,11 +60,12 @@ void player_update()
    float dt = GetFrameTime();
    ULK_fixed_32 vz_acc = ACCEL*dt;
    ULK_fixed_32 vz_dec = DECEL*dt;
-   player.stopped = 0;
 
    //Collision
    int i;
    segment_player = segment_list_get_pos(&segments,player.pz+PLAYER_OFFSET,&i);
+   int stop = player.stopped;
+   player.stopped = 0;
    for(int j = 0;j<segment_player->sprites.used;j++)
    {
       Sprite *sp = &dyn_array_element(Sprite,&segment_player->sprites,j);
@@ -72,7 +73,14 @@ void player_update()
       float width_1 = (float)texture_rects.sprites[sp->index].width*SPRITE_SCALE;
 
       if(overlap((float)player.px/65536.0f,width_0,(float)(sp->pos/65536.0f)+(sp->pos>0?1.5f:-1.5f)*(width_1/2.0f),width_1,0.5))
+      {
+         if(!stop)
+            PlaySound(sound_hit);
+
          player.stopped = 1;
+         if(sp->type==1)
+            player.stopped = 2+(player.px>0);
+      }
    }
    Car_list *cl = segment_player->cars;
    while(cl)
@@ -80,12 +88,20 @@ void player_update()
       if(player.vz>cl->car->speed&&overlap((float)player.px/65536.0f,(float)texture_rects.car_player[0][0].width*SPRITE_SCALE,(float)cl->car->pos_x/65536.0f,(float)texture_rects.car_sprites[cl->car->index][0].width*SPRITE_SCALE,0.3f))
       {
          player.vz = ULK_fixed_mul(cl->car->speed,ULK_fixed_div(cl->car->speed,player.vz));
+         PlaySound(sound_hit);
       }
 
       cl = cl->next;
    }
-   if(!player.stopped)
-      player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(segment_player->curve,ULK_fixed_32_from_int(2)))*dt;
+   //-------------------------------------
+
+   if(player.stopped!=1)
+   {
+      if(segment_player->curve<0&&player.stopped!=3)
+         player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(segment_player->curve,ULK_fixed_32_from_int(2)))*dt;
+      else if(segment_player->curve>0&&player.stopped!=2)
+         player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(segment_player->curve,ULK_fixed_32_from_int(2)))*dt;
+   }
 
    frame++;
    if(IsKeyDown(KEY_UP))
@@ -97,13 +113,13 @@ void player_update()
       player.vz+=2*vz_dec;
    else
       player.vz+=vz_dec;
-   if(player.vz>MAX_SPEED/4&&abs(player.px)>ULK_fixed_32_from_int(1))
+   if(player.vz>MAX_SPEED/4&&abs(player.px)>=ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(1)/10)
       player.vz+=4*vz_dec;
    if(player.vz<0)
       player.vz = 0;
 
    ULK_fixed old_z = player.pz;
-   if(!player.stopped)
+   if(player.stopped!=1)
       player.pz+=player.vz*dt;
    player.time+=ULK_fixed_32_from_int(1)*dt;
    player.pz = player.pz%(segments.used*SEGLEN);
@@ -120,7 +136,7 @@ void player_update()
    SetMusicPitch(sound_drive,0.5f+((float)player.vz/(float)MAX_SPEED));
 
    ULK_fixed_32 speed_x = 3*MIN(ULK_fixed_32_from_int(1),ULK_fixed_32_div(player.vz,MAX_SPEED/3))*dt;
-   if(IsKeyDown(KEY_LEFT))
+   if(IsKeyDown(KEY_LEFT)&&player.stopped!=2)
    {
       if(player.steer==0)
          frame = 0;
@@ -128,7 +144,7 @@ void player_update()
       if(player.steer<2&&frame%6==0)
          player.steer++;
    }
-   else if(IsKeyDown(KEY_RIGHT))
+   else if(IsKeyDown(KEY_RIGHT)&&player.stopped!=3)
    {
       if(player.steer==0)
          frame = 0;
@@ -162,7 +178,6 @@ int player_pos()
          if(player.pz+PLAYER_OFFSET>l->car->segment*SEGLEN+l->car->z)
             pos--;
       }
-      //printf("%d\n",l->car->lap);
       l = l->next;
    }
 

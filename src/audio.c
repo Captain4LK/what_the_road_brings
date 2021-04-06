@@ -42,6 +42,9 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //Variables
 Music *music_current = NULL;
 Music sound_drive;
+Sound sound_hit;
+Sound sound_countdown_0;
+Sound sound_countdown_1;
 
 static Music current_music;
 static int current_music_track = -1;
@@ -62,7 +65,11 @@ void audio_load()
    sound_drive = LoadMusicStream("sounds/drive.ogg");
    SetMusicVolume(sound_drive,0.3f);
 
-   SetMasterVolume(0.4f);
+   sound_hit = LoadSound("sounds/hit.ogg");
+   sound_countdown_0 = LoadSound("sounds/countdown_start.ogg");
+   sound_countdown_1 = LoadSound("sounds/countdown_end.ogg");
+
+   SetMasterVolume(1.0f);
 }
 
 void audio_set_track(unsigned track)
@@ -79,6 +86,7 @@ void audio_set_track(unsigned track)
 
       current_music_track = track;
       current_music = LoadMusicStream(tracks[track]);
+      SetMusicVolume(current_music,0.5f);
       music_current = &current_music;
       PlayMusicStream(current_music);
    }

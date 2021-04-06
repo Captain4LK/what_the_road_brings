@@ -61,10 +61,10 @@ void modes_update()
    case 1: //Credits
       mode_credits_update();
       break;
-   case 10:
+   case 11:
       mode_game_start_update();
       break;
-   case 11:
+   case 12:
       mode_game_update();
       break;
    }
@@ -169,6 +169,12 @@ static void mode_game_start_update()
       DrawTexturePro(texture_viewport.texture,(Rectangle){0,0,(float)texture_viewport.texture.width,(float)-texture_viewport.texture.height},rect,(Vector2){0,0},0.0f,WHITE);
 
    EndDrawing();
+
+   if(!IsSoundPlaying(sound_countdown_0))
+   {
+      PlaySound(sound_countdown_1);
+      mode = 12;
+   }
 }
 
 static void mode_game_update()

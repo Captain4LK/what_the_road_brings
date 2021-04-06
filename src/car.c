@@ -206,9 +206,9 @@ static void car_npc_update(Segment *s, Car_list *l, int seg, float dt)
          }
          if(j==16) //Nothing found
          {
-            if(l->car->pos_x>(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(4)/10))
+            if(l->car->pos_x>(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(3)/10))
                l->car->pos_x-=2*ULK_fixed_32_div(l->car->speed,CAR_MAX_SPEED)*dt;
-            else if(l->car->pos_x<-(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(4)/10))
+            else if(l->car->pos_x<-(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(3)/10))
                l->car->pos_x+=2*ULK_fixed_32_div(l->car->speed,CAR_MAX_SPEED)*dt;
          }
       }
@@ -289,9 +289,9 @@ static void car_opp_update(Segment *s, Car_list *l, int seg, float dt)
          }
          if(j==16) //Nothing found
          {
-            if(l->car->pos_x>(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(4)/10))
+            if(l->car->pos_x>(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(3)/10))
                l->car->pos_x-=2*ULK_fixed_32_div(l->car->speed,CAR_MAX_SPEED)*dt;
-            else if(l->car->pos_x<-(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(4)/10))
+            else if(l->car->pos_x<-(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(3)/10))
                l->car->pos_x+=2*ULK_fixed_32_div(l->car->speed,CAR_MAX_SPEED)*dt;
          }
       }

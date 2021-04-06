@@ -25,7 +25,8 @@ typedef struct
 typedef struct
 {
    ULK_fixed_32 pos;
-   uint32_t index;
+   uint16_t index;
+   uint8_t type;
 }Sprite;
 
 typedef struct

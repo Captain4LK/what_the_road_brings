@@ -65,7 +65,7 @@ void title_update()
    {
       switch(title_select)
       {
-      case 0: mode = 11; player_reset(); break;
+      case 0: mode = 11; player_reset(); PlaySound(sound_countdown_0); break;
       case 1: mode = 1; break;
       case 2: CloseWindow(); break;
       }
