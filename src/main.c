@@ -72,6 +72,7 @@ int main(int argc, char **arg)
    audio_load();
    clear_texture = grass1;
 
+   dyn_array_init(Segment,&segments,128);
    track_build();
 
    audio_set_track(0);

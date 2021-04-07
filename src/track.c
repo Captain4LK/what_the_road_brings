@@ -28,6 +28,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "track.h"
 #include "car.h"
 #include "segment.h"
+#include "player.h"
 #include "lil.h"
 //-------------------------------------
 
@@ -75,7 +76,31 @@ void track_build()
    track.music = 0;
 
    //Setup road
-   dyn_array_init(Segment,&segments,128);
+   //Free previous road
+   for(int i = 0;i<segments.used;i++)
+   {
+      Segment *s = &dyn_array_element(Segment,&segments,i);
+      dyn_array_free(Sprite,&s->sprites);
+      Car_list *l = s->cars;
+      while(l)
+      {
+         Car_list *next = l->next;
+         car_free(l->car);
+         car_list_free(l);
+
+         l = next;
+      }
+   }
+   Car_list *l = cars_opponents;
+   while(l)
+   {
+      Car_list *next = l->next;
+      car_list_free(l);
+
+      l = next;
+   }
+   cars_opponents = NULL;
+   dyn_array_clear(Segment,&segments);
 
    lil_t lil = lil_new();
 
@@ -114,6 +139,8 @@ void track_build()
    add_car(segments.used-4,0,-ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
    add_car(segments.used-4,0,ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
    add_car(segments.used-5,0,0,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
+
+   player_reset();
 }
 
 static LILCALLBACK lil_value_t fnc_add_road(lil_t lil, size_t argc, lil_value_t* argv)

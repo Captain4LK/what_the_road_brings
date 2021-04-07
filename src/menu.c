@@ -29,6 +29,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "mode.h"
 #include "draw.h"
 #include "menu.h"
+#include "track.h"
 //-------------------------------------
 
 //#defines
@@ -69,7 +70,7 @@ void title_update()
    {
       switch(title_select)
       {
-      case 0: mode = 11; player_reset(); StopMusicStream(*music_current); PlaySound(sound_countdown_0); break;
+      case 0: mode = 11; track_build(); player_reset(); StopMusicStream(*music_current); PlaySound(sound_countdown_0); break;
       case 1: mode = 1; break;
       case 2: CloseWindow(); break;
       }

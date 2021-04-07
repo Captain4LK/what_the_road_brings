@@ -25,6 +25,7 @@ struct Texture_Rects
    Rectangle car_sprites[4][3];
 };
 extern struct Texture_Rects texture_rects;
+extern int enable_parallax;
 
 extern Texture2D texture;
 extern Texture2D texture_menu;

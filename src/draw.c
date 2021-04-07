@@ -43,6 +43,7 @@ Texture2D texture;
 Texture2D texture_menu;
 RenderTexture2D texture_viewport;
 Font font;
+int enable_parallax = 1;
 
 struct Texture_Rects texture_rects = 
 {
@@ -167,7 +168,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    ULK_fixed_32 max_y = ULK_fixed_32_from_int(YRES);
    segment_player = segment_list_get_pos(&segments,player.pz+PLAYER_OFFSET,&i);
    Segment *base = segment_list_get_pos(&segments,z,&i);
-   if(!player.stopped)
+   if(!player.stopped&&enable_parallax)
       parallax_scroll(segment_player->curve);
    int max = i+RENDER_DISTANCE;
    is = i;

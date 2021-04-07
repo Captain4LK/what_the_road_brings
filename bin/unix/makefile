@@ -12,7 +12,7 @@ main.o: ../../src/main.c ../../src/audio.h ../../src/mode.h ../../src/segment.h 
 lil.o: ../../src/lil.c ../../src/lil.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-track.o: ../../src/track.c ../../src/track.h ../../src/lil.h ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/config.h
+track.o: ../../src/track.c ../../src/track.h ../../src/player.h ../../src/lil.h ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 mode.o: ../../src/mode.c ../../src/track.h ../../src/menu.h ../../src/audio.h ../../src/mode.h ../../src/car.h ../../src/segment.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
@@ -36,7 +36,7 @@ player.o: ../../src/player.c ../../src/player.h ../../src/audio.h ../../src/segm
 audio.o: ../../src/audio.c ../../src/audio.h ../../src/mode.h ../../src/segment.h ../../src/car.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-menu.o: ../../src/menu.c ../../src/menu.h ../../src/audio.h ../../src/player.h ../../src/mode.h ../../src/draw.h ../../src/util.h ../../src/config.h
+menu.o: ../../src/menu.c ../../src/menu.h ../../src/track.h ../../src/audio.h ../../src/player.h ../../src/mode.h ../../src/draw.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 clean:
