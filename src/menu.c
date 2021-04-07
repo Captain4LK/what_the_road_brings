@@ -30,6 +30,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "draw.h"
 #include "menu.h"
 #include "track.h"
+#include "input.h"
 //-------------------------------------
 
 //#defines
@@ -61,12 +62,12 @@ void title_draw()
 void title_update()
 {
    //Select
-   if(IsKeyPressed(KEY_DOWN)&&title_select<2)
+   if(input_pressed_down()&&title_select<2)
       title_select++;
-   if(IsKeyPressed(KEY_UP)&&title_select>0)
+   if(input_pressed_up()&&title_select>0)
       title_select--;
 
-   if(IsKeyPressed(KEY_ENTER))
+   if(input_pressed_confirm())
    {
       switch(title_select)
       {
@@ -100,7 +101,7 @@ void credits_update()
       fclose(f);
    }
 
-   if(IsKeyPressed(KEY_ENTER))
+   if(input_pressed_confirm())
       mode = 0;
 }
 //-------------------------------------

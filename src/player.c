@@ -25,6 +25,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "player.h"
 #include "draw.h"
 #include "segment.h"
+#include "input.h"
 //-------------------------------------
 
 //#defines
@@ -104,12 +105,12 @@ void player_update()
    }
 
    frame++;
-   if(IsKeyDown(KEY_UP))
+   if(input_down_accel())
    {
       if(player.vz<(MAX_SPEED))
          player.vz+=MIN(MAX_SPEED-player.vz,vz_acc);
    }
-   else if(IsKeyDown(KEY_DOWN))
+   else if(input_down_decel())
       player.vz+=2*vz_dec;
    else
       player.vz+=vz_dec;
@@ -136,19 +137,19 @@ void player_update()
    SetMusicPitch(sound_drive,0.5f+((float)player.vz/(float)MAX_SPEED));
 
    ULK_fixed_32 speed_x = 3*MIN(ULK_fixed_32_from_int(1),ULK_fixed_32_div(player.vz,MAX_SPEED/3))*dt;
-   if(IsKeyDown(KEY_LEFT)&&player.stopped!=2)
+   if(input_down_steer_left()&&player.stopped!=2)
    {
       if(player.steer==0)
          frame = 0;
-      player.px-=speed_x;
+      player.px-=speed_x*input_steer_left();
       if(player.steer<2&&frame%6==0)
          player.steer++;
    }
-   else if(IsKeyDown(KEY_RIGHT)&&player.stopped!=3)
+   else if(input_down_steer_right()&&player.stopped!=3)
    {
       if(player.steer==0)
          frame = 0;
-      player.px+=speed_x;
+      player.px+=speed_x*input_steer_right();
       if(player.steer>-2&&frame%6==0)
          player.steer--;
    } 

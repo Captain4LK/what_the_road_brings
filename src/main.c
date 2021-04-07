@@ -27,16 +27,13 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "util.h"
 #include "audio.h"
 #include "mode.h"
-#include "player.h"
 #include "car.h"
 #include "segment.h"
 #include "draw.h"
-#include "track.h"
+#include "input.h"
 //-------------------------------------
 
 //#defines
-#define COLOR_ROAD() \
-{ if((segments.used%10)<5) {s.color = grass0;s.color_road = road0;s.color_border = border0;s.line = segments.used%5>1;}else{s.color = grass1;s.color_road = road1;s.color_border = border1;s.line = 0;}}
 //-------------------------------------
 
 //Typedefs
@@ -73,7 +70,6 @@ int main(int argc, char **arg)
    clear_texture = grass1;
 
    dyn_array_init(Segment,&segments,128);
-   track_build();
 
    audio_set_track(0);
 
@@ -92,7 +88,7 @@ int main(int argc, char **arg)
 
 static void main_loop()
 {
-   if(IsKeyPressed(KEY_M))
+   if(input_pressed_fullscreen())
    {
       fullscreen = !fullscreen;
 

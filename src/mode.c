@@ -29,6 +29,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "draw.h"
 #include "menu.h"
 #include "track.h"
+#include "input.h"
 //-------------------------------------
 
 //#defines
@@ -193,7 +194,7 @@ static void mode_game_update()
    player_update();
    cars_update(1);
 
-   if(IsKeyPressed(KEY_ENTER))
+   if(input_pressed_pause())
    {
       if(music_current!=NULL)
          PauseMusicStream(*music_current);
@@ -237,11 +238,11 @@ static void mode_pause_update()
    if(music_current!=NULL)
       UpdateMusicStream(*music_current);
 
-   if(IsKeyPressed(KEY_UP)&&pause_select>0)
+   if(input_pressed_up()&&pause_select>0)
       pause_select--;
-   if(IsKeyPressed(KEY_DOWN)&&pause_select<2)
+   if(input_pressed_down()&&pause_select<2)
       pause_select++;
-   if(IsKeyPressed(KEY_ENTER))
+   if(input_pressed_confirm())
    {
       switch(pause_select)
       {
