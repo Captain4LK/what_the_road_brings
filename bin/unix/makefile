@@ -15,7 +15,7 @@ lil.o: ../../src/lil.c ../../src/lil.h
 track.o: ../../src/track.c ../../src/track.h ../../src/lil.h ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-mode.o: ../../src/mode.c ../../src/menu.h ../../src/audio.h ../../src/mode.h ../../src/car.h ../../src/segment.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
+mode.o: ../../src/mode.c ../../src/track.h ../../src/menu.h ../../src/audio.h ../../src/mode.h ../../src/car.h ../../src/segment.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 segment.o: ../../src/segment.c ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/config.h

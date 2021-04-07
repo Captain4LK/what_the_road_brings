@@ -46,6 +46,8 @@ static Color border0 = {102,102,102,255};
 static Color border1 = {11,31,60,255};
 static Color road0 = {59,45,31,255};
 static Color road1 = {59,45,31,255};
+
+Track track;
 //-------------------------------------
 
 //Function prototypes
@@ -56,6 +58,8 @@ static LILCALLBACK lil_value_t fnc_add_car(lil_t lil, size_t argc, lil_value_t* 
 static LILCALLBACK lil_value_t fnc_rand(lil_t lil, size_t argc, lil_value_t* argv);
 static LILCALLBACK lil_value_t fnc_fixed_mul(lil_t lil, size_t argc, lil_value_t* argv);
 static LILCALLBACK lil_value_t fnc_get_segments_used(lil_t lil, size_t argc, lil_value_t* argv);
+static LILCALLBACK lil_value_t fnc_set_music(lil_t lil, size_t argc, lil_value_t* argv);
+static LILCALLBACK lil_value_t fnc_set_laps(lil_t lil, size_t argc, lil_value_t* argv);
 
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill);
 static void add_sprite(int seg, int index, ULK_fixed_32 pos, uint8_t type);
@@ -67,12 +71,15 @@ static void add_stripe(int start, int end);
 
 void track_build()
 {
+   track.laps = 3;
+   track.music = 0;
+
    //Setup road
    dyn_array_init(Segment,&segments,128);
 
    lil_t lil = lil_new();
 
-   const char* filename = "track_00.lil";
+   const char* filename = "data/tracks/track_00.lil";
    const char* err_msg;
    size_t pos;
 
@@ -84,6 +91,8 @@ void track_build()
    lil_register(lil,"add_car",fnc_add_car);
    lil_register(lil,"get_segments_used",fnc_get_segments_used);
    lil_register(lil,"rand",fnc_rand);
+   lil_register(lil,"set_music",fnc_set_music);
+   lil_register(lil,"set_laps",fnc_set_laps);
 
    //lil constants
    lil_set_var(lil,"CAR_MAX_SPEED",lil_alloc_integer(CAR_MAX_SPEED),LIL_SETVAR_GLOBAL);
@@ -168,6 +177,18 @@ static LILCALLBACK lil_value_t fnc_get_segments_used(lil_t lil, size_t argc, lil
 static LILCALLBACK lil_value_t fnc_fixed_mul(lil_t lil, size_t argc, lil_value_t* argv)
 {
    return lil_alloc_integer(ULK_fixed_mul(lil_to_integer(argv[0]),lil_to_integer(argv[1])));
+}
+
+static LILCALLBACK lil_value_t fnc_set_music(lil_t lil, size_t argc, lil_value_t* argv)
+{
+   track.music = lil_to_integer(argv[0]);
+   return NULL;
+}
+
+static LILCALLBACK lil_value_t fnc_set_laps(lil_t lil, size_t argc, lil_value_t* argv)
+{
+   track.laps = lil_to_integer(argv[0]);
+   return NULL;
 }
 
 static void add_stripe(int start, int end)

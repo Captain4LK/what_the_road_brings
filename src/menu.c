@@ -9,6 +9,8 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 */
 
 //External includes
+#include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <time.h>
 #include <raylib.h>
@@ -38,6 +40,8 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //Variables
 
 static int title_select = 0;
+static int credits_loaded = 0;
+static char *credits_text = NULL;
 //-------------------------------------
 
 //Function prototypes
@@ -65,7 +69,7 @@ void title_update()
    {
       switch(title_select)
       {
-      case 0: mode = 11; player_reset(); PlaySound(sound_countdown_0); break;
+      case 0: mode = 11; player_reset(); StopMusicStream(*music_current); PlaySound(sound_countdown_0); break;
       case 1: mode = 1; break;
       case 2: CloseWindow(); break;
       }
@@ -75,10 +79,27 @@ void title_update()
 void credits_draw()
 {
    DrawTextureRec(texture_menu,(Rectangle){0,0,320,240},(Vector2){0,0},WHITE);
+   DrawTextEx(font,credits_text,(Vector2){0,4},font.baseSize,0.0f,WHITE);
 }
 
 void credits_update()
 {
+   if(!credits_loaded)
+   {
+      credits_loaded = 1;
 
+      FILE *f = fopen("data/credits.txt","r");
+      int size = 0;
+      fseek(f,0,SEEK_END);
+      size = ftell(f);
+      fseek(f,0,SEEK_SET);
+      credits_text = malloc(size+1);
+      fread(credits_text,size,1,f);
+      credits_text[size] = 0;
+      fclose(f);
+   }
+
+   if(IsKeyPressed(KEY_ENTER))
+      mode = 0;
 }
 //-------------------------------------

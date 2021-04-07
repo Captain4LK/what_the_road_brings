@@ -50,8 +50,8 @@ static Music current_music;
 static int current_music_track = -1;
 static const char *tracks[] = 
 {
-   "music/title.ogg",
-   "music/track1.mp3",
+   "data/music/title.ogg",
+   "data/music/track1.mp3",
 };
 //-------------------------------------
 
@@ -62,12 +62,12 @@ static const char *tracks[] =
 
 void audio_load()
 {
-   sound_drive = LoadMusicStream("sounds/drive.ogg");
+   sound_drive = LoadMusicStream("data/sounds/drive.ogg");
    SetMusicVolume(sound_drive,0.3f);
 
-   sound_hit = LoadSound("sounds/hit.ogg");
-   sound_countdown_0 = LoadSound("sounds/countdown_start.ogg");
-   sound_countdown_1 = LoadSound("sounds/countdown_end.ogg");
+   sound_hit = LoadSound("data/sounds/hit.ogg");
+   sound_countdown_0 = LoadSound("data/sounds/countdown_start.ogg");
+   sound_countdown_1 = LoadSound("data/sounds/countdown_end.ogg");
 
    SetMasterVolume(1.0f);
 }

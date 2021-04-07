@@ -12,6 +12,14 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 #define _TRACK_H_
 
+typedef struct
+{
+   int music;
+   int laps;
+}Track;
+
+extern Track track;
+
 void track_build();
 
 #endif

@@ -42,6 +42,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 Texture2D texture;
 Texture2D texture_menu;
 RenderTexture2D texture_viewport;
+Font font;
 
 struct Texture_Rects texture_rects = 
 {
@@ -147,9 +148,10 @@ static void parallax_scroll(ULK_fixed_32 curve);
 
 void load_assets()
 {
-   texture = LoadTexture("assets/textures.png");
-   texture_menu = LoadTexture("assets/sheet_menu.png");
+   texture = LoadTexture("data/assets/textures.png");
+   texture_menu = LoadTexture("data/assets/sheet_menu.png");
    texture_viewport = LoadRenderTexture(XRES,YRES);
+   font = LoadFont("data/assets/font.png");
 }
 
 void draw(ULK_fixed x, ULK_fixed z, int steer)

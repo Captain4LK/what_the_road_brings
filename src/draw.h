@@ -29,6 +29,7 @@ extern struct Texture_Rects texture_rects;
 extern Texture2D texture;
 extern Texture2D texture_menu;
 extern RenderTexture2D texture_viewport;
+extern Font font;
 
 void load_assets();
 void draw(ULK_fixed x, ULK_fixed z, int steer);

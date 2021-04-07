@@ -28,6 +28,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "car.h"
 #include "draw.h"
 #include "menu.h"
+#include "track.h"
 //-------------------------------------
 
 //#defines
@@ -148,7 +149,6 @@ static void mode_game_start_update()
       BeginTextureMode(texture_viewport);
          ClearBackground(clear_texture);
          draw(player.px,player.pz,player.steer);
-         DrawText(TextFormat("Lap\n%02d",player.lap),4,4,1,WHITE);
       EndTextureMode();
 
       float window_width = GetScreenWidth();
@@ -172,6 +172,7 @@ static void mode_game_start_update()
 
    if(!IsSoundPlaying(sound_countdown_0))
    {
+      audio_set_track(track.music);
       PlaySound(sound_countdown_1);
       mode = 12;
    }
@@ -191,9 +192,9 @@ static void mode_game_update()
       BeginTextureMode(texture_viewport);
          ClearBackground(clear_texture);
          draw(player.px,player.pz,player.steer);
-         DrawText(TextFormat("Lap\n%02d",player.lap),4,4,1,WHITE);
-         DrawText(TextFormat("Pos\n   %01d",player_pos()),298,4,1,WHITE);
-         //DrawText(TextFormat("      Time\n%02d:%02d:%03d",(ULK_fixed_32_to_int(player.time)/60),ULK_fixed_32_to_int(player.time)%60,ULK_fixed_32_to_int(1000*(player.time%ULK_fixed_32_from_int(1)))),270,4,1,WHITE);
+         DrawTextEx(font,TextFormat("Lap\n %02d",player.lap),(Vector2){4,4},font.baseSize,0.0f,WHITE);
+         DrawTextEx(font,TextFormat("Speed\n %03d",(int)(((float)player.vz/(float)MAX_SPEED)*200.0f)),(Vector2){147,4},font.baseSize,1.0f,WHITE);
+         DrawTextEx(font,TextFormat("Pos\n %01d",player_pos()),(Vector2){301,4},font.baseSize,1.0f,WHITE);
       EndTextureMode();
 
       float window_width = GetScreenWidth();
