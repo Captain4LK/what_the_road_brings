@@ -72,7 +72,7 @@ void player_update()
       float width_0 = (float)texture_rects.car_player[0][0].width*SPRITE_SCALE;
       float width_1 = (float)texture_rects.sprites[sp->index].width*SPRITE_SCALE;
 
-      if(overlap((float)player.px/65536.0f,width_0,(float)(sp->pos/65536.0f)+(sp->pos>0?1.5f:-1.5f)*(width_1/2.0f),width_1,0.5))
+      if(overlap((float)player.px/65536.0f,width_0,(float)(sp->pos/65536.0f)+(sp->pos>0?1.0f:-1.0f)*(width_1/2.0f),width_1,texture_rects.sprites_col_scale[sp->index]))
       {
          if(!stop)
             PlaySound(sound_hit);

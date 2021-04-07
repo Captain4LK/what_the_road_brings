@@ -71,11 +71,37 @@ struct Texture_Rects texture_rects =
    },
    .sprites = 
    {
+      //Universal props
       {.x = 0, .y = 344, .width = 51, .height = 100},
       {.x = 51, .y = 344, .width = 32, .height = 16},
       {.x = 51, .y = 360, .width = 32, .height = 16},
       {.x = 51, .y = 408, .width = 34, .height = 29},
       {.x = 51, .y = 376, .width = 32, .height = 32},
+
+      //Town props universal
+      {.x = 594, .y = 515, .width = 35, .height = 110},
+      {.x = 83, .y = 344, .width = 24, .height = 30},
+      {.x = 85, .y = 374, .width = 65, .height = 65},
+      //Town props right side
+      {.x = 0, .y = 444, .width = 167, .height = 181},
+      {.x = 167, .y = 381, .width = 207, .height = 244},
+      {.x = 374, .y = 448, .width = 220, .height = 177},
+      //Town props left side
+      {.x = 629, .y = 444, .width = 167, .height = 181},
+      {.x = 796, .y = 381, .width = 207, .height = 244},
+      {.x = 1003, .y = 448, .width = 220, .height = 177},
+
+      //Graveyard props universal
+      {.x = 150, .y = 344, .width = 20, .height = 37},
+   },
+   .sprites_col_scale = 
+   {
+      0.5f,0.5f,0.5f,0.4f,0.5f,
+
+      0.2f,0.5f,0.5f,
+
+      0.8f,0.8f,0.8f,
+      0.8f,0.8f,0.8f,
    },
    .car_sprites = 
    {
@@ -184,8 +210,8 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       for(int j = 0;j<s->sprites.used;j++)
       {
          Sprite *sp = &dyn_array_element(Sprite,&s->sprites,j);
-         dst.width = (float)texture_rects.sprites[sp->index].width*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*1.5f;
-         dst.height = (float)texture_rects.sprites[sp->index].height*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*1.5f;
+         dst.width = (float)texture_rects.sprites[sp->index].width*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*1.0f;
+         dst.height = (float)texture_rects.sprites[sp->index].height*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*1.0f;
          dst.x = (s->p1.screen_x/65536.0f)+(scale_1*(sp->pos/65536.0f)*ROAD_WIDTH*XRES/2)-(sp->pos<0?dst.width:0);
          dst.y = (s->p1.screen_y/65536.0f)-dst.height+1;
 
