@@ -16,6 +16,7 @@ int input_pressed_fullscreen();
 int input_pressed_up();
 int input_pressed_down();
 int input_pressed_confirm();
+int input_pressed_back();
 int input_pressed_pause();
 int input_down_accel();
 int input_down_decel();

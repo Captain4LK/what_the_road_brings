@@ -52,6 +52,7 @@ static void mode_credits_update();
 static void mode_game_start_update();
 static void mode_game_update();
 static void mode_pause_update();
+static void mode_track_sel_update();
 //-------------------------------------
 
 //Function implementations
@@ -65,6 +66,9 @@ void modes_update()
       break;
    case 1: //Credits
       mode_credits_update();
+      break;
+   case 2: //Track select
+      mode_track_sel_update();
       break;
    case 11:
       mode_game_start_update();
@@ -122,6 +126,39 @@ static void mode_credits_update()
       BeginTextureMode(texture_viewport);
          ClearBackground(clear_texture);
          credits_draw();
+      EndTextureMode();
+
+      float window_width = GetScreenWidth();
+      float window_height = GetScreenHeight();
+      Rectangle rect;
+      if((float)window_width/(4.0f/3.0f)>=window_height)
+      {
+         rect.width = window_height*(4.0f/3.0f);
+         rect.height = window_height;
+      }
+      else
+      {
+         rect.width = window_width;
+         rect.height = window_width*(3.0f/4.0f);
+      }
+      rect.x = (window_width-rect.width)/2;
+      rect.y = (window_height-rect.height)/2;
+      DrawTexturePro(texture_viewport.texture,(Rectangle){0,0,(float)texture_viewport.texture.width,(float)-texture_viewport.texture.height},rect,(Vector2){0,0},0.0f,WHITE);
+
+   EndDrawing();
+}
+
+static void mode_track_sel_update()
+{
+   if(music_current!=NULL)
+      UpdateMusicStream(*music_current);
+   track_sel_update();
+
+   BeginDrawing();
+      ClearBackground(clear_screen);
+      BeginTextureMode(texture_viewport);
+         ClearBackground(clear_texture);
+         track_sel_draw();
       EndTextureMode();
 
       float window_width = GetScreenWidth();
@@ -248,7 +285,7 @@ static void mode_pause_update()
       {
       case 0: mode = 12; enable_parallax = 1; if(music_current!=NULL) ResumeMusicStream(*music_current); break;
       case 1: mode = 11; track_build(); if(music_current!=NULL) StopMusicStream(*music_current); StopSound(sound_countdown_1); PlaySound(sound_countdown_0); break;
-      case 2: mode = 0; break;
+      case 2: mode = 0; audio_set_track(0); break;
       }
    }
 

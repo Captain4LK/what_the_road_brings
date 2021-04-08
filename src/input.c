@@ -66,6 +66,11 @@ int input_pressed_confirm()
    return IsKeyPressed(KEY_ENTER) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_FACE_DOWN);
 }
 
+int input_pressed_back()
+{
+   return IsKeyPressed(KEY_ESCAPE) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_FACE_RIGHT);
+}
+
 int input_pressed_pause()
 {
    return IsKeyPressed(KEY_ENTER) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_MIDDLE_RIGHT);

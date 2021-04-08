@@ -18,4 +18,7 @@ void title_update();
 void credits_draw();
 void credits_update();
 
+void track_sel_draw();
+void track_sel_update();
+
 #endif

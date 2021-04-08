@@ -132,7 +132,7 @@ void track_build()
    lil_free(lil);
 
    segment_list_get_pos(&segments,0,NULL)->color_road = WHITE;
-   add_car(segments.used-1,0,0,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
+   add_car(segments.used-1,0,0,1,ULK_fixed_mul(128,CAR_MAX_SPEED));
    add_car(segments.used-2,0,-ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
    add_car(segments.used-2,0,ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
    add_car(segments.used-3,0,0,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
