@@ -1,10 +1,9 @@
-CC = gcc
-CFLAGS+=-Wall -lraylib -lGL -lm -lpthread -lrt -ldl -lX11
+CC = i686-w64-mingw32-gcc
+CFLAGS+=-Wall -I/home/lukas/.wine/drive_c/raylib/raylib/src/ -L/home/lukas/.wine/drive_c/raylib/raylib/src/ -lraylib -lopengl32 -lgdi32 -lwinmm -static -lpthread
 
 pseudo_3d_racer: main.o lil.o track.o audio.o mode.o segment.o ULK_fixed.o car.o draw.o player.o menu.o input.o
-	gcc -o pseudo_3d_racer $^  $(CFLAGS)
-	chmod +x pseudo_3d_racer
-	mv pseudo_3d_racer ../
+	i686-w64-mingw32-gcc -o pseudo_3d_racer $^  $(CFLAGS)
+	mv pseudo_3d_racer.exe ../
 
 main.o: ../../src/main.c ../../src/audio.h ../../src/mode.h ../../src/segment.h ../../src/car.h ../../src/draw.h ../../src/util.h ../../src/input.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
@@ -43,4 +42,4 @@ menu.o: ../../src/menu.c ../../src/menu.h ../../src/track.h ../../src/audio.h ..
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 clean:
-	rm *.o ../pseudo_3d_racer
+	rm *.o ../pseudo_3d_racer.exe

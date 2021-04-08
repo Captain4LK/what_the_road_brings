@@ -49,6 +49,7 @@ static Color road0 = {59,45,31,255};
 static Color road1 = {59,45,31,255};
 
 Track track;
+ULK_fixed_32 *lap_times = NULL;
 //-------------------------------------
 
 //Function prototypes
@@ -100,6 +101,9 @@ void track_build()
       l = next;
    }
    cars_opponents = NULL;
+   if(lap_times)
+      free(lap_times);
+   lap_times = NULL;
    dyn_array_clear(Segment,&segments);
 
    lil_t lil = lil_new();
@@ -141,6 +145,7 @@ void track_build()
    add_car(segments.used-5,0,0,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
 
    player_reset();
+   lap_times = malloc(sizeof(*lap_times)*track.laps);
 }
 
 static LILCALLBACK lil_value_t fnc_add_road(lil_t lil, size_t argc, lil_value_t* argv)

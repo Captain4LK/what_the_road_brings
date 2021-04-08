@@ -1,13 +1,22 @@
 CC = emcc 
-CFLAGS+= -Wall -flto
+CFLAGS+= -Wall -flto -I/mnt/sdb1/code/raylib_web/src/ -lraylib -I/mnt/sdb1/code/raylib_web/src/
 
-pseudo_3d_racer: main.o mode.o segment.o ULK_fixed.o car.o draw.o player.o sdl.o
-	emcc -O3 $^ -lm -flto -Wall -s USE_SDL=2 --preload-file ../assets/ -o racer.html --shell-file shell_minimal.html
+pseudo_3d_racer: main.o lil.o track.o audio.o mode.o segment.o ULK_fixed.o car.o draw.o player.o menu.o input.o
+	emcc -O3 $^ -lm -flto -Wall -L/mnt/sdb1/code/raylib_web/src/ -lraylib -s USE_GLFW=3 -s ASYNCIFY --memory-init-file 0 --preload-file ../data/ -o racer.html 
 
-main.o: ../../src/main.c ../../src/mode.h ../../src/segment.h ../../src/car.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
+main.o: ../../src/main.c ../../src/audio.h ../../src/mode.h ../../src/segment.h ../../src/car.h ../../src/draw.h ../../src/util.h ../../src/input.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-mode.o: ../../src/mode.c ../../src/mode.h ../../src/car.h ../../src/segment.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
+lil.o: ../../src/lil.c ../../src/lil.h
+	$(CC) -O3 -c $< $(CFLAGS) 
+
+input.o: ../../src/input.c ../../src/input.h ../../src/config.h ../../src/util.h
+	$(CC) -O3 -c $< $(CFLAGS) 
+
+track.o: ../../src/track.c ../../src/track.h ../../src/player.h ../../src/lil.h ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/config.h
+	$(CC) -O3 -c $< $(CFLAGS) 
+
+mode.o: ../../src/mode.c ../../src/track.h ../../src/menu.h ../../src/audio.h ../../src/mode.h ../../src/car.h ../../src/segment.h ../../src/draw.h ../../src/input.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 segment.o: ../../src/segment.c ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/config.h
@@ -19,13 +28,16 @@ ULK_fixed.o: ../../src/ULK_fixed.c ../../src/ULK_fixed.h
 draw.o: ../../src/draw.c ../../src/draw.h ../../src/car.h ../../src/segment.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-car.o: ../../src/car.c ../../src/car.h ../../src/draw.h ../../src/segment.h ../../src/player.h ../../src/util.h ../../src/config.h
+car.o: ../../src/car.c ../../src/car.h ../../src/audio.h ../../src/draw.h ../../src/segment.h ../../src/player.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-player.o: ../../src/player.c ../../src/player.h ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/draw.h ../../src/config.h
+player.o: ../../src/player.c ../../src/player.h ../../src/track.h ../../src/input.h ../../src/audio.h ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/draw.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-sdl.o: ../../src/sdl.c ../../src/sdl.h ../../src/config.h
+audio.o: ../../src/audio.c ../../src/audio.h ../../src/mode.h ../../src/segment.h ../../src/car.h ../../src/draw.h ../../src/player.h ../../src/util.h ../../src/config.h
+	$(CC) -O3 -c $< $(CFLAGS) 
+
+menu.o: ../../src/menu.c ../../src/menu.h ../../src/track.h ../../src/audio.h ../../src/player.h ../../src/mode.h ../../src/draw.h ../../src/input.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 clean:

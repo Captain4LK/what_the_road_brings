@@ -157,22 +157,25 @@ void load_assets()
 
 void draw(ULK_fixed x, ULK_fixed z, int steer)
 {
+   //Draw background, with parallax effect
    for(int i = 0;i<5;i++)
    {
       DrawTextureRec(texture,texture_rects.backdrop[i],(Vector2){parallax_data.layers[i][0].x,parallax_data.layers[i][0].y},WHITE);
       DrawTextureRec(texture,texture_rects.backdrop[i],(Vector2){parallax_data.layers[i][1].x,parallax_data.layers[i][1].y},WHITE);
    }
 
-   int i = 0;
-   int is = 0;
+   int i;
    ULK_fixed_32 max_y = ULK_fixed_32_from_int(YRES);
-   segment_player = segment_list_get_pos(&segments,player.pz+PLAYER_OFFSET,&i);
+   segment_player = segment_list_get_pos(&segments,player.pz+PLAYER_OFFSET,NULL);
    Segment *base = segment_list_get_pos(&segments,z,&i);
-   if(!player.stopped&&enable_parallax)
-      parallax_scroll(segment_player->curve);
    int max = i+RENDER_DISTANCE;
-   is = i;
+   int i_start = i;
    
+   //pos: how far the player has traversed the current segment
+   //ppos: how far the player sprite has traversed the current segment
+   //cdx: curve delta starting value, multiplied by pos, to account for partial segment traversal
+   //cx: road x shift value, gets incremented by cdx every segment
+   //py: starting segment height, used to move the camera to the road
    ULK_fixed_32 pos = ULK_fixed_32_div((z%SEGLEN)<<8,SEGLEN<<8);
    ULK_fixed_32 ppos = ULK_fixed_32_div(((z+PLAYER_OFFSET)%SEGLEN)<<8,SEGLEN<<8);
    ULK_fixed_32 cdx = -(ULK_fixed_32_mul(base->curve,pos));
@@ -180,14 +183,15 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    ULK_fixed_32 py = segment_player->p0.y+ULK_fixed_32_mul(segment_player->p1.y-segment_player->p0.y,ppos);
 
    //Draw road segments
-   Point cache;
-   project_point(&base->p0,(x*ROAD_WIDTH)-cx-cdx,py+CAM_HEIGHT,z-(((is%segments.used)<is)?segments.used*SEGLEN:0),CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
-   cache = base->p0;
+   //Only project every second point, the other
+   //one can be cached
+   project_point(&base->p0,(x*ROAD_WIDTH)-cx-cdx,py+CAM_HEIGHT,z-(((i_start%segments.used)<i_start)?segments.used*SEGLEN:0),CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
+   Point cache = base->p0;
    for(;i<max;i++)
    {
       Segment *s = segment_list_get(&segments,i);
       s->clip_y = max_y;
-      int looped = (i%segments.used)<is?segments.used*SEGLEN:0;
+      int looped = (i%segments.used)<i_start?segments.used*SEGLEN:0;
       s->p0 = cache;
       project_point(&s->p1,(x*ROAD_WIDTH)-cx-cdx,py+CAM_HEIGHT,z-looped,CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
       cache = s->p1;
@@ -203,7 +207,10 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    }
 
    //Draw sprites
-   for(i = max-1;i>is;i--)
+   //All cars and sprites get drawn from
+   //back to front, this game is not 3d so
+   //there is no z buffer 
+   for(i = max-1;i>i_start;i--)
    {
       Segment *s = segment_list_get(&segments,i);
       Rectangle dst;
@@ -213,11 +220,14 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       for(int j = 0;j<s->sprites.used;j++)
       {
          Sprite *sp = &dyn_array_element(Sprite,&s->sprites,j);
-         dst.width = (float)texture_rects.sprites[sp->index].width*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*1.0f;
-         dst.height = (float)texture_rects.sprites[sp->index].height*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE*1.0f;
+         dst.width = (float)texture_rects.sprites[sp->index].width*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE;
+         dst.height = (float)texture_rects.sprites[sp->index].height*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE;
          dst.x = (s->p1.screen_x/65536.0f)+(scale_1*(sp->pos/65536.0f)*ROAD_WIDTH*XRES/2)-(sp->pos<0?dst.width:0);
          dst.y = (s->p1.screen_y/65536.0f)-dst.height+1;
 
+         //Its possible to specify a clip rect with raylib.
+         //This, however, flushes the sprite batch, worsening
+         //performance.
          float clip = MAX(dst.y+dst.height-(s->clip_y/65536.0f),0.0f);
          if(clip<dst.height)
          {
@@ -260,6 +270,10 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
             DrawTextureRec(texture,texture_rects.car_player[0][steer+2],(Vector2){115,170},WHITE);
       }
    }
+
+   //Update parallax background scroll
+   if(!player.stopped&&enable_parallax)
+      parallax_scroll(segment_player->curve);
 }
 
 static void project_point(Point *p, ULK_fixed_32 cam_x, ULK_fixed_32 cam_y, ULK_fixed cam_z, ULK_fixed_32 cam_depth, int width, int height, int road_width)

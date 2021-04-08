@@ -26,6 +26,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "draw.h"
 #include "segment.h"
 #include "input.h"
+#include "track.h"
 //-------------------------------------
 
 //#defines
@@ -54,9 +55,11 @@ void player_reset()
    player.steer = 0;
    player.stopped = 0;
    player.lap = 0;
+   player.collisions = 0;
+   player.time = 0;
 }
 
-void player_update()
+void player_update(int controll)
 {
    float dt = GetFrameTime();
    ULK_fixed_32 vz_acc = ACCEL*dt;
@@ -76,7 +79,10 @@ void player_update()
       if(overlap((float)player.px/65536.0f,width_0,(float)(sp->pos/65536.0f)+(sp->pos>0?1.0f:-1.0f)*(width_1/2.0f),width_1,texture_rects.sprites_col_scale[sp->index]))
       {
          if(!stop)
+         {
             PlaySound(sound_hit);
+            player.collisions++;
+         }
 
          player.stopped = 1;
          if(sp->type==1)
@@ -90,6 +96,7 @@ void player_update()
       {
          player.vz = ULK_fixed_mul(cl->car->speed,ULK_fixed_div(cl->car->speed,player.vz));
          PlaySound(sound_hit);
+         player.collisions++;
       }
 
       cl = cl->next;
@@ -105,12 +112,12 @@ void player_update()
    }
 
    frame++;
-   if(input_down_accel())
+   if(controll&&input_down_accel())
    {
       if(player.vz<(MAX_SPEED))
          player.vz+=MIN(MAX_SPEED-player.vz,vz_acc);
    }
-   else if(input_down_decel())
+   else if(controll&&input_down_decel())
       player.vz+=2*vz_dec;
    else
       player.vz+=vz_dec;
@@ -126,6 +133,8 @@ void player_update()
    player.pz = player.pz%(segments.used*SEGLEN);
    if(old_z>player.pz)
    {
+      if(player.lap!=0)
+         lap_times[player.lap-1] = player.time;
       player.time = 0;
       player.lap++;
    }
@@ -137,7 +146,7 @@ void player_update()
    SetMusicPitch(sound_drive,0.5f+((float)player.vz/(float)MAX_SPEED));
 
    ULK_fixed_32 speed_x = 3*MIN(ULK_fixed_32_from_int(1),ULK_fixed_32_div(player.vz,MAX_SPEED/3))*dt;
-   if(input_down_steer_left()&&player.stopped!=2)
+   if(controll&&input_down_steer_left()&&player.stopped!=2)
    {
       if(player.steer==0)
          frame = 0;
@@ -145,7 +154,7 @@ void player_update()
       if(player.steer<2&&frame%6==0)
          player.steer++;
    }
-   else if(input_down_steer_right()&&player.stopped!=3)
+   else if(controll&&input_down_steer_right()&&player.stopped!=3)
    {
       if(player.steer==0)
          frame = 0;
