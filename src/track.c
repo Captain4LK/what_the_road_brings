@@ -143,7 +143,7 @@ void track_build()
    add_car(segments.used-3,0,0,1,ULK_fixed_mul(188,CAR_MAX_SPEED));
    add_car(segments.used-4,0,-ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(208,CAR_MAX_SPEED));
    add_car(segments.used-4,0,ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(213,CAR_MAX_SPEED));
-   add_car(segments.used-5,0,0,1,ULK_fixed_mul(218,CAR_MAX_SPEED));
+   add_car(segments.used-5,0,0,1,ULK_fixed_mul(220,CAR_MAX_SPEED));
 
    player_reset();
    lap_times = malloc(sizeof(*lap_times)*track.laps);

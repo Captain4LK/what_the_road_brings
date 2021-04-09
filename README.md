@@ -12,6 +12,7 @@
 |[Generic Platformer Tiles](https://opengameart.org/content/generic-platformer-tiles)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[surt](https://opengameart.org/users/surt)|
 |[Car Kit](https://opengameart.org/content/car-kit)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[Kenney](https://opengameart.org/users/kenney)|
 |[New original Grafx2 font collection](https://opengameart.org/content/new-original-grafx2-font-collection)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[devurandom](https://opengameart.org/users/devurandom)|
+|[2.5D Racing Resources](https://opengameart.org/content/25d-racing-resources)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[drummyfish](https://opengameart.org/users/drummyfish)|
 
 ## Sounds/Music
 

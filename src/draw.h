@@ -22,7 +22,7 @@ struct Texture_Rects
    Rectangle backdrop[5];
    Rectangle sprites[64];
    float sprites_col_scale[64];
-   Rectangle car_sprites[4][3];
+   Rectangle car_sprites[6][3];
 };
 extern struct Texture_Rects texture_rects;
 extern int enable_parallax;

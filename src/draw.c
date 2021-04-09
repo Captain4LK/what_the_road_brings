@@ -132,6 +132,21 @@ struct Texture_Rects texture_rects =
          {.x = 540, .y = 0, .width = 90, .height = 60},
          {.x = 630, .y = 0, .width = 90, .height = 60},
       },
+      {
+         {.x = 450, .y = 60, .width = 90, .height = 60},
+         {.x = 540, .y = 60, .width = 90, .height = 60},
+         {.x = 630, .y = 60, .width = 90, .height = 60},
+      },
+      {
+         {.x = 720, .y = 0, .width = 90, .height = 60},
+         {.x = 810, .y = 0, .width = 90, .height = 60},
+         {.x = 900, .y = 0, .width = 90, .height = 60},
+      },
+      {
+         {.x = 720, .y = 60, .width = 90, .height = 60},
+         {.x = 810, .y = 60, .width = 90, .height = 60},
+         {.x = 900, .y = 60, .width = 90, .height = 60},
+      },
    },
 };
 
