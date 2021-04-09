@@ -93,8 +93,17 @@ struct Texture_Rects texture_rects =
       {.x = 796, .y = 381, .width = 207, .height = 244},
       {.x = 1003, .y = 448, .width = 220, .height = 177},
 
-      //Graveyard props universal
-      {.x = 150, .y = 344, .width = 20, .height = 37},
+      //Graveyard props universal 14-16
+      {.x = 150, .y = 344, .width = 22, .height = 37},
+      {.x = 172, .y = 344, .width = 26, .height = 37},
+      {.x = 198, .y = 352, .width = 34, .height = 29},
+      {.x = 374, .y = 410, .width = 19, .height = 38},
+      {.x = 393, .y = 408, .width = 27, .height = 40},
+      {.x = 420, .y = 384, .width = 32, .height = 64},
+      {.x = 453, .y = 377, .width = 33, .height = 71},
+      {.x = 0, .y = 625, .width = 166, .height = 118},
+      {.x = 166, .y = 625, .width = 166, .height = 117},
+      {.x = 332, .y = 625, .width = 176, .height = 170},
    },
    .sprites_col_scale = 
    {
@@ -104,6 +113,9 @@ struct Texture_Rects texture_rects =
 
       0.8f,0.8f,0.8f,
       0.8f,0.8f,0.8f,
+
+      0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f,
+      0.4f, 0.4f, 0.4f,
    },
    .car_sprites = 
    {

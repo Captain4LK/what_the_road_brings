@@ -32,6 +32,9 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //#defines
 #define MIN(a,b) \
    ((a)<(b)?(a):(b))
+
+#define MAX(a,b) \
+   ((a)>(b)?(a):(b))
 //-------------------------------------
 
 //Typedefs
@@ -127,8 +130,10 @@ void player_update(int controll)
       player.vz = 0;
 
    ULK_fixed old_z = player.pz;
+   //Peak floating point...
+   //I should rely start explicetely casting between int and float...
    if(player.stopped!=1)
-      player.pz+=player.vz*dt;
+      player.pz+=(ULK_fixed_32)(player.vz*dt);
    player.time+=ULK_fixed_32_from_int(1)*dt;
    player.pz = player.pz%(segments.used*SEGLEN);
    if(old_z>player.pz)

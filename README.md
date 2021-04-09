@@ -21,3 +21,4 @@
 |[Impact Sounds](https://kenney.nl/assets/impact-sounds)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[Kenney](https://kenney.nl/)|
 |[Arcade Countdown](https://freesound.org/people/NXRT/sounds/546602/)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[NXRT](https://freesound.org/people/NXRT/)|
 |[At the end of hope](https://opengameart.org/content/at-the-end-of-hope)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[Emma_MA](https://opengameart.org/users/emmama)|
+|[RailJet / Long Seamless Loop](https://opengameart.org/content/railjet-long-seamless-loop)|[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)|[Deceased Superior Technician](http://www.nosoapradio.us)|

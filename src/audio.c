@@ -51,7 +51,7 @@ static int current_music_track = -1;
 static const char *tracks[] = 
 {
    "data/music/title.ogg",
-   "data/music/track1.mp3",
+   "data/music/track0.ogg",
 };
 //-------------------------------------
 
@@ -86,7 +86,7 @@ void audio_set_track(unsigned track)
 
       current_music_track = track;
       current_music = LoadMusicStream(tracks[track]);
-      SetMusicVolume(current_music,0.5f);
+      SetMusicVolume(current_music,0.7f);
       music_current = &current_music;
       PlayMusicStream(current_music);
    }
