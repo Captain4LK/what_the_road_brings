@@ -73,6 +73,7 @@ static void add_stripe(int start, int end);
 
 void track_build()
 {
+   srand(time(NULL));
    track.laps = 3;
    track.music = 0;
 
@@ -137,12 +138,12 @@ void track_build()
 
    segment_list_get_pos(&segments,0,NULL)->color_road = WHITE;
    add_car(segments.used-1,0,0,1,ULK_fixed_mul(128,CAR_MAX_SPEED));
-   add_car(segments.used-2,0,-ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
-   add_car(segments.used-2,0,ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
-   add_car(segments.used-3,0,0,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
-   add_car(segments.used-4,0,-ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
-   add_car(segments.used-4,0,ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
-   add_car(segments.used-5,0,0,1,ULK_fixed_mul(128+rand()%129,CAR_MAX_SPEED));
+   add_car(segments.used-2,0,-ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(148,CAR_MAX_SPEED));
+   add_car(segments.used-2,0,ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(168,CAR_MAX_SPEED));
+   add_car(segments.used-3,0,0,1,ULK_fixed_mul(188,CAR_MAX_SPEED));
+   add_car(segments.used-4,0,-ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(208,CAR_MAX_SPEED));
+   add_car(segments.used-4,0,ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(213,CAR_MAX_SPEED));
+   add_car(segments.used-5,0,0,1,ULK_fixed_mul(218,CAR_MAX_SPEED));
 
    player_reset();
    lap_times = malloc(sizeof(*lap_times)*track.laps);

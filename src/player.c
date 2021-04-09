@@ -87,9 +87,12 @@ void player_update(int controll)
             player.collisions++;
          }
 
-         player.stopped = 1;
          if(sp->type==1)
             player.stopped = 2+(player.px>0);
+         else if(sp->type==2)
+            player.vz = MAX_SPEED_BOOST;
+         else
+            player.stopped = 1;
       }
    }
    Car_list *cl = segment_player->cars;

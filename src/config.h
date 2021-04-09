@@ -19,6 +19,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 #define SEGLEN ULK_fixed_from_int(32)
 #define MAX_SPEED ULK_fixed_from_int(24*60)
+#define MAX_SPEED_BOOST ULK_fixed_from_int(30*60)
 #define CAR_MAX_SPEED ULK_fixed_from_int(24*60)
 #define ACCEL ULK_fixed_div(MAX_SPEED,ULK_fixed_from_int(20))
 #define DECEL ULK_fixed_div(-MAX_SPEED,ULK_fixed_from_int(10))

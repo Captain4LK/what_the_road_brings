@@ -254,7 +254,7 @@ static void mode_game_update()
       BeginTextureMode(texture_viewport);
          ClearBackground(clear_texture);
          draw(player.px,player.pz,player.steer);
-         DrawTextEx(font,TextFormat("Lap\n %02d",player.lap),(Vector2){4,4},font.baseSize,0.0f,WHITE);
+         DrawTextEx(font,TextFormat("Lap\n%01d/%01d",player.lap,track.laps),(Vector2){4,4},font.baseSize,0.0f,WHITE);
          DrawTextEx(font,TextFormat("Speed\n %03d",(int)(((float)player.vz/(float)MAX_SPEED)*200.0f)),(Vector2){147,4},font.baseSize,1.0f,WHITE);
          DrawTextEx(font,TextFormat("Pos\n %01d",player_pos()),(Vector2){301,4},font.baseSize,1.0f,WHITE);
       EndTextureMode();
@@ -302,8 +302,8 @@ static void mode_pause_update()
       switch(pause_select)
       {
       case 0: mode = 12; enable_parallax = 1; if(music_current!=NULL) ResumeMusicStream(*music_current); break;
-      case 1: mode = 11; track_build(); if(music_current!=NULL) StopMusicStream(*music_current); StopSound(sound_countdown_1); PlaySound(sound_countdown_0); break;
-      case 2: mode = 0; audio_set_track(0); break;
+      case 1: mode = 11; enable_parallax = 1; track_build(); if(music_current!=NULL) StopMusicStream(*music_current); StopSound(sound_countdown_1); PlaySound(sound_countdown_0); break;
+      case 2: mode = 0; enable_parallax = 1; audio_set_track(0); break;
       }
    }
 
@@ -312,7 +312,7 @@ static void mode_pause_update()
       BeginTextureMode(texture_viewport);
          ClearBackground(clear_texture);
          draw(player.px,player.pz,player.steer);
-         DrawTextEx(font,TextFormat("Lap\n %02d",player.lap),(Vector2){4,4},font.baseSize,0.0f,WHITE);
+         DrawTextEx(font,TextFormat("Lap\n%01d/%01d",player.lap,track.laps),(Vector2){4,4},font.baseSize,0.0f,WHITE);
          DrawTextEx(font,TextFormat("Speed\n %03d",(int)(((float)player.vz/(float)MAX_SPEED)*200.0f)),(Vector2){147,4},font.baseSize,1.0f,WHITE);
          DrawTextEx(font,TextFormat("Pos\n %01d",player_pos()),(Vector2){301,4},font.baseSize,1.0f,WHITE);
          DrawTextEx(font,"Resume",(Vector2){145,96},font.baseSize,0.0f,WHITE);
@@ -378,7 +378,7 @@ static void mode_results_update()
       BeginTextureMode(texture_viewport);
          ClearBackground(clear_texture);
          draw(player.px,player.pz,player.steer);
-         DrawTextEx(font,TextFormat("Lap\n %02d",player.lap-1),(Vector2){4,4},font.baseSize,0.0f,reverse_fade);
+         DrawTextEx(font,TextFormat("Lap\n%01d/%01d",player.lap,track.laps),(Vector2){4,4},font.baseSize,0.0f,reverse_fade);
          DrawTextEx(font,TextFormat("Speed\n %03d",(int)(((float)player.vz/(float)MAX_SPEED)*200.0f)),(Vector2){147,4},font.baseSize,1.0f,reverse_fade);
          DrawTextEx(font,TextFormat("Pos\n %01d",results_pos),(Vector2){301,4},font.baseSize,1.0f,reverse_fade);
          DrawTextureRec(texture_menu,(Rectangle){8,240,256,200},(Vector2){32,20},fade);

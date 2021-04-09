@@ -104,6 +104,8 @@ struct Texture_Rects texture_rects =
       {.x = 0, .y = 625, .width = 166, .height = 118},
       {.x = 166, .y = 625, .width = 166, .height = 117},
       {.x = 332, .y = 625, .width = 176, .height = 170},
+
+      {.x = 508, .y = 625, .width = 63, .height = 64},
    },
    .sprites_col_scale = 
    {
@@ -115,6 +117,7 @@ struct Texture_Rects texture_rects =
       0.8f,0.8f,0.8f,
 
       0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f,
+      0.4f, 0.4f, 0.4f, 0.5f, 0.4f, 0.4f, 0.4f,
       0.4f, 0.4f, 0.4f,
    },
    .car_sprites = 
@@ -234,7 +237,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
          Sprite *sp = &dyn_array_element(Sprite,&s->sprites,j);
          dst.width = (float)texture_rects.sprites[sp->index].width*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE;
          dst.height = (float)texture_rects.sprites[sp->index].height*scale_1*(XRES/2)*ROAD_WIDTH*SPRITE_SCALE;
-         dst.x = (s->p1.screen_x/65536.0f)+(scale_1*(sp->pos/65536.0f)*ROAD_WIDTH*XRES/2)-(sp->pos<0?dst.width:0);
+         dst.x = (s->p1.screen_x/65536.0f)+(scale_1*(sp->pos/65536.0f)*ROAD_WIDTH*XRES/2)-(sp->pos==0?dst.width/2:(sp->pos<0?dst.width:0));
          dst.y = (s->p1.screen_y/65536.0f)-dst.height+1;
 
          //Its possible to specify a clip rect with raylib.

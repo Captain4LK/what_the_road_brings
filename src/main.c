@@ -52,10 +52,9 @@ static void main_loop();
 
 int main(int argc, char **arg)
 {
-   /*srand(time(NULL));
-   for(int i = 0;i<50;i++)
+   /*for(int i = 0;i<45;i++)
    {
-      printf("[add_sprite %d %d %d 0]\n",3+i*5,11+rand()%3,(ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1)/3)*(rand()%9)));
+      printf("[add_sprite [expr $start + %d] %d %d 0]\n",3+i*5,11+rand()%3,-(ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1)/3)*(rand()%9)));
    }*/
    //exit(-1);
 
