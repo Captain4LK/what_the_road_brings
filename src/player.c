@@ -90,7 +90,11 @@ void player_update(int controll)
          if(sp->type==1)
             player.stopped = 2+(player.px>0);
          else if(sp->type==2)
+         {
+            if(player.vz<MAX_SPEED)
+               PlaySound(sound_boost);
             player.vz = MAX_SPEED_BOOST;
+         }
          else
             player.stopped = 1;
       }

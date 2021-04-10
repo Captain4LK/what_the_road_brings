@@ -17,6 +17,7 @@ extern Music sound_drive;
 extern Sound sound_hit;
 extern Sound sound_countdown_0;
 extern Sound sound_countdown_1;
+extern Sound sound_boost;
 
 void audio_load();
 void audio_set_track(unsigned track);

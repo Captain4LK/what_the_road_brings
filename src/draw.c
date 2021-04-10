@@ -75,10 +75,10 @@ struct Texture_Rects texture_rects =
    {
       //Universal props
       {.x = 0, .y = 344, .width = 51, .height = 100},
-      {.x = 51, .y = 344, .width = 32, .height = 16},
+      {.x = 51, .y = 376, .width = 32, .height = 32},
       {.x = 51, .y = 360, .width = 32, .height = 16},
       {.x = 51, .y = 408, .width = 34, .height = 29},
-      {.x = 51, .y = 376, .width = 32, .height = 32},
+      {.x = 51, .y = 344, .width = 32, .height = 16},
 
       //Town props universal
       {.x = 594, .y = 515, .width = 35, .height = 110},

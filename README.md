@@ -21,5 +21,6 @@
 |[Sci-Fi Sounds](https://opengameart.org/content/sci-fi-sounds)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[Kenney](https://opengameart.org/users/kenney)|
 |[Impact Sounds](https://kenney.nl/assets/impact-sounds)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[Kenney](https://kenney.nl/)|
 |[Arcade Countdown](https://freesound.org/people/NXRT/sounds/546602/)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[NXRT](https://freesound.org/people/NXRT/)|
+|[Power Up Charge [Remix of LegoLunatic's Charged laser 151243]](https://freesound.org/people/qubodup/sounds/172631/)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[qubodup](https://freesound.org/people/qubodup/)|
 |[At the end of hope](https://opengameart.org/content/at-the-end-of-hope)|[CC0](https://creativecommons.org/publicdomain/zero/1.0/)|[Emma_MA](https://opengameart.org/users/emmama)|
 |[RailJet / Long Seamless Loop](https://opengameart.org/content/railjet-long-seamless-loop)|[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)|[Deceased Superior Technician](http://www.nosoapradio.us)|

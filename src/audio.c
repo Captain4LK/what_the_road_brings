@@ -45,6 +45,7 @@ Music sound_drive;
 Sound sound_hit;
 Sound sound_countdown_0;
 Sound sound_countdown_1;
+Sound sound_boost;
 
 static Music current_music;
 static int current_music_track = -1;
@@ -68,6 +69,7 @@ void audio_load()
    sound_hit = LoadSound("data/sounds/hit.ogg");
    sound_countdown_0 = LoadSound("data/sounds/countdown_start.ogg");
    sound_countdown_1 = LoadSound("data/sounds/countdown_end.ogg");
+   sound_boost = LoadSound("data/sounds/boost.ogg");
 
    SetMasterVolume(1.0f);
 }
