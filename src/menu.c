@@ -112,14 +112,14 @@ void track_sel_draw()
    DrawTextEx(font,"Select a track",(Vector2){125,40},font.baseSize,0.0f,WHITE);
    DrawTextEx(font,"<       Dream-Land       >",(Vector2){95,72},font.baseSize,0.0f,WHITE);
    DrawTextEx(font,"By a route obscure and lonely",(Vector2){87,104},font.baseSize,0.0f,WHITE);
-   DrawTextEx(font,"Haunted by ill angels only,",(Vector2){92,112},font.baseSize,0.0f,WHITE);
-   DrawTextEx(font,"Where an Eidolon, named Night,",(Vector2){85,120},font.baseSize,0.0f,WHITE);
-   DrawTextEx(font,"On a black throne reigns upright,",(Vector2){77,128},font.baseSize,0.0f,WHITE);
-   DrawTextEx(font,"I have reached these lands but newly",(Vector2){70,136},font.baseSize,0.0f,WHITE);
-   DrawTextEx(font,"From an ultimate dim Thule -",(Vector2){90,144},font.baseSize,0.0f,WHITE);
-   DrawTextEx(font,"From a wild weird clime that lieth, sublime,",(Vector2){50,152},font.baseSize,0.0f,WHITE);
-   DrawTextEx(font,"Out of Space-out of Time.",(Vector2){97,160},font.baseSize,0.0f,WHITE);
-   DrawTextEx(font,"-- Edgar Allan Poe",(Vector2){115,176},font.baseSize,0.0f,WHITE);
+   DrawTextEx(font,"Haunted by ill angels only,",(Vector2){92,114},font.baseSize,0.0f,WHITE);
+   DrawTextEx(font,"Where an Eidolon, named Night,",(Vector2){85,124},font.baseSize,0.0f,WHITE);
+   DrawTextEx(font,"On a black throne reigns upright,",(Vector2){77,134},font.baseSize,0.0f,WHITE);
+   DrawTextEx(font,"I have reached these lands but newly",(Vector2){70,144},font.baseSize,0.0f,WHITE);
+   DrawTextEx(font,"From an ultimate dim Thule -",(Vector2){90,154},font.baseSize,0.0f,WHITE);
+   DrawTextEx(font,"From a wild weird clime that lieth, sublime,",(Vector2){50,164},font.baseSize,0.0f,WHITE);
+   DrawTextEx(font,"Out of Space-out of Time.",(Vector2){97,174},font.baseSize,0.0f,WHITE);
+   DrawTextEx(font,"-- Edgar Allan Poe",(Vector2){115,184},font.baseSize,0.0f,WHITE);
 }
 
 void track_sel_update()
