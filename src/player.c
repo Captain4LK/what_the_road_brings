@@ -14,6 +14,10 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <string.h>
 #include <stdint.h>
 #include <raylib.h>
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 //-------------------------------------
 
 //Internal includes

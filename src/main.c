@@ -52,17 +52,9 @@ static void main_loop();
 
 int main(int argc, char **arg)
 {
-   /*srand(time(NULL));
-   for(int i = 0;i<45;i++)
-   {
-      printf("[add_sprite [expr $start + %d] %d %d 0]\n",i*5,8+rand()%3,(ULK_fixed_32_from_int(1)+(ULK_fixed_32_from_int(1)/3)*(rand()%9)));
-   }*/
-
    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
    //SetConfigFlags(FLAG_FULLSCREEN_MODE);
    InitWindow(XRES*2,YRES*2,"What the road brings");
-   InitAudioDevice();
-   SetTargetFPS(FPS);
 
    load_assets();
    audio_load();
@@ -73,10 +65,11 @@ int main(int argc, char **arg)
    audio_set_track(0);
 
 #ifndef __EMSCRIPTEN__
+   SetTargetFPS(FPS);
    while(!WindowShouldClose())
       main_loop();
 #else
-   emscripten_set_main_loop(main_loop,0,1);
+   emscripten_set_main_loop(main_loop,FPS,1);
 #endif
 
    audio_unload();

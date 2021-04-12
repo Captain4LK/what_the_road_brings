@@ -1,8 +1,8 @@
 CC = emcc 
-CFLAGS+= -Wall -flto -I/mnt/sdb1/code/raylib_web/src/ -lraylib -I/mnt/sdb1/code/raylib_web/src/ 
+CFLAGS+= -Wall -L/mnt/sdb1/code/raylib_web/src/ -lraylib -I/mnt/sdb1/code/raylib_web/src/ -std=c99 -D_DEFAULT_SOURCE -Wno-missing-braces -s USE_GLFW=3 -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 -D_DEFAULT_SOURCE  -DPLATFORM_WEB
 
 pseudo_3d_racer: main.o lil.o track.o audio.o mode.o segment.o ULK_fixed.o car.o draw.o player.o menu.o input.o
-	emcc -O3 $^ -lm -flto -Wall -L/mnt/sdb1/code/raylib_web/src/ -lraylib -s USE_GLFW=3 --memory-init-file 0 --preload-file ../data/ -o racer.html 
+	emcc -O3 $^ -lm $(CFLAGS) --preload-file ../data/ -o racer.html 
 
 main.o: ../../src/main.c ../../src/audio.h ../../src/mode.h ../../src/segment.h ../../src/car.h ../../src/draw.h ../../src/util.h ../../src/input.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 

@@ -15,6 +15,10 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <stdint.h>
 #include <math.h>
 #include <raylib.h>
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 //-------------------------------------
 
 //Internal includes
@@ -194,12 +198,12 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
       DrawTextureRec(texture,texture_rects.backdrop[i],(Vector2){parallax_data.layers[i][1].x,parallax_data.layers[i][1].y},WHITE);
    }
 
-   int i;
+   int index = 0;;
    ULK_fixed_32 max_y = ULK_fixed_32_from_int(YRES);
-   segment_player = segment_list_get_pos(&segments,player.pz+PLAYER_OFFSET,NULL);
-   Segment *base = segment_list_get_pos(&segments,z,&i);
-   int max = i+RENDER_DISTANCE;
-   int i_start = i;
+   segment_player = segment_list_get_pos(&segments,z+PLAYER_OFFSET,NULL);
+   Segment *base = segment_list_get_pos(&segments,z,&index);
+   int max = index+RENDER_DISTANCE;
+   int index_start = index;
    
    //pos: how far the player has traversed the current segment
    //ppos: how far the player sprite has traversed the current segment
@@ -215,34 +219,35 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
    //Draw road segments
    //Only project every second point, the other
    //one can be cached
-   project_point(&base->p0,(x*ROAD_WIDTH)-cx-cdx,py+CAM_HEIGHT,z-(((i_start%segments.used)<i_start)?segments.used*SEGLEN:0),CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
+   project_point(&base->p0,(x*ROAD_WIDTH)-cx-cdx,py+CAM_HEIGHT,z-(((index_start%segments.used)<index_start)?segments.used*SEGLEN:0),CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
    Point cache = base->p0;
-   for(;i<max;i++)
+   for(;index<max;index++)
    {
-      Segment *s = segment_list_get(&segments,i);
+      Segment *s = segment_list_get(&segments,index);
       s->clip_y = max_y;
-      int looped = (i%segments.used)<i_start?segments.used*SEGLEN:0;
       s->p0 = cache;
+      int looped = (index%segments.used)<index_start?segments.used*SEGLEN:0;
       project_point(&s->p1,(x*ROAD_WIDTH)-cx-cdx,py+CAM_HEIGHT,z-looped,CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
       cache = s->p1;
+
       cx+=cdx;
       cdx+=s->curve;
-      if(s->p0.camera_z<<8<=CAM_DEPTH||s->p1.screen_y>=max_y||s->p1.screen_y>=s->p0.screen_y)
+      if(s->p0.camera_z<<8<=CAM_DEPTH //Fixes some flickering issues
+         ||s->p1.screen_y>=max_y //Clip road
+         ||s->p1.screen_y>=s->p0.screen_y)
          continue;
-      if(ULK_fixed_32_floor(s->p0.screen_y)<ULK_fixed_32_ceil(s->p1.screen_y))
-         continue;
-      draw_segment(s);
 
-      max_y = s->p1.screen_y;
+      draw_segment(s);
+      max_y = s->p1.screen_y; //Set new clipping value
    }
 
    //Draw sprites
    //All cars and sprites get drawn from
    //back to front, this game is not 3d so
    //there is no z buffer 
-   for(i = max-1;i>i_start;i--)
+   for(index = max-1;index>index_start;index--)
    {
-      Segment *s = segment_list_get(&segments,i);
+      Segment *s = segment_list_get(&segments,index);
       Rectangle dst;
       float scale_0 = (float)CAM_DEPTH/(float)(s->p0.camera_z<<8);
       float scale_1 = (float)CAM_DEPTH/(float)(s->p1.camera_z<<8);
@@ -529,3 +534,4 @@ static void parallax_scroll(ULK_fixed_32 curve)
       }
    }
 }
+//-------------------------------------

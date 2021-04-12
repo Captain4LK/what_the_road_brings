@@ -63,6 +63,7 @@ static const char *tracks[] =
 
 void audio_load()
 {
+   InitAudioDevice();
    sound_drive = LoadMusicStream("data/sounds/drive.ogg");
    SetMusicVolume(sound_drive,0.3f);
 
@@ -71,7 +72,7 @@ void audio_load()
    sound_countdown_1 = LoadSound("data/sounds/countdown_end.ogg");
    sound_boost = LoadSound("data/sounds/boost.ogg");
 
-   SetMasterVolume(1.0f);
+   SetMasterVolume(0.6f);
 }
 
 void audio_set_track(unsigned track)
