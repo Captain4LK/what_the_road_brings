@@ -51,30 +51,6 @@ int enable_parallax = 1;
 
 struct Texture_Rects texture_rects = 
 {
-   .road00 = {.x = 0,.y = 0,.width = 128,.height = 16},
-   .road01 = {.x = 0,.y = 16,.width = 128,.height = 16},
-   .road02 = {.x = 0,.y = 32,.width = 128,.height = 16},
-   .road03 = {.x = 0,.y = 48,.width = 128,.height = 16},
-   .car_player = 
-   {{
-      {.x = 0, .y = 0, .width = 90, .height = 60},
-      {.x = 90, .y = 0, .width = 90, .height = 60},
-      {.x = 180, .y = 0, .width = 90, .height = 60},
-      {.x = 270, .y = 0, .width = 90, .height = 60},
-      {.x = 360, .y = 0, .width = 90, .height = 60},
-    },{
-      {.x = 0, .y = 60, .width = 90, .height = 60},
-      {.x = 90, .y = 60, .width = 90, .height = 60},
-      {.x = 180, .y = 60, .width = 90, .height = 60},
-      {.x = 270, .y = 60, .width = 90, .height = 60},
-      {.x = 360, .y = 60, .width = 90, .height = 60},
-   }},
-   .backdrop = 
-   {
-      {.x = 0, .y = 120, .width = 320, .height = 224},
-      {.x = 320, .y = 120, .width = 384, .height = 224},
-      {.x = 704, .y = 120, .width = 384, .height = 224},
-   },
    .sprites = 
    {
       //Universal props

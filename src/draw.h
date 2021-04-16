@@ -14,10 +14,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 struct Texture_Rects
 {
-   Rectangle road00;
-   Rectangle road01;
-   Rectangle road02;
-   Rectangle road03;
    Rectangle car_player[2][5];
    Rectangle backdrop[5];
    Rectangle sprites[64];
