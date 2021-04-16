@@ -15,7 +15,7 @@ lil.o: ../../src/lil.c ../../src/lil.h
 input.o: ../../src/input.c ../../src/input.h ../../src/config.h ../../src/util.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-track.o: ../../src/track.c ../../src/track.h ../../src/player.h ../../src/lil.h ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/config.h
+track.o: ../../src/track.c ../../src/track.h ../../src/draw.h ../../src/player.h ../../src/lil.h ../../src/segment.h ../../src/car.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 mode.o: ../../src/mode.c ../../src/track.h ../../src/menu.h ../../src/audio.h ../../src/mode.h ../../src/car.h ../../src/segment.h ../../src/draw.h ../../src/input.h ../../src/player.h ../../src/util.h ../../src/config.h

@@ -29,6 +29,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "car.h"
 #include "segment.h"
 #include "player.h"
+#include "draw.h"
 #include "lil.h"
 //-------------------------------------
 
@@ -62,6 +63,7 @@ static LILCALLBACK lil_value_t fnc_fixed_mul(lil_t lil, size_t argc, lil_value_t
 static LILCALLBACK lil_value_t fnc_get_segments_used(lil_t lil, size_t argc, lil_value_t* argv);
 static LILCALLBACK lil_value_t fnc_set_music(lil_t lil, size_t argc, lil_value_t* argv);
 static LILCALLBACK lil_value_t fnc_set_laps(lil_t lil, size_t argc, lil_value_t* argv);
+static LILCALLBACK lil_value_t fnc_set_texture(lil_t lil, size_t argc, lil_value_t* argv);
 
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill);
 static void add_sprite(int seg, int index, ULK_fixed_32 pos, uint8_t type);
@@ -123,6 +125,7 @@ void track_build()
    lil_register(lil,"rand",fnc_rand);
    lil_register(lil,"set_music",fnc_set_music);
    lil_register(lil,"set_laps",fnc_set_laps);
+   lil_register(lil,"set_texture",fnc_set_texture);
 
    //lil constants
    lil_set_var(lil,"CAR_MAX_SPEED",lil_alloc_integer(CAR_MAX_SPEED),LIL_SETVAR_GLOBAL);
@@ -221,6 +224,12 @@ static LILCALLBACK lil_value_t fnc_set_music(lil_t lil, size_t argc, lil_value_t
 static LILCALLBACK lil_value_t fnc_set_laps(lil_t lil, size_t argc, lil_value_t* argv)
 {
    track.laps = lil_to_integer(argv[0]);
+   return NULL;
+}
+
+static LILCALLBACK lil_value_t fnc_set_texture(lil_t lil, size_t argc, lil_value_t* argv)
+{
+   set_texture(lil_to_string(argv[0]));
    return NULL;
 }
 

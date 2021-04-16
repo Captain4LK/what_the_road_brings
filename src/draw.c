@@ -183,10 +183,15 @@ static void parallax_scroll(ULK_fixed_32 curve);
 
 void load_assets()
 {
-   texture = LoadTexture("data/assets/textures.png");
    texture_menu = LoadTexture("data/assets/sheet_menu.png");
    texture_viewport = LoadRenderTexture(XRES,YRES);
    font = LoadFont("data/assets/font.png");
+}
+
+void set_texture(const char *path)
+{
+   UnloadTexture(texture);
+   texture = LoadTexture(path);
 }
 
 void draw(ULK_fixed x, ULK_fixed z, int steer)

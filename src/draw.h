@@ -34,5 +34,6 @@ extern Font font;
 
 void load_assets();
 void draw(ULK_fixed x, ULK_fixed z, int steer);
+void set_texture(const char *path);
 
 #endif
