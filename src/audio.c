@@ -72,7 +72,7 @@ void audio_load()
    sound_countdown_1 = LoadSound("data/sounds/countdown_end.ogg");
    sound_boost = LoadSound("data/sounds/boost.ogg");
 
-   SetMasterVolume(0.6f);
+   SetMasterVolume(0.3f);
 }
 
 void audio_set_track(unsigned track)

@@ -64,8 +64,10 @@ static LILCALLBACK lil_value_t fnc_get_segments_used(lil_t lil, size_t argc, lil
 static LILCALLBACK lil_value_t fnc_set_music(lil_t lil, size_t argc, lil_value_t* argv);
 static LILCALLBACK lil_value_t fnc_set_laps(lil_t lil, size_t argc, lil_value_t* argv);
 static LILCALLBACK lil_value_t fnc_set_texture(lil_t lil, size_t argc, lil_value_t* argv);
-static LILCALLBACK lil_value_t fnc_set_car_sprite(lil_t lil, size_t argc, lil_value_t* argv);
+static LILCALLBACK lil_value_t fnc_set_player_sprite(lil_t lil, size_t argc, lil_value_t* argv);
 static LILCALLBACK lil_value_t fnc_set_backdrop_sprite(lil_t lil, size_t argc, lil_value_t* argv);
+static LILCALLBACK lil_value_t fnc_set_sprite(lil_t lil, size_t argc, lil_value_t* argv);
+static LILCALLBACK lil_value_t fnc_set_car_sprite(lil_t lil, size_t argc, lil_value_t* argv);
 
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill);
 static void add_sprite(int seg, int index, ULK_fixed_32 pos, uint8_t type);
@@ -128,8 +130,10 @@ void track_build()
    lil_register(lil,"set_music",fnc_set_music);
    lil_register(lil,"set_laps",fnc_set_laps);
    lil_register(lil,"set_texture",fnc_set_texture);
-   lil_register(lil,"set_car_sprite",fnc_set_car_sprite);
+   lil_register(lil,"set_player_sprite",fnc_set_player_sprite);
    lil_register(lil,"set_backdrop_sprite",fnc_set_backdrop_sprite);
+   lil_register(lil,"set_sprite",fnc_set_sprite);
+   lil_register(lil,"set_car_sprite",fnc_set_car_sprite);
 
    //lil constants
    lil_set_var(lil,"CAR_MAX_SPEED",lil_alloc_integer(CAR_MAX_SPEED),LIL_SETVAR_GLOBAL);
@@ -237,7 +241,7 @@ static LILCALLBACK lil_value_t fnc_set_texture(lil_t lil, size_t argc, lil_value
    return NULL;
 }
 
-static LILCALLBACK lil_value_t fnc_set_car_sprite(lil_t lil, size_t argc, lil_value_t* argv)
+static LILCALLBACK lil_value_t fnc_set_player_sprite(lil_t lil, size_t argc, lil_value_t* argv)
 {
    Rectangle *r = &texture_rects.car_player[lil_to_integer(argv[0])][lil_to_integer(argv[1])];
    r->x = lil_to_integer(argv[2]);
@@ -255,6 +259,29 @@ static LILCALLBACK lil_value_t fnc_set_backdrop_sprite(lil_t lil, size_t argc, l
    r->y = lil_to_integer(argv[2]);
    r->width = lil_to_integer(argv[3]);
    r->height = lil_to_integer(argv[4]);
+
+   return NULL;
+}
+
+static LILCALLBACK lil_value_t fnc_set_sprite(lil_t lil, size_t argc, lil_value_t* argv)
+{
+   Rectangle *r = &texture_rects.sprites[lil_to_integer(argv[0])];
+   r->x = lil_to_integer(argv[1]);
+   r->y = lil_to_integer(argv[2]);
+   r->width = lil_to_integer(argv[3]);
+   r->height = lil_to_integer(argv[4]);
+   texture_rects.sprites_col_scale[lil_to_integer(argv[0])] = lil_to_double(argv[5]);
+
+   return NULL;
+}
+
+static LILCALLBACK lil_value_t fnc_set_car_sprite(lil_t lil, size_t argc, lil_value_t* argv)
+{
+   Rectangle *r = &texture_rects.car_sprites[lil_to_integer(argv[0])][lil_to_integer(argv[1])];
+   r->x = lil_to_integer(argv[2]);
+   r->y = lil_to_integer(argv[3]);
+   r->width = lil_to_integer(argv[4]);
+   r->height = lil_to_integer(argv[5]);
 
    return NULL;
 }
