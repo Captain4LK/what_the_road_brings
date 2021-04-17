@@ -40,7 +40,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Variables
-static Color grass1 = {11,31,60,255};
 static int fullscreen = 0;
 //-------------------------------------
 
@@ -58,7 +57,6 @@ int main(int argc, char **arg)
 
    load_assets();
    audio_load();
-   clear_texture = grass1;
 
    dyn_array_init(Segment,&segments,128);
 

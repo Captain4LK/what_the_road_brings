@@ -30,24 +30,20 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "segment.h"
 #include "player.h"
 #include "draw.h"
+#include "mode.h"
 #include "lil.h"
 //-------------------------------------
 
 //#defines
 #define COLOR_ROAD() \
-{ if((segments.used%10)<5) {s.color = grass0;s.color_road = road0;s.color_border = border0;s.line = segments.used%5>1;}else{s.color = grass1;s.color_road = road1;s.color_border = border1;s.line = 0;}}
+{ if((segments.used%10)<5) {s.color = colors[0];s.color_road = colors[4];s.color_border = colors[2];s.line = segments.used%5>1;}else{s.color = colors[1];s.color_road = colors[5];s.color_border = colors[3];s.line = 0;}}
 //-------------------------------------
 
 //Typedefs
 //-------------------------------------
 
 //Variables
-static Color grass0 = {28,38,60,255};
-static Color grass1 = {11,31,60,255};
-static Color border0 = {102,102,102,255};
-static Color border1 = {11,31,60,255};
-static Color road0 = {59,45,31,255};
-static Color road1 = {59,45,31,255};
+static Color colors[7];
 
 Track track;
 ULK_fixed_32 *lap_times = NULL;
@@ -68,6 +64,7 @@ static LILCALLBACK lil_value_t fnc_set_player_sprite(lil_t lil, size_t argc, lil
 static LILCALLBACK lil_value_t fnc_set_backdrop_sprite(lil_t lil, size_t argc, lil_value_t* argv);
 static LILCALLBACK lil_value_t fnc_set_sprite(lil_t lil, size_t argc, lil_value_t* argv);
 static LILCALLBACK lil_value_t fnc_set_car_sprite(lil_t lil, size_t argc, lil_value_t* argv);
+static LILCALLBACK lil_value_t fnc_set_color(lil_t lil, size_t argc, lil_value_t* argv);
 
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill);
 static void add_sprite(int seg, int index, ULK_fixed_32 pos, uint8_t type);
@@ -134,6 +131,7 @@ void track_build()
    lil_register(lil,"set_backdrop_sprite",fnc_set_backdrop_sprite);
    lil_register(lil,"set_sprite",fnc_set_sprite);
    lil_register(lil,"set_car_sprite",fnc_set_car_sprite);
+   lil_register(lil,"set_color",fnc_set_color);
 
    //lil constants
    lil_set_var(lil,"CAR_MAX_SPEED",lil_alloc_integer(CAR_MAX_SPEED),LIL_SETVAR_GLOBAL);
@@ -148,16 +146,11 @@ void track_build()
    lil_free(lil);
 
    segment_list_get_pos(&segments,0,NULL)->color_road = WHITE;
-   add_car(segments.used-1,0,0,1,ULK_fixed_mul(128,CAR_MAX_SPEED));
-   add_car(segments.used-2,0,-ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(148,CAR_MAX_SPEED));
-   add_car(segments.used-2,0,ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(168,CAR_MAX_SPEED));
-   add_car(segments.used-3,0,0,1,ULK_fixed_mul(188,CAR_MAX_SPEED));
-   add_car(segments.used-4,0,-ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(208,CAR_MAX_SPEED));
-   add_car(segments.used-4,0,ULK_fixed_32_from_int(1)/2,1,ULK_fixed_mul(213,CAR_MAX_SPEED));
-   add_car(segments.used-5,0,0,1,ULK_fixed_mul(220,CAR_MAX_SPEED));
 
    player_reset();
    lap_times = malloc(sizeof(*lap_times)*track.laps);
+
+   clear_texture = colors[6];
 }
 
 static LILCALLBACK lil_value_t fnc_add_road(lil_t lil, size_t argc, lil_value_t* argv)
@@ -286,12 +279,23 @@ static LILCALLBACK lil_value_t fnc_set_car_sprite(lil_t lil, size_t argc, lil_va
    return NULL;
 }
 
+static LILCALLBACK lil_value_t fnc_set_color(lil_t lil, size_t argc, lil_value_t* argv)
+{
+   Color *c = &colors[lil_to_integer(argv[0])];
+   c->r = lil_to_integer(argv[1]);
+   c->g = lil_to_integer(argv[2]);
+   c->b = lil_to_integer(argv[3]);
+   c->a = lil_to_integer(argv[4]);
+
+   return NULL;
+}
+
 static void add_stripe(int start, int end)
 {
    for(int i = start;i<=end;i++)
    {
-      segment_list_get(&segments,i)->color = road0;
-      segment_list_get(&segments,i)->color_border = road0;
+      segment_list_get(&segments,i)->color = colors[4];
+      segment_list_get(&segments,i)->color_border = colors[4];
    }
 }
 
