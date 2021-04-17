@@ -20,7 +20,13 @@ struct Texture_Rects
    float sprites_col_scale[64];
    Rectangle car_sprites[6][3];
 };
+struct Parallax_data
+{
+   Rectangle layers[5][2];
+   float speed[5];
+};
 extern struct Texture_Rects texture_rects;
+extern struct Parallax_data parallax_data;
 extern int enable_parallax;
 
 extern Texture2D texture;

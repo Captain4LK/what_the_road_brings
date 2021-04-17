@@ -65,6 +65,7 @@ static LILCALLBACK lil_value_t fnc_set_backdrop_sprite(lil_t lil, size_t argc, l
 static LILCALLBACK lil_value_t fnc_set_sprite(lil_t lil, size_t argc, lil_value_t* argv);
 static LILCALLBACK lil_value_t fnc_set_car_sprite(lil_t lil, size_t argc, lil_value_t* argv);
 static LILCALLBACK lil_value_t fnc_set_color(lil_t lil, size_t argc, lil_value_t* argv);
+static LILCALLBACK lil_value_t fnc_set_backdrop(lil_t lil, size_t argc, lil_value_t* argv);
 
 static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill);
 static void add_sprite(int seg, int index, ULK_fixed_32 pos, uint8_t type);
@@ -132,6 +133,7 @@ void track_build()
    lil_register(lil,"set_sprite",fnc_set_sprite);
    lil_register(lil,"set_car_sprite",fnc_set_car_sprite);
    lil_register(lil,"set_color",fnc_set_color);
+   lil_register(lil,"set_backdrop",fnc_set_backdrop);
 
    //lil constants
    lil_set_var(lil,"CAR_MAX_SPEED",lil_alloc_integer(CAR_MAX_SPEED),LIL_SETVAR_GLOBAL);
@@ -287,6 +289,21 @@ static LILCALLBACK lil_value_t fnc_set_color(lil_t lil, size_t argc, lil_value_t
    c->b = lil_to_integer(argv[3]);
    c->a = lil_to_integer(argv[4]);
 
+   return NULL;
+}
+
+static LILCALLBACK lil_value_t fnc_set_backdrop(lil_t lil, size_t argc, lil_value_t* argv)
+{
+   int index = lil_to_integer(argv[0]);
+   parallax_data.layers[index][0].x = lil_to_integer(argv[1]);
+   parallax_data.layers[index][0].y = lil_to_integer(argv[2]);
+   parallax_data.layers[index][0].width = lil_to_integer(argv[3]);
+   parallax_data.layers[index][0].height = lil_to_integer(argv[4]);
+   parallax_data.speed[index] = lil_to_double(argv[5]);
+   parallax_data.layers[index][1].x = parallax_data.layers[index][0].width;
+   parallax_data.layers[index][1].y = parallax_data.layers[index][0].y;
+   parallax_data.layers[index][1].width = parallax_data.layers[index][0].width;
+   parallax_data.layers[index][1].height = parallax_data.layers[index][0].height;
    return NULL;
 }
 

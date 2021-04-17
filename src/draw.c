@@ -48,25 +48,8 @@ Texture2D texture_menu;
 RenderTexture2D texture_viewport;
 Font font;
 int enable_parallax = 1;
-
 struct Texture_Rects texture_rects;
-static struct
-{
-   Rectangle layers[5][2];
-   float speed[5];
-}parallax_data = 
-{
-   .layers = 
-   {
-      { {.x = 0, .y = 0, .width = 320, .height = 224}, {.x = 0, .y = 0, .width = 0, .height = 0 } },
-      { {.x = 0, .y = 0, .width = 384, .height = 224}, {.x = 384, .y = 0, .width = 384, .height = 224 } },
-      { {.x = 0, .y = 0, .width = 384, .height = 224}, {.x = 384, .y = 0, .width = 384, .height = 224 } },
-   },
-   .speed = 
-   {
-      0, 128.0f, 256.0f,
-   },
-};
+struct Parallax_data parallax_data;
 //-------------------------------------
 
 //Function prototypes
