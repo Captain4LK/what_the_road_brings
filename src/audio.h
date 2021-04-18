@@ -22,5 +22,6 @@ extern Sound sound_boost;
 void audio_load();
 void audio_set_track(unsigned track);
 void audio_unload();
+void audio_set_path(unsigned track, const char *path);
 
 #endif

@@ -9,11 +9,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 */
 
 //External includes
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
-#include <string.h>
 #include <raylib.h>
 
 #ifdef __EMSCRIPTEN__
@@ -29,10 +24,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //#defines
-#define DEADZONE 0.2f
-
-#define MIN(a,b) \
-   ((a)<(b)?(a):(b))
 //-------------------------------------
 
 //Typedefs

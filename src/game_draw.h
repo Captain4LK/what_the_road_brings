@@ -12,30 +12,8 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 #define _DRAW_H_
 
-struct Texture_Rects
-{
-   Rectangle car_player[2][5];
-   Rectangle backdrop[5];
-   Rectangle sprites[64];
-   float sprites_col_scale[64];
-   Rectangle car_sprites[6][3];
-};
-struct Parallax_data
-{
-   Rectangle layers[5][2];
-   float speed[5];
-};
-extern struct Texture_Rects texture_rects;
-extern struct Parallax_data parallax_data;
 extern int enable_parallax;
 
-extern Texture2D texture;
-extern Texture2D texture_menu;
-extern RenderTexture2D texture_viewport;
-extern Font font;
-
-void load_assets();
-void draw(ULK_fixed x, ULK_fixed z, int steer);
-void set_texture(const char *path);
+void game_draw(ULK_fixed x, ULK_fixed z, int steer);
 
 #endif

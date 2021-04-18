@@ -27,10 +27,10 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "audio.h"
 #include "player.h"
 #include "mode.h"
-#include "draw.h"
 #include "menu.h"
 #include "track.h"
 #include "input.h"
+#include "texture.h"
 //-------------------------------------
 
 //#defines
@@ -40,7 +40,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Variables
-
 static int title_select = 0;
 static int credits_loaded = 0;
 static char *credits_text = NULL;

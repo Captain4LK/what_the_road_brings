@@ -10,16 +10,18 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 //External includes
 #include <stdlib.h>
-#include <stdint.h>
 #include <raylib.h>
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 //-------------------------------------
 
 //Internal includes
 #include "ULK_fixed.h"
 #include "config.h"
 #include "util.h"
-#include "car.h"
-#include "segment.h"
+#include "texture.h"
 //-------------------------------------
 
 //#defines
@@ -29,24 +31,29 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Variables
-dyn_array segments;
-Segment *segment_player = NULL;
+Texture2D texture;
+Texture2D texture_menu;
+RenderTexture2D texture_viewport;
+Font font;
+struct Texture_Rects texture_rects;
+struct Parallax_data parallax_data;
 //-------------------------------------
 
 //Function prototypes
 //-------------------------------------
 
 //Function implementations
-Segment *segment_list_get_pos(dyn_array *list, ULK_fixed pos, int *index)
+
+void textures_load()
 {
-   int in = ULK_fixed_to_int(ULK_fixed_div(pos,SEGLEN))%list->used;
-   if(index)
-      *index = in;
-   return &dyn_array_element(Segment,list,in);
+   texture_menu = LoadTexture("data/assets/sheet_menu.png");
+   texture_viewport = LoadRenderTexture(XRES,YRES);
+   font = LoadFont("data/assets/font.png");
 }
 
-Segment *segment_list_get(dyn_array *list, int index)
+void texture_set(const char *path)
 {
-   return &dyn_array_element(Segment,list,index%list->used);
+   UnloadTexture(texture);
+   texture = LoadTexture(path);
 }
 //-------------------------------------

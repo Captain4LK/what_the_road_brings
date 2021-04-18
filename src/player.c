@@ -27,18 +27,13 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "audio.h"
 #include "car.h"
 #include "player.h"
-#include "draw.h"
 #include "segment.h"
 #include "input.h"
 #include "track.h"
+#include "texture.h"
 //-------------------------------------
 
 //#defines
-#define MIN(a,b) \
-   ((a)<(b)?(a):(b))
-
-#define MAX(a,b) \
-   ((a)>(b)?(a):(b))
 //-------------------------------------
 
 //Typedefs
@@ -142,7 +137,7 @@ void player_update(int controll)
 
    ULK_fixed old_z = player.pz;
    //Peak floating point...
-   //I should rely start explicetely casting between int and float...
+   //I should really start explicetely casting between int and float...
    if(player.stopped!=1)
       player.pz+=(ULK_fixed_32)(player.vz*dt);
    player.time+=ULK_fixed_32_from_int(1)*dt;

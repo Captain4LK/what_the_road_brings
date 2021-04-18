@@ -26,7 +26,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "car.h"
 #include "player.h"
 #include "segment.h"
-#include "draw.h"
+#include "texture.h"
 //-------------------------------------
 
 //#defines
@@ -299,7 +299,8 @@ static void car_opp_update(Segment *s, Car_list *l, int seg, float dt)
       //Update z position/segment
       ULK_fixed old_z = l->car->z+l->car->segment*SEGLEN;
       l->car->z+=l->car->speed*dt;
-      if(old_z<SEGLEN&&l->car->z+l->car->segment*SEGLEN>SEGLEN)
+
+      if(old_z>((l->car->z+l->car->segment*SEGLEN)%(segments.used*SEGLEN)))
          l->car->lap++;
       if(l->car->z>=SEGLEN)
       {

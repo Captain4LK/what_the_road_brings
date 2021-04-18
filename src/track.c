@@ -29,14 +29,15 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "car.h"
 #include "segment.h"
 #include "player.h"
-#include "draw.h"
 #include "mode.h"
+#include "audio.h"
+#include "texture.h"
 #include "lil.h"
 //-------------------------------------
 
 //#defines
 #define COLOR_ROAD() \
-{ if((segments.used%10)<5) {s.color = colors[0];s.color_road = colors[4];s.color_border = colors[2];s.line = segments.used%5>1;}else{s.color = colors[1];s.color_road = colors[5];s.color_border = colors[3];s.line = 0;}}
+   { if((segments.used%10)<5) {s.color = colors[0];s.color_road = colors[4];s.color_border = colors[2];s.line = segments.used%5>1;}else{s.color = colors[1];s.color_road = colors[5];s.color_border = colors[3];s.line = 0;}}
 //-------------------------------------
 
 //Typedefs
@@ -79,7 +80,6 @@ void track_build()
 {
    srand(time(NULL));
    track.laps = 3;
-   track.music = 0;
 
    //Setup road
    //Free previous road
@@ -220,7 +220,7 @@ static LILCALLBACK lil_value_t fnc_fixed_mul(lil_t lil, size_t argc, lil_value_t
 
 static LILCALLBACK lil_value_t fnc_set_music(lil_t lil, size_t argc, lil_value_t* argv)
 {
-   track.music = lil_to_integer(argv[0]);
+   audio_set_path(1,lil_to_string(argv[0]));
    return NULL;
 }
 
@@ -232,7 +232,7 @@ static LILCALLBACK lil_value_t fnc_set_laps(lil_t lil, size_t argc, lil_value_t*
 
 static LILCALLBACK lil_value_t fnc_set_texture(lil_t lil, size_t argc, lil_value_t* argv)
 {
-   set_texture(lil_to_string(argv[0]));
+   texture_set(lil_to_string(argv[0]));
    return NULL;
 }
 

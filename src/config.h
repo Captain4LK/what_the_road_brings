@@ -16,6 +16,11 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define FPS 60
 #define XRES 320
 #define YRES 240
+#define TITLE "What the road brings"
+#define MAX_PATH_LENGTH 512
+
+//Input
+#define DEADZONE 0.2f
 
 #define SEGLEN ULK_fixed_from_int(32)
 #define MAX_SPEED ULK_fixed_from_int(24*60)

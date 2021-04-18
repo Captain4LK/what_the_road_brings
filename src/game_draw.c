@@ -14,6 +14,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <string.h>
 #include <stdint.h>
 #include <math.h>
+#include "ULK_fixed.h"
 #include <raylib.h>
 
 #ifdef __EMSCRIPTEN__
@@ -22,34 +23,23 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Internal includes
-#include "ULK_fixed.h"
 #include "config.h"
 #include "util.h"
 #include "car.h"
 #include "segment.h"
-#include "draw.h"
+#include "game_draw.h"
+#include "texture.h"
 #include "player.h"
 //-------------------------------------
 
 //#defines
-#define MIN(a,b) \
-   ((a)<(b)?(a):(b))
-
-#define MAX(a,b) \
-   ((a)>(b)?(a):(b))
 //-------------------------------------
 
 //Typedefs
 //-------------------------------------
 
 //Variables
-Texture2D texture;
-Texture2D texture_menu;
-RenderTexture2D texture_viewport;
-Font font;
 int enable_parallax = 1;
-struct Texture_Rects texture_rects;
-struct Parallax_data parallax_data;
 //-------------------------------------
 
 //Function prototypes
@@ -60,20 +50,7 @@ static void parallax_scroll(ULK_fixed_32 curve);
 
 //Function implementations
 
-void load_assets()
-{
-   texture_menu = LoadTexture("data/assets/sheet_menu.png");
-   texture_viewport = LoadRenderTexture(XRES,YRES);
-   font = LoadFont("data/assets/font.png");
-}
-
-void set_texture(const char *path)
-{
-   UnloadTexture(texture);
-   texture = LoadTexture(path);
-}
-
-void draw(ULK_fixed x, ULK_fixed z, int steer)
+void game_draw(ULK_fixed x, ULK_fixed z, int steer)
 {
    //Draw background, with parallax effect
    for(int i = 0;i<5;i++)
@@ -183,7 +160,7 @@ void draw(ULK_fixed x, ULK_fixed z, int steer)
 
       if(s==segment_player)
       {
-         if(segment_player->p1.y-segment_player->p0.y>ULK_fixed_32_from_int(1))
+         if(segment_player->p1.y-segment_player->p0.y>ULK_fixed_32_from_int(1)/2)
             DrawTextureRec(texture,texture_rects.car_player[1][steer+2],(Vector2){115,170},WHITE);
          else
             DrawTextureRec(texture,texture_rects.car_player[0][steer+2],(Vector2){115,170},WHITE);

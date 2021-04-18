@@ -42,4 +42,10 @@ typedef struct
 #define overlap(xa,wa,xb,wb,p) \
    (!((((xa)+(wa)*((p)/2.0))<((xb)-(wb)*((p)/2.0)))||(((xa)-(wa)*((p)/2.0))>((xb)+(wb)*((p)/2.0)))))
 
+#define MIN(a,b) \
+   ((a)<(b)?(a):(b))
+
+#define MAX(a,b) \
+   ((a)>(b)?(a):(b))
+
 #endif

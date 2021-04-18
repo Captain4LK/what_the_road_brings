@@ -9,11 +9,8 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 */
 
 //External includes
-#include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <time.h>
-#include <string.h>
+#include "ULK_fixed.h"
 #include <raylib.h>
 
 #ifdef __EMSCRIPTEN__
@@ -22,15 +19,14 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Internal includes
-#include "ULK_fixed.h"
 #include "config.h"
 #include "util.h"
 #include "audio.h"
 #include "mode.h"
 #include "car.h"
 #include "segment.h"
-#include "draw.h"
 #include "input.h"
+#include "texture.h"
 //-------------------------------------
 
 //#defines
@@ -49,17 +45,15 @@ static void main_loop();
 
 //Function implementations
 
-int main(int argc, char **arg)
+int main(int argc, const char **argv)
 {
    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-   //SetConfigFlags(FLAG_FULLSCREEN_MODE);
-   InitWindow(XRES*2,YRES*2,"What the road brings");
+   InitWindow(XRES*2,YRES*2,TITLE);
 
-   load_assets();
+   textures_load();
    audio_load();
 
    dyn_array_init(Segment,&segments,128);
-
    audio_set_track(0);
 
 #ifndef __EMSCRIPTEN__
@@ -90,7 +84,7 @@ static void main_loop()
          main_loop_oheight = GetScreenHeight();
          main_loop_ox = GetWindowPosition().x;
          main_loop_oy = GetWindowPosition().y;
-         SetWindowState(FLAG_WINDOW_UNDECORATED|FLAG_WINDOW_RESIZABLE);
+         SetWindowState(FLAG_WINDOW_UNDECORATED);
          SetWindowSize(GetMonitorWidth(0),GetMonitorHeight(0));
          SetWindowPosition(0,0);
       }

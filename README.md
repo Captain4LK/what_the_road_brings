@@ -1,5 +1,9 @@
 # What the road brings
 
+# Download
+
+You can download the game on itch.io: https://captain4lk.itch.io/what-the-road-brings
+
 # Assets used
 
 ## Graphics

@@ -26,15 +26,14 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "mode.h"
 #include "player.h"
 #include "car.h"
-#include "draw.h"
+#include "game_draw.h"
 #include "menu.h"
 #include "track.h"
+#include "texture.h"
 #include "input.h"
 //-------------------------------------
 
 //#defines
-#define MIN(a,b) \
-   ((a)<(b)?(a):(b))
 //-------------------------------------
 
 //Typedefs
@@ -201,7 +200,7 @@ static void mode_game_start_update()
       ClearBackground(clear_screen);
       BeginTextureMode(texture_viewport);
          ClearBackground(clear_texture);
-         draw(player.px,player.pz,player.steer);
+         game_draw(player.px,player.pz,player.steer);
       EndTextureMode();
 
       float window_width = GetScreenWidth();
@@ -225,7 +224,7 @@ static void mode_game_start_update()
 
    if(!IsSoundPlaying(sound_countdown_0))
    {
-      audio_set_track(track.music);
+      audio_set_track(1);
       PlaySound(sound_countdown_1);
       mode = 12;
    }
@@ -253,7 +252,7 @@ static void mode_game_update()
       ClearBackground(clear_screen);
       BeginTextureMode(texture_viewport);
          ClearBackground(clear_texture);
-         draw(player.px,player.pz,player.steer);
+         game_draw(player.px,player.pz,player.steer);
          DrawTextEx(font,TextFormat("Lap\n%01d/%01d",player.lap,track.laps),(Vector2){4,4},font.baseSize,0.0f,WHITE);
          DrawTextEx(font,TextFormat("Speed\n %03d",(int)(((float)player.vz/(float)MAX_SPEED)*200.0f)),(Vector2){147,4},font.baseSize,1.0f,WHITE);
          DrawTextEx(font,TextFormat("Pos\n %01d",player_pos()),(Vector2){301,4},font.baseSize,1.0f,WHITE);
@@ -311,7 +310,7 @@ static void mode_pause_update()
       ClearBackground(clear_screen);
       BeginTextureMode(texture_viewport);
          ClearBackground(clear_texture);
-         draw(player.px,player.pz,player.steer);
+         game_draw(player.px,player.pz,player.steer);
          DrawTextEx(font,TextFormat("Lap\n%01d/%01d",player.lap,track.laps),(Vector2){4,4},font.baseSize,0.0f,WHITE);
          DrawTextEx(font,TextFormat("Speed\n %03d",(int)(((float)player.vz/(float)MAX_SPEED)*200.0f)),(Vector2){147,4},font.baseSize,1.0f,WHITE);
          DrawTextEx(font,TextFormat("Pos\n %01d",player_pos()),(Vector2){301,4},font.baseSize,1.0f,WHITE);
@@ -377,7 +376,7 @@ static void mode_results_update()
       ClearBackground(clear_screen);
       BeginTextureMode(texture_viewport);
          ClearBackground(clear_texture);
-         draw(player.px,player.pz,player.steer);
+         game_draw(player.px,player.pz,player.steer);
          DrawTextEx(font,TextFormat("Lap\n%01d/%01d",player.lap,track.laps),(Vector2){4,4},font.baseSize,0.0f,reverse_fade);
          DrawTextEx(font,TextFormat("Speed\n %03d",(int)(((float)player.vz/(float)MAX_SPEED)*200.0f)),(Vector2){147,4},font.baseSize,1.0f,reverse_fade);
          DrawTextEx(font,TextFormat("Pos\n %01d",results_pos),(Vector2){301,4},font.baseSize,1.0f,reverse_fade);

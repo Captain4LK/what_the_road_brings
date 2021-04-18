@@ -9,10 +9,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 */
 
 //External includes
-#include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <time.h>
 #include <string.h>
 #include <raylib.h>
 
@@ -26,11 +23,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "config.h"
 #include "util.h"
 #include "audio.h"
-#include "mode.h"
-#include "player.h"
-#include "car.h"
-#include "segment.h"
-#include "draw.h"
 //-------------------------------------
 
 //#defines
@@ -49,10 +41,9 @@ Sound sound_boost;
 
 static Music current_music;
 static int current_music_track = -1;
-static const char *tracks[] = 
+static char tracks[8][MAX_PATH_LENGTH] = 
 {
    "data/music/title.ogg",
-   "data/music/track0.ogg",
 };
 //-------------------------------------
 
@@ -102,5 +93,10 @@ void audio_unload()
       UnloadMusicStream(current_music);
 
    CloseAudioDevice();
+}
+
+void audio_set_path(unsigned track, const char *path)
+{
+   strcpy(tracks[track],path);
 }
 //-------------------------------------
