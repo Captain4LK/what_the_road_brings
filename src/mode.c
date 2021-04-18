@@ -63,31 +63,17 @@ static void mode_results_update();
 
 //Function implementations
 
-void modes_update()
+void mode_update()
 {
    switch(mode)
    {
-   case 0: //Title screen
-      mode_title_update();
-      break;
-   case 1: //Credits
-      mode_credits_update();
-      break;
-   case 2: //Track select
-      mode_track_sel_update();
-      break;
-   case 11:
-      mode_game_start_update();
-      break;
-   case 12:
-      mode_game_update();
-      break;
-   case 13:
-      mode_pause_update();
-      break;
-   case 14:
-      mode_results_update();
-      break;
+   case 0: mode_title_update(); break;
+   case 1: mode_credits_update(); break;
+   case 2: mode_track_sel_update(); break;
+   case 11: mode_game_start_update(); break;
+   case 12: mode_game_update(); break;
+   case 13: mode_pause_update(); break;
+   case 14: mode_results_update(); break;
    }
 }
 

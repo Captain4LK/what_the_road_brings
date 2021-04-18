@@ -39,6 +39,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //Variables
 static Car_list *base_cars_list = NULL;
 static Car *base_cars = NULL;
+//TODO: reset on track load
 static uint8_t car_update_counter = 0;
 static uint16_t car_id_counter = 0;
 

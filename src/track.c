@@ -33,7 +33,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "mode.h"
 #include "audio.h"
 #include "texture.h"
-#include "lil.h"
+#include "../external/lil.h"
 //-------------------------------------
 
 //#defines

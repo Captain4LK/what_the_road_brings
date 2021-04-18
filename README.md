@@ -1,8 +1,18 @@
 # What the road brings
 
+A pseudo 3d racer made using raylib. The game was originally made for the [32-bit Spring Cleaning!](https://itch.io/jam/32-bit-spring-cleaning) Jam, where this game ranked first place. I decided to continue development of this game from there.
+
 # Download
 
 You can download the game on itch.io: https://captain4lk.itch.io/what-the-road-brings
+
+# License
+
+All code in this repository (except the 'external' directory containing source code not by me) is released into the public domain (CC0), see COPYING for more info.
+
+# Third party libraries
+
+* [lil](http://runtimeterror.com/tech/lil/), zlib
 
 # Assets used
 

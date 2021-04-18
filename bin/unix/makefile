@@ -9,7 +9,7 @@ pseudo_3d_racer: main.o lil.o track.o audio.o mode.o segment.o texture.o fixed.o
 main.o: ../../src/main.c ../../src/audio.h ../../src/mode.h ../../src/segment.h ../../src/car.h ../../src/texture.h ../../src/input.h ../../src/fixed.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-lil.o: ../../src/lil.c ../../src/lil.h
+lil.o: ../../external/lil.c ../../external/lil.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 input.o: ../../src/input.c ../../src/input.h ../../src/fixed.h ../../src/config.h ../../src/util.h
@@ -18,7 +18,7 @@ input.o: ../../src/input.c ../../src/input.h ../../src/fixed.h ../../src/config.
 texture.o: ../../src/texture.c ../../src/texture.h ../../src/fixed.h ../../src/config.h ../../src/util.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
-track.o: ../../src/track.c ../../src/track.h ../../src/mode.h ../../src/game_draw.h ../../src/player.h ../../src/texture.h ../../src/lil.h ../../src/segment.h ../../src/car.h ../../src/fixed.h ../../src/util.h ../../src/config.h
+track.o: ../../src/track.c ../../src/track.h ../../src/mode.h ../../src/game_draw.h ../../src/player.h ../../src/texture.h ../../external/lil.h ../../src/segment.h ../../src/car.h ../../src/fixed.h ../../src/util.h ../../src/config.h
 	$(CC) -O3 -c $< $(CFLAGS) 
 
 mode.o: ../../src/mode.c ../../src/track.h ../../src/menu.h ../../src/audio.h ../../src/mode.h ../../src/car.h ../../src/texture.h ../../src/segment.h ../../src/game_draw.h ../../src/input.h ../../src/player.h ../../src/fixed.h ../../src/util.h ../../src/config.h

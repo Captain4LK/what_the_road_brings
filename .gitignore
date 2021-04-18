@@ -1,1 +1,11 @@
 *.o
+bin/data
+bin/pseudo_3d_racer
+
+*.dll
+*.exe
+
+*.html
+*.js
+*.wasm
+*.data

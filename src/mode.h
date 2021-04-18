@@ -16,6 +16,6 @@ extern int mode;
 extern Color clear_texture;
 extern Color clear_screen;
 
-void modes_update();
+void mode_update();
 
 #endif

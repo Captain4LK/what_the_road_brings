@@ -37,7 +37,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Variables
-static int fullscreen = 0;
 //-------------------------------------
 
 //Function prototypes
@@ -48,13 +47,14 @@ static void main_loop();
 
 int main(int argc, const char **argv)
 {
+   //Initialize raylib
    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
    InitWindow(XRES*2,YRES*2,TITLE);
 
+   //Load ressources
+   dyn_array_init(Segment,&segments,128);
    textures_load();
    audio_load();
-
-   dyn_array_init(Segment,&segments,128);
    audio_set_track(0);
 
 #ifndef __EMSCRIPTEN__
@@ -75,11 +75,12 @@ static void main_loop()
 {
    if(input_pressed_fullscreen())
    {
-      fullscreen = !fullscreen;
-
+      static int main_loop_fullscreen = 0;
       static int main_loop_owidth,main_loop_oheight;
       static int main_loop_ox,main_loop_oy;
-      if(fullscreen)
+
+      main_loop_fullscreen = !main_loop_fullscreen;
+      if(main_loop_fullscreen)
       {
          main_loop_owidth = GetScreenWidth();
          main_loop_oheight = GetScreenHeight();
@@ -97,6 +98,6 @@ static void main_loop()
       }
    }
    
-   modes_update();
+   mode_update();
 }
 //-------------------------------------
