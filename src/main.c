@@ -10,7 +10,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 //External includes
 #include <stdlib.h>
-#include "ULK_fixed.h"
+#include <stdint.h>
 #include <raylib.h>
 
 #ifdef __EMSCRIPTEN__
@@ -21,6 +21,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //Internal includes
 #include "config.h"
 #include "util.h"
+#include "fixed.h"
 #include "audio.h"
 #include "mode.h"
 #include "car.h"

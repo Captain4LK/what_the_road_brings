@@ -11,6 +11,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //External includes
 #include <math.h>
 #include <time.h>
+#include <stdint.h>
 #include <raylib.h>
 
 #ifdef __EMSCRIPTEN__
@@ -19,7 +20,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Internal includes
-#include "ULK_fixed.h"
+#include "fixed.h"
 #include "config.h"
 #include "util.h"
 #include "audio.h"
@@ -383,7 +384,7 @@ static void mode_results_update()
          DrawTextureRec(texture_menu,(Rectangle){8,240,256,200},(Vector2){32,20},fade);
          DrawTextEx(font,"Time",(Vector2){40,36},font.baseSize,1.0f,fade);
          for(int i = 0;i<track.laps;i++)
-            DrawTextEx(font,TextFormat("%02d:%02d:%03d",(ULK_fixed_32_to_int(lap_times[i])/60),ULK_fixed_32_to_int(lap_times[i])%60,ULK_fixed_32_to_int(1000*(lap_times[i]%ULK_fixed_32_from_int(1)))),(Vector2){40,52+i*8},font.baseSize,1.0f,fade);
+            DrawTextEx(font,TextFormat("%02d:%02d:%03d",(Fixed1616_to_int(lap_times[i])/60),Fixed1616_to_int(lap_times[i])%60,Fixed1616_to_int(1000*(lap_times[i]%Fixed1616_from_int(1)))),(Vector2){40,52+i*8},font.baseSize,1.0f,fade);
          if(results_pos==1)
             DrawTextEx(font,"1st",(Vector2){145,44},font.baseSize*2,1.0f,fade);
          else if(results_pos==2)

@@ -9,12 +9,8 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 */
 
 //External includes
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdint.h>
-#include <math.h>
-#include "ULK_fixed.h"
 #include <raylib.h>
 
 #ifdef __EMSCRIPTEN__
@@ -25,6 +21,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //Internal includes
 #include "config.h"
 #include "util.h"
+#include "fixed.h"
 #include "car.h"
 #include "segment.h"
 #include "game_draw.h"
@@ -43,14 +40,14 @@ int enable_parallax = 1;
 //-------------------------------------
 
 //Function prototypes
-static void project_point(Point *p, ULK_fixed cam_x, ULK_fixed cam_y, ULK_fixed cam_z, ULK_fixed cam_depth, int width, int height, int road_width);
+static void project_point(Point *p, Fixed2408 cam_x, Fixed2408 cam_y, Fixed2408 cam_z, Fixed2408 cam_depth, int width, int height, int road_width);
 static void draw_segment(Segment *s);
-static void parallax_scroll(ULK_fixed_32 curve);
+static void parallax_scroll(Fixed1616 curve);
 //-------------------------------------
 
 //Function implementations
 
-void game_draw(ULK_fixed x, ULK_fixed z, int steer)
+void game_draw(Fixed2408 x, Fixed2408 z, int steer)
 {
    //Draw background, with parallax effect
    for(int i = 0;i<5;i++)
@@ -60,7 +57,7 @@ void game_draw(ULK_fixed x, ULK_fixed z, int steer)
    }
 
    int index = 0;;
-   ULK_fixed_32 max_y = ULK_fixed_32_from_int(YRES);
+   Fixed1616 max_y = Fixed1616_from_int(YRES);
    segment_player = segment_list_get_pos(&segments,z+PLAYER_OFFSET,NULL);
    Segment *base = segment_list_get_pos(&segments,z,&index);
    int max = index+RENDER_DISTANCE;
@@ -71,11 +68,11 @@ void game_draw(ULK_fixed x, ULK_fixed z, int steer)
    //cdx: curve delta starting value, multiplied by pos, to account for partial segment traversal
    //cx: road x shift value, gets incremented by cdx every segment
    //py: starting segment height, used to move the camera to the road
-   ULK_fixed_32 pos = ULK_fixed_32_div((z%SEGLEN)<<8,SEGLEN<<8);
-   ULK_fixed_32 ppos = ULK_fixed_32_div(((z+PLAYER_OFFSET)%SEGLEN)<<8,SEGLEN<<8);
-   ULK_fixed_32 cdx = -(ULK_fixed_32_mul(base->curve,pos));
-   ULK_fixed_32 cx = -cdx;
-   ULK_fixed_32 py = segment_player->p0.y+ULK_fixed_32_mul(segment_player->p1.y-segment_player->p0.y,ppos);
+   Fixed1616 pos = Fixed1616_div((z%SEGLEN)<<8,SEGLEN<<8);
+   Fixed1616 ppos = Fixed1616_div(((z+PLAYER_OFFSET)%SEGLEN)<<8,SEGLEN<<8);
+   Fixed1616 cdx = -(Fixed1616_mul(base->curve,pos));
+   Fixed1616 cx = -cdx;
+   Fixed1616 py = segment_player->p0.y+Fixed1616_mul(segment_player->p1.y-segment_player->p0.y,ppos);
 
    //Draw road segments
    //Only project every second point, the other
@@ -160,7 +157,7 @@ void game_draw(ULK_fixed x, ULK_fixed z, int steer)
 
       if(s==segment_player)
       {
-         if(segment_player->p1.y-segment_player->p0.y>ULK_fixed_32_from_int(1)/2)
+         if(segment_player->p1.y-segment_player->p0.y>Fixed1616_from_int(1)/2)
             DrawTextureRec(texture,texture_rects.car_player[1][steer+2],(Vector2){115,170},WHITE);
          else
             DrawTextureRec(texture,texture_rects.car_player[0][steer+2],(Vector2){115,170},WHITE);
@@ -172,16 +169,16 @@ void game_draw(ULK_fixed x, ULK_fixed z, int steer)
       parallax_scroll(segment_player->curve);
 }
 
-static void project_point(Point *p, ULK_fixed_32 cam_x, ULK_fixed_32 cam_y, ULK_fixed cam_z, ULK_fixed_32 cam_depth, int width, int height, int road_width)
+static void project_point(Point *p, Fixed1616 cam_x, Fixed1616 cam_y, Fixed2408 cam_z, Fixed1616 cam_depth, int width, int height, int road_width)
 {
-   ULK_fixed_32 camera_x = -cam_x;
-   ULK_fixed_32 camera_y = p->y-cam_y;
+   Fixed1616 camera_x = -cam_x;
+   Fixed1616 camera_y = p->y-cam_y;
    p->camera_z = p->z-cam_z;
    if(p->camera_z==0)
       p->camera_z = INT16_MAX<<8;
-   p->screen_x = (ULK_fixed_32_from_int(width/2)+ULK_fixed_32_mul(ULK_fixed_32_from_int(width/2),ULK_fixed_32_mul(ULK_fixed_32_div(camera_x,p->camera_z<<8),cam_depth)));
-   p->screen_y = (ULK_fixed_32_from_int(height/2)-ULK_fixed_32_mul(ULK_fixed_32_from_int(height/2),ULK_fixed_32_mul(ULK_fixed_32_div(camera_y,p->camera_z<<8),cam_depth)));
-   p->screen_w = ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(width),p->camera_z<<8)*48,cam_depth);
+   p->screen_x = (Fixed1616_from_int(width/2)+Fixed1616_mul(Fixed1616_from_int(width/2),Fixed1616_mul(Fixed1616_div(camera_x,p->camera_z<<8),cam_depth)));
+   p->screen_y = (Fixed1616_from_int(height/2)-Fixed1616_mul(Fixed1616_from_int(height/2),Fixed1616_mul(Fixed1616_div(camera_y,p->camera_z<<8),cam_depth)));
+   p->screen_w = Fixed1616_mul(Fixed1616_div(Fixed1616_from_int(width),p->camera_z<<8)*48,cam_depth);
 }
 
 static void draw_segment(Segment *s)
@@ -192,15 +189,15 @@ static void draw_segment(Segment *s)
 
       //Grass
       a.y = ((s->p1.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = 0.0f;
       b.x = 0.0f;
       c.x = XRES;
       DrawTriangle(a,b,c,s->color);
 
-      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      a.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = 0.0f;
       b.x = XRES;
@@ -209,15 +206,15 @@ static void draw_segment(Segment *s)
 
       //Left border
       a.y = ((s->p1.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p1.screen_x-s->p1.screen_w))/65536.0f;
       b.x = ((s->p0.screen_x-s->p0.screen_w))/65536.0f;
       c.x = ((s->p1.screen_x-s->p1.screen_w+s->p1.screen_w/16))/65536.0f;
       DrawTriangle(a,b,c,s->color_border);
 
-      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      a.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p0.screen_x-s->p0.screen_w))/65536.0f;
       b.x = ((s->p0.screen_x-s->p0.screen_w+s->p0.screen_w/16))/65536.0f;
@@ -226,15 +223,15 @@ static void draw_segment(Segment *s)
 
       //Road
       a.y = ((s->p1.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p1.screen_x-s->p1.screen_w+s->p1.screen_w/16))/65536.0f;
       b.x = ((s->p0.screen_x-s->p0.screen_w+s->p0.screen_w/16))/65536.0f;
       c.x = ((s->p1.screen_x+s->p1.screen_w-s->p1.screen_w/16))/65536.0f;
       DrawTriangle(a,b,c,s->color_road);
 
-      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      a.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p0.screen_x-s->p0.screen_w+s->p0.screen_w/16))/65536.0f;
       b.x = ((s->p0.screen_x+s->p0.screen_w-s->p0.screen_w/16))/65536.0f;
@@ -243,15 +240,15 @@ static void draw_segment(Segment *s)
 
       //Right border
       a.y = ((s->p1.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p1.screen_x+s->p1.screen_w-s->p1.screen_w/16))/65536.0f;
       b.x = ((s->p0.screen_x+s->p0.screen_w-s->p0.screen_w/16))/65536.0f;
       c.x = ((s->p1.screen_x+s->p1.screen_w))/65536.0f;
       DrawTriangle(a,b,c,s->color_border);
 
-      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      a.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p0.screen_x+s->p0.screen_w-s->p0.screen_w/16))/65536.0f;
       b.x = ((s->p0.screen_x+s->p0.screen_w))/65536.0f;
@@ -264,15 +261,15 @@ static void draw_segment(Segment *s)
 
       //Grass
       a.y = ((s->p1.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = 0.0f;
       b.x = 0.0f;
       c.x = XRES;
       DrawTriangle(a,b,c,s->color);
 
-      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      a.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = 0.0f;
       b.x = XRES;
@@ -281,15 +278,15 @@ static void draw_segment(Segment *s)
 
       //Left border
       a.y = ((s->p1.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p1.screen_x-s->p1.screen_w))/65536.0f;
       b.x = ((s->p0.screen_x-s->p0.screen_w))/65536.0f;
       c.x = ((s->p1.screen_x-s->p1.screen_w+s->p1.screen_w/16))/65536.0f;
       DrawTriangle(a,b,c,s->color_border);
 
-      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      a.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p0.screen_x-s->p0.screen_w))/65536.0f;
       b.x = ((s->p0.screen_x-s->p0.screen_w+s->p0.screen_w/16))/65536.0f;
@@ -298,15 +295,15 @@ static void draw_segment(Segment *s)
 
       //Road
       a.y = ((s->p1.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p1.screen_x-s->p1.screen_w+s->p1.screen_w/16))/65536.0f;
       b.x = ((s->p0.screen_x-s->p0.screen_w+s->p0.screen_w/16))/65536.0f;
       c.x = ((s->p1.screen_x+s->p1.screen_w-s->p1.screen_w/16))/65536.0f;
       DrawTriangle(a,b,c,s->color_road);
 
-      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      a.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p0.screen_x-s->p0.screen_w+s->p0.screen_w/16))/65536.0f;
       b.x = ((s->p0.screen_x+s->p0.screen_w-s->p0.screen_w/16))/65536.0f;
@@ -315,15 +312,15 @@ static void draw_segment(Segment *s)
 
       //Right border
       a.y = ((s->p1.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p1.screen_x+s->p1.screen_w-s->p1.screen_w/16))/65536.0f;
       b.x = ((s->p0.screen_x+s->p0.screen_w-s->p0.screen_w/16))/65536.0f;
       c.x = ((s->p1.screen_x+s->p1.screen_w))/65536.0f;
       DrawTriangle(a,b,c,s->color_border);
 
-      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      a.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p0.screen_x+s->p0.screen_w-s->p0.screen_w/16))/65536.0f;
       b.x = ((s->p0.screen_x+s->p0.screen_w))/65536.0f;
@@ -332,15 +329,15 @@ static void draw_segment(Segment *s)
 
       //Left marker 
       a.y = ((s->p1.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p1.screen_x-s->p1.screen_w+11*s->p1.screen_w/16))/65536.0f;
       b.x = ((s->p0.screen_x-s->p0.screen_w+11*s->p0.screen_w/16))/65536.0f;
       c.x = ((s->p1.screen_x-s->p1.screen_w+12*s->p1.screen_w/16))/65536.0f;
       DrawTriangle(a,b,c,s->color_border);
 
-      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      a.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p0.screen_x-s->p0.screen_w+11*s->p0.screen_w/16))/65536.0f;
       b.x = ((s->p0.screen_x-s->p0.screen_w+12*s->p0.screen_w/16))/65536.0f;
@@ -349,15 +346,15 @@ static void draw_segment(Segment *s)
 
       //Right marker 
       a.y = ((s->p1.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p1.screen_x-s->p1.screen_w+21*s->p1.screen_w/16))/65536.0f;
       b.x = ((s->p0.screen_x-s->p0.screen_w+21*s->p0.screen_w/16))/65536.0f;
       c.x = ((s->p1.screen_x-s->p1.screen_w+22*s->p1.screen_w/16))/65536.0f;
       DrawTriangle(a,b,c,s->color_border);
 
-      a.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
-      b.y = (ULK_fixed_32_ceil(s->p0.screen_y))/65536.0f;
+      a.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
+      b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
       a.x = ((s->p0.screen_x-s->p0.screen_w+21*s->p0.screen_w/16))/65536.0f;
       b.x = ((s->p0.screen_x-s->p0.screen_w+22*s->p0.screen_w/16))/65536.0f;
@@ -366,7 +363,7 @@ static void draw_segment(Segment *s)
    }
 }
 
-static void parallax_scroll(ULK_fixed_32 curve)
+static void parallax_scroll(Fixed1616 curve)
 {
    float dt = GetFrameTime();
 

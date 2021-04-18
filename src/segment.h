@@ -14,17 +14,17 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 typedef struct
 {
-   ULK_fixed_32 y;
-   ULK_fixed z;
-   ULK_fixed camera_z;
-   ULK_fixed_32 screen_x;
-   ULK_fixed_32 screen_y;
-   ULK_fixed_32 screen_w;
+   Fixed1616 y;
+   Fixed2408 z;
+   Fixed2408 camera_z;
+   Fixed1616 screen_x;
+   Fixed1616 screen_y;
+   Fixed1616 screen_w;
 }Point;
 
 typedef struct
 {
-   ULK_fixed_32 pos;
+   Fixed1616 pos;
    uint16_t index;
    uint8_t type;
 }Sprite;
@@ -37,8 +37,8 @@ typedef struct
    Color color_road;
    Color color_border;
    uint8_t line;
-   ULK_fixed_32 curve;
-   ULK_fixed_32 clip_y;
+   Fixed1616 curve;
+   Fixed1616 clip_y;
    dyn_array sprites;
    Car_list *cars;
 }Segment;
@@ -46,7 +46,7 @@ typedef struct
 extern dyn_array segments;
 extern Segment *segment_player;
 
-Segment *segment_list_get_pos(dyn_array *list, ULK_fixed pos, int *index);
+Segment *segment_list_get_pos(dyn_array *list, Fixed2408 pos, int *index);
 Segment *segment_list_get(dyn_array *list, int index);
 
 #endif

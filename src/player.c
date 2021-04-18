@@ -21,7 +21,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Internal includes
-#include "ULK_fixed.h"
+#include "fixed.h"
 #include "config.h"
 #include "util.h"
 #include "audio.h"
@@ -64,8 +64,8 @@ void player_reset()
 void player_update(int controll)
 {
    float dt = GetFrameTime();
-   ULK_fixed_32 vz_acc = ACCEL*dt;
-   ULK_fixed_32 vz_dec = DECEL*dt;
+   Fixed1616 vz_acc = ACCEL*dt;
+   Fixed1616 vz_dec = DECEL*dt;
 
    //Collision
    int i;
@@ -103,7 +103,7 @@ void player_update(int controll)
    {
       if(player.vz>cl->car->speed&&overlap((float)player.px/65536.0f,(float)texture_rects.car_player[0][0].width*SPRITE_SCALE,(float)cl->car->pos_x/65536.0f,(float)texture_rects.car_sprites[cl->car->index][0].width*SPRITE_SCALE,0.3f))
       {
-         player.vz = ULK_fixed_mul(cl->car->speed,ULK_fixed_div(cl->car->speed,player.vz));
+         player.vz = Fixed2408_mul(cl->car->speed,Fixed2408_div(cl->car->speed,player.vz));
          PlaySound(sound_hit);
          player.collisions++;
       }
@@ -115,9 +115,9 @@ void player_update(int controll)
    if(player.stopped!=1)
    {
       if(segment_player->curve<0&&player.stopped!=3)
-         player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(segment_player->curve,ULK_fixed_32_from_int(2)))*dt;
+         player.px-=Fixed1616_mul(Fixed1616_div(player.vz,MAX_SPEED),Fixed1616_mul(segment_player->curve,Fixed1616_from_int(2)))*dt;
       else if(segment_player->curve>0&&player.stopped!=2)
-         player.px-=ULK_fixed_32_mul(ULK_fixed_32_div(player.vz,MAX_SPEED),ULK_fixed_32_mul(segment_player->curve,ULK_fixed_32_from_int(2)))*dt;
+         player.px-=Fixed1616_mul(Fixed1616_div(player.vz,MAX_SPEED),Fixed1616_mul(segment_player->curve,Fixed1616_from_int(2)))*dt;
    }
 
    frame++;
@@ -130,17 +130,17 @@ void player_update(int controll)
       player.vz+=2*vz_dec;
    else
       player.vz+=vz_dec;
-   if(player.vz>MAX_SPEED/4&&abs(player.px)>=ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(1)/10)
+   if(player.vz>MAX_SPEED/4&&abs(player.px)>=Fixed1616_from_int(1)-Fixed1616_from_int(1)/10)
       player.vz+=4*vz_dec;
    if(player.vz<0)
       player.vz = 0;
 
-   ULK_fixed old_z = player.pz;
+   Fixed2408 old_z = player.pz;
    //Peak floating point...
    //I should really start explicetely casting between int and float...
    if(player.stopped!=1)
-      player.pz+=(ULK_fixed_32)(player.vz*dt);
-   player.time+=ULK_fixed_32_from_int(1)*dt;
+      player.pz+=(Fixed1616)(player.vz*dt);
+   player.time+=Fixed1616_from_int(1)*dt;
    player.pz = player.pz%(segments.used*SEGLEN);
    if(old_z>player.pz)
    {
@@ -156,7 +156,7 @@ void player_update(int controll)
       PlayMusicStream(sound_drive);
    SetMusicPitch(sound_drive,0.5f+((float)player.vz/(float)MAX_SPEED));
 
-   ULK_fixed_32 speed_x = 3*MIN(ULK_fixed_32_from_int(1),ULK_fixed_32_div(player.vz,MAX_SPEED/3))*dt;
+   Fixed1616 speed_x = 3*MIN(Fixed1616_from_int(1),Fixed1616_div(player.vz,MAX_SPEED/3))*dt;
    if(controll&&input_down_steer_left()&&player.stopped!=2)
    {
       if(player.steer==0)
@@ -181,7 +181,7 @@ void player_update(int controll)
          player.steer--;
    }
 
-   segment_player = segment_list_get_pos(&segments,player.pz+ULK_fixed_from_int(64),&i);
+   segment_player = segment_list_get_pos(&segments,player.pz+Fixed2408_from_int(64),&i);
 }
 
 int player_pos()

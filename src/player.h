@@ -14,14 +14,14 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 struct Player
 {
-   ULK_fixed pz;
-   ULK_fixed_32 px;
-   ULK_fixed vz;
+   Fixed2408 pz;
+   Fixed1616 px;
+   Fixed2408 vz;
    int steer;
    int stopped;
    int lap;
    int collisions;
-   ULK_fixed_32 time;
+   Fixed1616 time;
 };
 
 extern struct Player player;

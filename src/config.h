@@ -22,15 +22,15 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //Input
 #define DEADZONE 0.2f
 
-#define SEGLEN ULK_fixed_from_int(32)
-#define MAX_SPEED ULK_fixed_from_int(24*60)
-#define MAX_SPEED_BOOST ULK_fixed_from_int(30*60)
-#define CAR_MAX_SPEED ULK_fixed_from_int(24*60)
-#define ACCEL ULK_fixed_div(MAX_SPEED,ULK_fixed_from_int(20))
-#define DECEL ULK_fixed_div(-MAX_SPEED,ULK_fixed_from_int(10))
+#define SEGLEN Fixed2408_from_int(32)
+#define MAX_SPEED Fixed2408_from_int(24*60)
+#define MAX_SPEED_BOOST Fixed2408_from_int(30*60)
+#define CAR_MAX_SPEED Fixed2408_from_int(24*60)
+#define ACCEL Fixed2408_div(MAX_SPEED,Fixed2408_from_int(20))
+#define DECEL Fixed2408_div(-MAX_SPEED,Fixed2408_from_int(10))
 #define RENDER_DISTANCE 96
-#define CAM_HEIGHT ULK_fixed_32_from_int(64)
-#define PLAYER_OFFSET (ULK_fixed_32_mul(CAM_HEIGHT,CAM_DEPTH)>>8)
+#define CAM_HEIGHT Fixed1616_from_int(64)
+#define PLAYER_OFFSET (Fixed1616_mul(CAM_HEIGHT,CAM_DEPTH)>>8)
 #define CAM_DEPTH 54991
 #define CAM_DEPTHF 0.83909963f
 #define GOAL_POS (PLAYER_OFFSET+8*SEGLEN)

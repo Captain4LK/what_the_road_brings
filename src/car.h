@@ -15,9 +15,9 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 typedef struct Car
 {
    //Universall for all cars
-   ULK_fixed_32 pos_x;
-   ULK_fixed z;
-   ULK_fixed speed;
+   Fixed1616 pos_x;
+   Fixed2408 z;
+   Fixed2408 speed;
    uint16_t id;
    uint8_t index;
    uint8_t counter;

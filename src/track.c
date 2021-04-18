@@ -11,6 +11,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //External includes
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <math.h>
 #include <time.h>
 #include <string.h>
@@ -22,7 +23,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Internal includes
-#include "ULK_fixed.h"
+#include "fixed.h"
 #include "config.h"
 #include "util.h"
 #include "track.h"
@@ -47,7 +48,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 static Color colors[7];
 
 Track track;
-ULK_fixed_32 *lap_times = NULL;
+Fixed1616 *lap_times = NULL;
 //-------------------------------------
 
 //Function prototypes
@@ -68,9 +69,9 @@ static LILCALLBACK lil_value_t fnc_set_car_sprite(lil_t lil, size_t argc, lil_va
 static LILCALLBACK lil_value_t fnc_set_color(lil_t lil, size_t argc, lil_value_t* argv);
 static LILCALLBACK lil_value_t fnc_set_backdrop(lil_t lil, size_t argc, lil_value_t* argv);
 
-static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill);
-static void add_sprite(int seg, int index, ULK_fixed_32 pos, uint8_t type);
-static void add_car(int seg, int index, ULK_fixed_32 pos, uint8_t type, ULK_fixed speed);
+static void add_road(int start, int end, int length, Fixed1616 curve, Fixed1616 hill);
+static void add_sprite(int seg, int index, Fixed1616 pos, uint8_t type);
+static void add_car(int seg, int index, Fixed1616 pos, uint8_t type, Fixed2408 speed);
 static void add_stripe(int start, int end);
 //-------------------------------------
 
@@ -215,7 +216,7 @@ static LILCALLBACK lil_value_t fnc_get_segments_used(lil_t lil, size_t argc, lil
 
 static LILCALLBACK lil_value_t fnc_fixed_mul(lil_t lil, size_t argc, lil_value_t* argv)
 {
-   return lil_alloc_integer(ULK_fixed_mul(lil_to_integer(argv[0]),lil_to_integer(argv[1])));
+   return lil_alloc_integer(Fixed2408_mul(lil_to_integer(argv[0]),lil_to_integer(argv[1])));
 }
 
 static LILCALLBACK lil_value_t fnc_set_music(lil_t lil, size_t argc, lil_value_t* argv)
@@ -316,11 +317,11 @@ static void add_stripe(int start, int end)
    }
 }
 
-static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fixed_32 hill)
+static void add_road(int start, int end, int length, Fixed1616 curve, Fixed1616 hill)
 {
 
-   ULK_fixed_32 start_y = segments.used?dyn_array_element(Segment,&segments,segments.used-1).p1.y:0;
-   ULK_fixed_32 end_y = start_y+hill;
+   Fixed1616 start_y = segments.used?dyn_array_element(Segment,&segments,segments.used-1).p1.y:0;
+   Fixed1616 end_y = start_y+hill;
    int total = start+end+length;
 
    for(int i = 0;i<start;i++)
@@ -328,13 +329,12 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       Segment s;
       memset(&s,0,sizeof(s));
       s.p0.z = segments.used*SEGLEN;
-      ULK_fixed_32 ly = segments.used?dyn_array_element(Segment,&segments,segments.used-1).p1.y:0;
+      Fixed1616 ly = segments.used?dyn_array_element(Segment,&segments,segments.used-1).p1.y:0;
       s.p0.y = ly;
       s.p1.z = (segments.used+1)*SEGLEN;
-      s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)i/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
-      s.curve = curve+ULK_fixed_32_mul(-curve,((-ULK_fixed_32_cos(ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(end))*4)/2)+ULK_fixed_32_from_int(1)/2));
+      s.p1.y = start_y+Fixed1616_mul(end_y-start_y,((-cos(((float)i/(float)total)*M_PI)*Fixed1616_from_int(1))/2)+Fixed1616_from_int(1)/2);
       COLOR_ROAD()
-      s.curve = ULK_fixed_32_mul(curve,ULK_fixed_32_mul(ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(start)),ULK_fixed_32_div(ULK_fixed_32_from_int(i),ULK_fixed_32_from_int(start))));
+      s.curve = Fixed1616_mul(curve,Fixed1616_mul(Fixed1616_div(Fixed1616_from_int(i),Fixed1616_from_int(start)),Fixed1616_div(Fixed1616_from_int(i),Fixed1616_from_int(start))));
       dyn_array_init(Sprite,&s.sprites,2);
       dyn_array_add(Segment,&segments,128,s);
    }
@@ -344,10 +344,10 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       Segment s;
       memset(&s,0,sizeof(s));
       s.p0.z = segments.used*SEGLEN;
-      ULK_fixed_32 ly = segments.used?dyn_array_element(Segment,&segments,segments.used-1).p1.y:0;
+      Fixed1616 ly = segments.used?dyn_array_element(Segment,&segments,segments.used-1).p1.y:0;
       s.p0.y = ly;
       s.p1.z = (segments.used+1)*SEGLEN;
-      s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)(start+i)/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
+      s.p1.y = start_y+Fixed1616_mul(end_y-start_y,((-cos(((float)(start+i)/(float)total)*M_PI)*Fixed1616_from_int(1))/2)+Fixed1616_from_int(1)/2);
       COLOR_ROAD()
       s.curve = curve;
       dyn_array_init(Sprite,&s.sprites,2);
@@ -359,18 +359,18 @@ static void add_road(int start, int end, int length, ULK_fixed_32 curve, ULK_fix
       Segment s;
       memset(&s,0,sizeof(s));
       s.p0.z = segments.used*SEGLEN;
-      ULK_fixed_32 ly = segments.used?dyn_array_element(Segment,&segments,segments.used).p1.y:0;
+      Fixed1616 ly = segments.used?dyn_array_element(Segment,&segments,segments.used).p1.y:0;
       s.p0.y = ly;
       s.p1.z = (segments.used+1)*SEGLEN;
-      s.p1.y = start_y+ULK_fixed_32_mul(end_y-start_y,((-cos(((float)(start+length+i)/(float)total)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
+      s.p1.y = start_y+Fixed1616_mul(end_y-start_y,((-cos(((float)(start+length+i)/(float)total)*M_PI)*Fixed1616_from_int(1))/2)+Fixed1616_from_int(1)/2);
       COLOR_ROAD()
-      s.curve = curve+ULK_fixed_32_mul(-curve,((-cos(((float)i/(float)end)*M_PI)*ULK_fixed_32_from_int(1))/2)+ULK_fixed_32_from_int(1)/2);
+      s.curve = curve+Fixed1616_mul(-curve,((-cos(((float)i/(float)end)*M_PI)*Fixed1616_from_int(1))/2)+Fixed1616_from_int(1)/2);
       dyn_array_init(Sprite,&s.sprites,2);
       dyn_array_add(Segment,&segments,128,s);
    }
 }
 
-static void add_sprite(int seg, int index, ULK_fixed_32 pos, uint8_t type)
+static void add_sprite(int seg, int index, Fixed1616 pos, uint8_t type)
 {
    Sprite sp;
    sp.index = index;
@@ -379,7 +379,7 @@ static void add_sprite(int seg, int index, ULK_fixed_32 pos, uint8_t type)
    dyn_array_add(Sprite,&dyn_array_element(Segment,&segments,seg).sprites,2,sp);
 }
 
-static void add_car(int seg, int index, ULK_fixed_32 pos, uint8_t type, ULK_fixed speed)
+static void add_car(int seg, int index, Fixed1616 pos, uint8_t type, Fixed2408 speed)
 {
    Segment *segment = &dyn_array_element(Segment,&segments,seg);
    Car_list *l = car_list_new();
@@ -387,7 +387,7 @@ static void add_car(int seg, int index, ULK_fixed_32 pos, uint8_t type, ULK_fixe
    l->car = c;
    l->car->pos_x = pos;
    l->car->index = index;
-   l->car->z = ULK_fixed_from_int(1)+1;
+   l->car->z = Fixed2408_from_int(1)+1;
    l->car->counter = 0;
    l->car->id = cars_id_counter();
    l->car->speed = speed;

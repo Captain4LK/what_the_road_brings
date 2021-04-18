@@ -10,6 +10,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 //External includes
 #include <stdlib.h>
+#include <stdint.h>
 #include <math.h>
 #include <time.h>
 #include <raylib.h>
@@ -20,7 +21,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Internal includes
-#include "ULK_fixed.h"
+#include "fixed.h"
 #include "config.h"
 #include "util.h"
 #include "car.h"
@@ -174,11 +175,11 @@ static void car_npc_update(Segment *s, Car_list *l, int seg, float dt)
             {
                //Calculate steering direction
                int dir = 0;
-               if(player.px>ULK_fixed_32_from_int(1)/3) dir = -1;
-               else if(player.px<-ULK_fixed_32_from_int(1)/3) dir = 1;
+               if(player.px>Fixed1616_from_int(1)/3) dir = -1;
+               else if(player.px<-Fixed1616_from_int(1)/3) dir = 1;
                else dir = (l->car->pos_x>player.px)?1:-1;
 
-               l->car->pos_x+=ULK_fixed_32_div(l->car->speed<<8,CAR_MAX_SPEED<<8)*dir*dt*4;
+               l->car->pos_x+=Fixed1616_div(l->car->speed<<8,CAR_MAX_SPEED<<8)*dir*dt*4;
                break;
             }
             
@@ -190,11 +191,11 @@ static void car_npc_update(Segment *s, Car_list *l, int seg, float dt)
                {
                   //Calculate steering direction
                   int dir = 0;
-                  if(cl->car->pos_x>ULK_fixed_32_from_int(1)/3) dir = -1;
-                  else if(cl->car->pos_x<-ULK_fixed_32_from_int(1)/3) dir = 1;
+                  if(cl->car->pos_x>Fixed1616_from_int(1)/3) dir = -1;
+                  else if(cl->car->pos_x<-Fixed1616_from_int(1)/3) dir = 1;
                   else dir = (l->car->pos_x>cl->car->pos_x)?1:-1;
 
-                  l->car->pos_x+=ULK_fixed_32_div(l->car->speed<<8,CAR_MAX_SPEED<<8)*dir*dt;
+                  l->car->pos_x+=Fixed1616_div(l->car->speed<<8,CAR_MAX_SPEED<<8)*dir*dt;
                   end = 1;
                   break;
                }
@@ -206,10 +207,10 @@ static void car_npc_update(Segment *s, Car_list *l, int seg, float dt)
          }
          if(j==16) //Nothing found
          {
-            if(l->car->pos_x>(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(3)/10))
-               l->car->pos_x-=2*ULK_fixed_32_div(l->car->speed,CAR_MAX_SPEED)*dt;
-            else if(l->car->pos_x<-(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(3)/10))
-               l->car->pos_x+=2*ULK_fixed_32_div(l->car->speed,CAR_MAX_SPEED)*dt;
+            if(l->car->pos_x>(Fixed1616_from_int(1)-Fixed1616_from_int(3)/10))
+               l->car->pos_x-=2*Fixed1616_div(l->car->speed,CAR_MAX_SPEED)*dt;
+            else if(l->car->pos_x<-(Fixed1616_from_int(1)-Fixed1616_from_int(3)/10))
+               l->car->pos_x+=2*Fixed1616_div(l->car->speed,CAR_MAX_SPEED)*dt;
          }
       }
 
@@ -257,11 +258,11 @@ static void car_opp_update(Segment *s, Car_list *l, int seg, float dt)
             {
                //Calculate steering direction
                int dir = 0;
-               if(player.px>ULK_fixed_32_from_int(1)/3) dir = -1;
-               else if(player.px<-ULK_fixed_32_from_int(1)/3) dir = 1;
+               if(player.px>Fixed1616_from_int(1)/3) dir = -1;
+               else if(player.px<-Fixed1616_from_int(1)/3) dir = 1;
                else dir = (l->car->pos_x>player.px)?1:-1;
 
-               l->car->pos_x+=ULK_fixed_32_div(l->car->speed<<8,CAR_MAX_SPEED<<8)*dir*dt*4;
+               l->car->pos_x+=Fixed1616_div(l->car->speed<<8,CAR_MAX_SPEED<<8)*dir*dt*4;
                break;
             }
             
@@ -273,11 +274,11 @@ static void car_opp_update(Segment *s, Car_list *l, int seg, float dt)
                {
                   //Calculate steering direction
                   int dir = 0;
-                  if(cl->car->pos_x>ULK_fixed_32_from_int(1)/3) dir = -1;
-                  else if(cl->car->pos_x<-ULK_fixed_32_from_int(1)/3) dir = 1;
+                  if(cl->car->pos_x>Fixed1616_from_int(1)/3) dir = -1;
+                  else if(cl->car->pos_x<-Fixed1616_from_int(1)/3) dir = 1;
                   else dir = (l->car->pos_x>cl->car->pos_x)?1:-1;
 
-                  l->car->pos_x+=ULK_fixed_32_div(l->car->speed<<8,CAR_MAX_SPEED<<8)*dir*dt;
+                  l->car->pos_x+=Fixed1616_div(l->car->speed<<8,CAR_MAX_SPEED<<8)*dir*dt;
                   end = 1;
                   break;
                }
@@ -289,15 +290,15 @@ static void car_opp_update(Segment *s, Car_list *l, int seg, float dt)
          }
          if(j==16) //Nothing found
          {
-            if(l->car->pos_x>(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(3)/10))
-               l->car->pos_x-=2*ULK_fixed_32_div(l->car->speed,CAR_MAX_SPEED)*dt;
-            else if(l->car->pos_x<-(ULK_fixed_32_from_int(1)-ULK_fixed_32_from_int(3)/10))
-               l->car->pos_x+=2*ULK_fixed_32_div(l->car->speed,CAR_MAX_SPEED)*dt;
+            if(l->car->pos_x>(Fixed1616_from_int(1)-Fixed1616_from_int(3)/10))
+               l->car->pos_x-=2*Fixed1616_div(l->car->speed,CAR_MAX_SPEED)*dt;
+            else if(l->car->pos_x<-(Fixed1616_from_int(1)-Fixed1616_from_int(3)/10))
+               l->car->pos_x+=2*Fixed1616_div(l->car->speed,CAR_MAX_SPEED)*dt;
          }
       }
 
       //Update z position/segment
-      ULK_fixed old_z = l->car->z+l->car->segment*SEGLEN;
+      Fixed2408 old_z = l->car->z+l->car->segment*SEGLEN;
       l->car->z+=l->car->speed*dt;
 
       if(old_z>((l->car->z+l->car->segment*SEGLEN)%(segments.used*SEGLEN)))

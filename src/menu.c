@@ -11,6 +11,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //External includes
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <math.h>
 #include <time.h>
 #include <raylib.h>
@@ -21,7 +22,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Internal includes
-#include "ULK_fixed.h"
+#include "fixed.h"
 #include "config.h"
 #include "util.h"
 #include "audio.h"

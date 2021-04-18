@@ -15,7 +15,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 //-------------------------------------
 
 //Internal includes
-#include "ULK_fixed.h"
+#include "fixed.h"
 #include "config.h"
 #include "util.h"
 #include "car.h"
@@ -37,9 +37,9 @@ Segment *segment_player = NULL;
 //-------------------------------------
 
 //Function implementations
-Segment *segment_list_get_pos(dyn_array *list, ULK_fixed pos, int *index)
+Segment *segment_list_get_pos(dyn_array *list, Fixed2408 pos, int *index)
 {
-   int in = ULK_fixed_to_int(ULK_fixed_div(pos,SEGLEN))%list->used;
+   int in = Fixed2408_to_int(Fixed2408_div(pos,SEGLEN))%list->used;
    if(index)
       *index = in;
    return &dyn_array_element(Segment,list,in);

@@ -18,7 +18,7 @@ typedef struct
 }Track;
 
 extern Track track;
-extern ULK_fixed_32 *lap_times;
+extern Fixed1616 *lap_times;
 
 void track_build();
 
