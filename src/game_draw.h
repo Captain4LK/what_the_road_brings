@@ -14,6 +14,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 extern int enable_parallax;
 
-void game_draw(Fixed2408 x, Fixed2408 z, int steer);
+void game_draw(Fixed2408 x, Fixed2408 z, int steer, float dt);
 
 #endif

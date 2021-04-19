@@ -120,10 +120,8 @@ void car_free(Car *l)
    base_cars = l;
 }
 
-void cars_update(uint8_t op)
+void cars_update(uint8_t op, float dt)
 {
-   float dt = GetFrameTime();
-
    //The counter is used to keep track of which cars have already been updated this frame
    //It intensionally overflows, since only the difference between two numbers matters
    car_update_counter++;

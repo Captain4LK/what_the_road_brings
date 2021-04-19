@@ -42,12 +42,12 @@ int enable_parallax = 1;
 //Function prototypes
 static void project_point(Point *p, Fixed2408 cam_x, Fixed2408 cam_y, Fixed2408 cam_z, Fixed2408 cam_depth, int width, int height, int road_width);
 static void draw_segment(Segment *s);
-static void parallax_scroll(Fixed1616 curve);
+static void parallax_scroll(Fixed1616 curve, float dt);
 //-------------------------------------
 
 //Function implementations
 
-void game_draw(Fixed2408 x, Fixed2408 z, int steer)
+void game_draw(Fixed2408 x, Fixed2408 z, int steer, float dt)
 {
    //Draw background, with parallax effect
    for(int i = 0;i<5;i++)
@@ -166,7 +166,7 @@ void game_draw(Fixed2408 x, Fixed2408 z, int steer)
 
    //Update parallax background scroll
    if(!player.stopped&&enable_parallax)
-      parallax_scroll(segment_player->curve);
+      parallax_scroll(segment_player->curve,dt);
 }
 
 static void project_point(Point *p, Fixed1616 cam_x, Fixed1616 cam_y, Fixed2408 cam_z, Fixed1616 cam_depth, int width, int height, int road_width)
@@ -363,10 +363,8 @@ static void draw_segment(Segment *s)
    }
 }
 
-static void parallax_scroll(Fixed1616 curve)
+static void parallax_scroll(Fixed1616 curve, float dt)
 {
-   float dt = GetFrameTime();
-
    for(int i = 0;i<5;i++)
    {
       float speed = -parallax_data.speed[i]*(curve/65536.0f)*((float)player.vz/(float)MAX_SPEED)*dt;

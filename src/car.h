@@ -46,7 +46,7 @@ Car *car_list_remove(Car_list **l, uint16_t id);
 Car *car_new();
 void car_free(Car *l);
 
-void cars_update(uint8_t op);
+void cars_update(uint8_t op, float dt);
 uint16_t cars_id_counter();
 
 #endif

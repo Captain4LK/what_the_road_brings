@@ -50,33 +50,35 @@ static int results_select = 0;
 //-------------------------------------
 
 //Function prototypes
-static void mode_title_update();
-static void mode_credits_update();
-static void mode_game_start_update();
-static void mode_game_update();
-static void mode_game_draw();
-static void mode_pause_update();
-static void mode_pause_draw();
-static void mode_track_sel_update();
-static void mode_results_update();
-static void mode_results_draw();
+static void mode_title_update(float dt);
+static void mode_credits_update(float dt);
+static void mode_game_start_update(float dt);
+static void mode_game_update(float dt);
+static void mode_game_draw(float dt);
+static void mode_pause_update(float dt);
+static void mode_pause_draw(float dt);
+static void mode_track_sel_update(float dt);
+static void mode_results_update(float dt);
+static void mode_results_draw(float dt);
 //-------------------------------------
 
 //Function implementations
 
 void mode_update()
 {
+   float dt = GetFrameTime();
+
    //Game logic
    int old_mode = mode;
    switch(mode)
    {
-   case 0: mode_title_update(); break;
-   case 1: mode_credits_update(); break;
-   case 2: mode_track_sel_update(); break;
-   case 11: mode_game_start_update(); break;
-   case 12: mode_game_update(); break;
-   case 13: mode_pause_update(); break;
-   case 14: mode_results_update(); break;
+   case 0: mode_title_update(dt); break;
+   case 1: mode_credits_update(dt); break;
+   case 2: mode_track_sel_update(dt); break;
+   case 11: mode_game_start_update(dt); break;
+   case 12: mode_game_update(dt); break;
+   case 13: mode_pause_update(dt); break;
+   case 14: mode_results_update(dt); break;
    }
 
    //Drawing
@@ -89,10 +91,10 @@ void mode_update()
          case 0: title_draw(); break;
          case 1: credits_draw(); break;
          case 2: track_sel_draw(); break;
-         case 11: game_draw(player.px,player.pz,player.steer); break;
-         case 12: mode_game_draw(); break;
-         case 13: mode_pause_draw(); break;
-         case 14: mode_results_draw(); break;
+         case 11: game_draw(player.px,player.pz,player.steer,dt); break;
+         case 12: mode_game_draw(dt); break;
+         case 13: mode_pause_draw(dt); break;
+         case 14: mode_results_draw(dt); break;
          }
       EndTextureMode();
       float window_width = GetScreenWidth();
@@ -115,33 +117,33 @@ void mode_update()
    EndDrawing();
 }
 
-static void mode_title_update()
+static void mode_title_update(float dt)
 {
    if(music_current!=NULL)
       UpdateMusicStream(*music_current);
    title_update();
 }
 
-static void mode_credits_update()
+static void mode_credits_update(float dt)
 {
    if(music_current!=NULL)
       UpdateMusicStream(*music_current);
    credits_update();
 }
 
-static void mode_track_sel_update()
+static void mode_track_sel_update(float dt)
 {
    if(music_current!=NULL)
       UpdateMusicStream(*music_current);
    track_sel_update();
 }
 
-static void mode_game_start_update()
+static void mode_game_start_update(float dt)
 {
    if(music_current!=NULL)
       UpdateMusicStream(*music_current);
 
-   cars_update(0);
+   cars_update(0,dt);
 
    if(!IsSoundPlaying(sound_countdown_0))
    {
@@ -151,14 +153,14 @@ static void mode_game_start_update()
    }
 }
 
-static void mode_game_update()
+static void mode_game_update(float dt)
 {
    UpdateMusicStream(sound_drive);
    if(music_current!=NULL)
       UpdateMusicStream(*music_current);
 
-   player_update(1);
-   cars_update(1);
+   player_update(1,dt);
+   cars_update(1,dt);
 
    if(input_pressed_pause())
    {
@@ -179,15 +181,15 @@ static void mode_game_update()
    }
 }
 
-static void mode_game_draw()
+static void mode_game_draw(float dt)
 {
-   game_draw(player.px,player.pz,player.steer);
+   game_draw(player.px,player.pz,player.steer,dt);
    DrawTextEx(font,TextFormat("Lap\n%01d/%01d",player.lap,track.laps),(Vector2){4,4},font.baseSize,0.0f,WHITE);
    DrawTextEx(font,TextFormat("Speed\n %03d",(int)(((float)player.vz/(float)MAX_SPEED)*200.0f)),(Vector2){147,4},font.baseSize,1.0f,WHITE);
    DrawTextEx(font,TextFormat("Pos\n %01d",player_pos()),(Vector2){301,4},font.baseSize,1.0f,WHITE);
 }
 
-static void mode_pause_update()
+static void mode_pause_update(float dt)
 {
    if(music_current!=NULL)
       UpdateMusicStream(*music_current);
@@ -207,9 +209,9 @@ static void mode_pause_update()
    }
 }
 
-static void mode_pause_draw()
+static void mode_pause_draw(float dt)
 {
-   game_draw(player.px,player.pz,player.steer);
+   game_draw(player.px,player.pz,player.steer,dt);
    DrawTextEx(font,TextFormat("Lap\n%01d/%01d",player.lap,track.laps),(Vector2){4,4},font.baseSize,0.0f,WHITE);
    DrawTextEx(font,TextFormat("Speed\n %03d",(int)(((float)player.vz/(float)MAX_SPEED)*200.0f)),(Vector2){147,4},font.baseSize,1.0f,WHITE);
    DrawTextEx(font,TextFormat("Pos\n %01d",player_pos()),(Vector2){301,4},font.baseSize,1.0f,WHITE);
@@ -224,15 +226,14 @@ static void mode_pause_draw()
    }
 }
 
-static void mode_results_update()
+static void mode_results_update(float dt)
 {
    UpdateMusicStream(sound_drive);
    if(music_current!=NULL)
       UpdateMusicStream(*music_current);
 
-   float dt = GetFrameTime();
-   player_update(0);
-   cars_update(1);
+   player_update(0,dt);
+   cars_update(1,dt);
    if(results_alpha<255.0f)
       results_alpha+=128.0f*dt;
 
@@ -250,12 +251,12 @@ static void mode_results_update()
    }
 }
 
-static void mode_results_draw()
+static void mode_results_draw(float dt)
 {
    Color fade = (Color){255,255,255,MIN(255,(int)results_alpha)};
    Color reverse_fade = (Color){255,255,255,255-fade.a};
 
-   game_draw(player.px,player.pz,player.steer);
+   game_draw(player.px,player.pz,player.steer,dt);
    DrawTextEx(font,TextFormat("Lap\n%01d/%01d",player.lap,track.laps),(Vector2){4,4},font.baseSize,0.0f,reverse_fade);
    DrawTextEx(font,TextFormat("Speed\n %03d",(int)(((float)player.vz/(float)MAX_SPEED)*200.0f)),(Vector2){147,4},font.baseSize,1.0f,reverse_fade);
    DrawTextEx(font,TextFormat("Pos\n %01d",results_pos),(Vector2){301,4},font.baseSize,1.0f,reverse_fade);

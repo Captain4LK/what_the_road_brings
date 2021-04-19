@@ -61,9 +61,8 @@ void player_reset()
    player.time = 0;
 }
 
-void player_update(int controll)
+void player_update(int controll, float dt)
 {
-   float dt = GetFrameTime();
    Fixed1616 vz_acc = ACCEL*dt;
    Fixed1616 vz_dec = DECEL*dt;
 
