@@ -14,7 +14,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 extern int mode;
 extern Color clear_texture;
-extern Color clear_screen;
 
 void mode_update();
 
