@@ -40,7 +40,7 @@ int enable_parallax = 1;
 //-------------------------------------
 
 //Function prototypes
-static void project_point(Point *p, Fixed2408 cam_x, Fixed2408 cam_y, Fixed2408 cam_z, Fixed2408 cam_depth, int width, int height, int road_width);
+static void project_point(Point *p, Fixed1616 cam_x, Fixed1616 cam_y, Fixed2408 cam_z);
 static void draw_segment(Segment *s);
 static void parallax_scroll(Fixed1616 curve, float dt);
 //-------------------------------------
@@ -56,36 +56,35 @@ void game_draw(Fixed2408 x, Fixed2408 z, int steer, float dt)
       DrawTextureRec(texture,texture_rects.backdrop[i],(Vector2){parallax_data.layers[i][1].x,parallax_data.layers[i][1].y},WHITE);
    }
 
-   int index = 0;;
-   Fixed1616 max_y = Fixed1616_from_int(YRES);
-   segment_player = segment_list_get_pos(&segments,z+PLAYER_OFFSET,NULL);
-   Segment *base = segment_list_get_pos(&segments,z,&index);
-   int max = index+RENDER_DISTANCE;
-   int index_start = index;
-   
+   //max_y: clipping bounds
    //pos: how far the player has traversed the current segment
    //ppos: how far the player sprite has traversed the current segment
    //cdx: curve delta starting value, multiplied by pos, to account for partial segment traversal
    //cx: road x shift value, gets incremented by cdx every segment
    //py: starting segment height, used to move the camera to the road
+   Fixed1616 max_y = Fixed1616_from_int(YRES);
+   int index;
+   Segment *base = segment_list_get_pos(&segments,z,&index);
+   int max = index+RENDER_DISTANCE;
+   int index_start = index;
    Fixed1616 pos = Fixed1616_div((z%SEGLEN)<<8,SEGLEN<<8);
    Fixed1616 ppos = Fixed1616_div(((z+PLAYER_OFFSET)%SEGLEN)<<8,SEGLEN<<8);
    Fixed1616 cdx = -(Fixed1616_mul(base->curve,pos));
    Fixed1616 cx = -cdx;
+   segment_player = segment_list_get_pos(&segments,z+PLAYER_OFFSET,NULL);
    Fixed1616 py = segment_player->p0.y+Fixed1616_mul(segment_player->p1.y-segment_player->p0.y,ppos);
 
    //Draw road segments
    //Only project every second point, the other
    //one can be cached
-   project_point(&base->p0,(x*ROAD_WIDTH)-cx-cdx,py+CAM_HEIGHT,z-(((index_start%segments.used)<index_start)?segments.used*SEGLEN:0),CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
+   project_point(&base->p0,(x*ROAD_WIDTH)-cx-cdx,py+CAM_HEIGHT,z-(((index_start%segments.used)<index_start)?segments.used*SEGLEN:0));
    Point cache = base->p0;
    for(;index<max;index++)
    {
       Segment *s = segment_list_get(&segments,index);
       s->clip_y = max_y;
       s->p0 = cache;
-      int looped = (index%segments.used)<index_start?segments.used*SEGLEN:0;
-      project_point(&s->p1,(x*ROAD_WIDTH)-cx-cdx,py+CAM_HEIGHT,z-looped,CAM_DEPTH,XRES,YRES,ROAD_WIDTH);
+      project_point(&s->p1,(x*ROAD_WIDTH)-cx-cdx,py+CAM_HEIGHT,z-((index%segments.used)<index_start?segments.used*SEGLEN:0));
       cache = s->p1;
 
       cx+=cdx;
@@ -95,8 +94,8 @@ void game_draw(Fixed2408 x, Fixed2408 z, int steer, float dt)
          ||s->p1.screen_y>=s->p0.screen_y)
          continue;
 
-      draw_segment(s);
       max_y = s->p1.screen_y; //Set new clipping value
+      draw_segment(s);
    }
 
    //Draw sprites
@@ -169,16 +168,16 @@ void game_draw(Fixed2408 x, Fixed2408 z, int steer, float dt)
       parallax_scroll(segment_player->curve,dt);
 }
 
-static void project_point(Point *p, Fixed1616 cam_x, Fixed1616 cam_y, Fixed2408 cam_z, Fixed1616 cam_depth, int width, int height, int road_width)
+static void project_point(Point *p, Fixed1616 cam_x, Fixed1616 cam_y, Fixed2408 cam_z)
 {
    Fixed1616 camera_x = -cam_x;
    Fixed1616 camera_y = p->y-cam_y;
    p->camera_z = p->z-cam_z;
    if(p->camera_z==0)
-      p->camera_z = INT16_MAX<<8;
-   p->screen_x = (Fixed1616_from_int(width/2)+Fixed1616_mul(Fixed1616_from_int(width/2),Fixed1616_mul(Fixed1616_div(camera_x,p->camera_z<<8),cam_depth)));
-   p->screen_y = (Fixed1616_from_int(height/2)-Fixed1616_mul(Fixed1616_from_int(height/2),Fixed1616_mul(Fixed1616_div(camera_y,p->camera_z<<8),cam_depth)));
-   p->screen_w = Fixed1616_mul(Fixed1616_div(Fixed1616_from_int(width),p->camera_z<<8)*48,cam_depth);
+      p->camera_z = Fixed2408_from_int(INT16_MAX);
+   p->screen_w = Fixed1616_mul(Fixed1616_div(Fixed1616_from_int(XRES),p->camera_z<<8)*48,CAM_DEPTH);
+   p->screen_x = (Fixed1616_from_int(XRES/2)+Fixed1616_mul(Fixed1616_from_int(XRES/2),Fixed1616_mul(Fixed1616_div(camera_x,p->camera_z<<8),CAM_DEPTH)));
+   p->screen_y = (Fixed1616_from_int(YRES/2)-Fixed1616_mul(Fixed1616_from_int(YRES/2),Fixed1616_mul(Fixed1616_div(camera_y,p->camera_z<<8),CAM_DEPTH)));
 }
 
 static void draw_segment(Segment *s)
