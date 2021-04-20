@@ -89,7 +89,7 @@ void player_update(int controll, float dt)
             player.stopped = 2+(player.px>0);
          else if(sp->type==2)
          {
-            if(player.vz<MAX_SPEED)
+            if(player.vz!=MAX_SPEED_BOOST)
                PlaySound(sound_boost);
             player.vz = MAX_SPEED_BOOST;
          }

@@ -37,6 +37,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 //Variables
 int enable_parallax = 1;
+static Camera2D camera = {.offset = {.x = XRES/2, .y = YRES/2}, .target = {.x = XRES/2, .y = YRES/2}, .rotation = 0.0f, .zoom = 1.0f};
 //-------------------------------------
 
 //Function prototypes
@@ -55,6 +56,7 @@ void game_draw(Fixed2408 x, Fixed2408 z, int steer, float dt)
       DrawTextureRec(texture,texture_rects.backdrop[i],(Vector2){parallax_data.layers[i][0].x,parallax_data.layers[i][0].y},WHITE);
       DrawTextureRec(texture,texture_rects.backdrop[i],(Vector2){parallax_data.layers[i][1].x,parallax_data.layers[i][1].y},WHITE);
    }
+   BeginMode2D(camera);
 
    //max_y: clipping bounds
    //pos: how far the player has traversed the current segment
@@ -62,7 +64,7 @@ void game_draw(Fixed2408 x, Fixed2408 z, int steer, float dt)
    //cdx: curve delta starting value, multiplied by pos, to account for partial segment traversal
    //cx: road x shift value, gets incremented by cdx every segment
    //py: starting segment height, used to move the camera to the road
-   Fixed1616 max_y = Fixed1616_from_int(YRES);
+   Fixed1616 max_y = Fixed1616_from_int(YRES+YRES/8);
    int index;
    Segment *base = segment_list_get_pos(&segments,z,&index);
    int max = index+RENDER_DISTANCE;
@@ -73,6 +75,11 @@ void game_draw(Fixed2408 x, Fixed2408 z, int steer, float dt)
    Fixed1616 cx = -cdx;
    segment_player = segment_list_get_pos(&segments,z+PLAYER_OFFSET,NULL);
    Fixed1616 py = segment_player->p0.y+Fixed1616_mul(segment_player->p1.y-segment_player->p0.y,ppos);
+   float target_tilt = -5.625f*(base->curve/65536.0f);
+   if(camera.rotation>target_tilt)
+      camera.rotation-=MIN(camera.rotation-target_tilt,22.5f*dt);
+   if(camera.rotation<target_tilt)
+      camera.rotation+=MIN(-camera.rotation+target_tilt,22.5f*dt);
 
    //Draw road segments
    //Only project every second point, the other
@@ -166,6 +173,7 @@ void game_draw(Fixed2408 x, Fixed2408 z, int steer, float dt)
    //Update parallax background scroll
    if(!player.stopped&&enable_parallax)
       parallax_scroll(segment_player->curve,dt);
+   EndMode2D();
 }
 
 static void project_point(Point *p, Fixed1616 cam_x, Fixed1616 cam_y, Fixed2408 cam_z)
@@ -190,17 +198,17 @@ static void draw_segment(Segment *s)
       a.y = ((s->p1.screen_y))/65536.0f;
       b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
-      a.x = 0.0f;
-      b.x = 0.0f;
-      c.x = XRES;
+      a.x = 0.0f-XRES/16;
+      b.x = 0.0f-XRES/16;
+      c.x = XRES+XRES/16;
       DrawTriangle(a,b,c,s->color);
 
       a.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
-      a.x = 0.0f;
-      b.x = XRES;
-      c.x = XRES;
+      a.x = 0.0f-XRES/16;
+      b.x = XRES+XRES/16;
+      c.x = XRES+XRES/16;
       DrawTriangle(a,b,c,s->color);
 
       //Left border
@@ -262,17 +270,17 @@ static void draw_segment(Segment *s)
       a.y = ((s->p1.screen_y))/65536.0f;
       b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
-      a.x = 0.0f;
-      b.x = 0.0f;
-      c.x = XRES;
+      a.x = 0.0f-XRES/16;
+      b.x = 0.0f-XRES/16;
+      c.x = XRES+XRES/16;
       DrawTriangle(a,b,c,s->color);
 
       a.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       b.y = (Fixed1616_ceil(s->p0.screen_y))/65536.0f;
       c.y = ((s->p1.screen_y))/65536.0f;
-      a.x = 0.0f;
-      b.x = XRES;
-      c.x = XRES;
+      a.x = 0.0f-XRES/16;
+      b.x = XRES+XRES/16;
+      c.x = XRES+XRES/16;
       DrawTriangle(a,b,c,s->color);
 
       //Left border
