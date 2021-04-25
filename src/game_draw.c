@@ -37,7 +37,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 //Variables
 int enable_parallax = 1;
-static Camera2D camera = {.offset = {.x = XRES/2, .y = YRES/2}, .target = {.x = XRES/2, .y = YRES/2}, .rotation = 0.0f, .zoom = 1.0f};
+static Camera2D camera = {.offset = {.x = XRES/2, .y = 200}, .target = {.x = XRES/2, .y = 200}, .rotation = 0.0f, .zoom = 1.0f};
 //-------------------------------------
 
 //Function prototypes
@@ -75,11 +75,11 @@ void game_draw(Fixed2408 x, Fixed2408 z, int steer, float dt)
    Fixed1616 cx = -cdx;
    segment_player = segment_list_get_pos(&segments,z+PLAYER_OFFSET,NULL);
    Fixed1616 py = segment_player->p0.y+Fixed1616_mul(segment_player->p1.y-segment_player->p0.y,ppos);
-   float target_tilt = -5.625f*(base->curve/65536.0f);
-   if(camera.rotation>target_tilt)
-      camera.rotation-=MIN(camera.rotation-target_tilt,22.5f*dt);
-   if(camera.rotation<target_tilt)
-      camera.rotation+=MIN(-camera.rotation+target_tilt,22.5f*dt);
+   //float target_tilt = -5.625f*(base->curve/65536.0f);
+   //if(camera.rotation>target_tilt)
+      //camera.rotation-=MIN(camera.rotation-target_tilt,22.5f*dt);
+   //if(camera.rotation<target_tilt)
+      //camera.rotation+=MIN(-camera.rotation+target_tilt,22.5f*dt);
 
    //Draw road segments
    //Only project every second point, the other
