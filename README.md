@@ -1,5 +1,7 @@
 # What the road brings
 
+![gif](pictures/32bitjam.gif) 
+
 A pseudo 3d racer made using raylib. The game was originally made for the [32-bit Spring Cleaning!](https://itch.io/jam/32-bit-spring-cleaning) Jam, where this game ranked first place. I decided to continue development of this game from there.
 
 # Download
